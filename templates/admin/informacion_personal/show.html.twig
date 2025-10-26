@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}InformacionPersonal{% endblock %}
+
+{% block body %}
+    <h1>InformacionPersonal</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ informacion_personal.id }}</td>
+            </tr>
+            <tr>
+                <th>Nombre</th>
+                <td>{{ informacion_personal.nombre }}</td>
+            </tr>
+            <tr>
+                <th>ApPaterno</th>
+                <td>{{ informacion_personal.apellidoPaterno }}</td>
+            </tr>
+            <tr>
+                <th>ApMaterno</th>
+                <td>{{ informacion_personal.apellidoMaterno }}</td>
+            </tr>
+            <tr>
+                <th>TelefonoFijo</th>
+                <td>{{ informacion_personal.telefonoFijo }}</td>
+            </tr>
+            <tr>
+                <th>TelefonoCelular</th>
+                <td>{{ informacion_personal.telefonoCelular }}</td>
+            </tr>
+            <tr>
+                <th>Correo</th>
+                <td>{{ informacion_personal.correo }}</td>
+            </tr>
+            <tr>
+                <th>Curp</th>
+                <td>{{ informacion_personal.curp }}</td>
+            </tr>
+            <tr>
+                <th>Rfc</th>
+                <td>{{ informacion_personal.rfc }}</td>
+            </tr>
+            <tr>
+                <th>Nss</th>
+                <td>{{ informacion_personal.nss }}</td>
+            </tr>
+            <tr>
+                <th>EstadoCivil</th>
+                <td>{{ informacion_personal.estadoCivil ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Domicilio</th>
+                <td>{{ informacion_personal.domicilio }}</td>
+            </tr>
+            <tr>
+                <th>Imagen</th>
+                <td>{{ informacion_personal.imagen }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_informacion_personal_index') }}">back to list</a>
+
+    <a href="{{ path('app_informacion_personal_edit', {'id': informacion_personal.id}) }}">edit</a>
+
+    {{ include('informacion_personal/_delete_form.html.twig') }}
+{% endblock %}
