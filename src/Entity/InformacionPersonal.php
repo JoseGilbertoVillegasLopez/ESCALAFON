@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\InformacionPersonalRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: InformacionPersonalRepository::class)]
@@ -51,6 +53,20 @@ class InformacionPersonal
 
     #[ORM\OneToOne(mappedBy: 'trabajador', cascade: ['persist', 'remove'])]
     private ?Usuario $usuario = null;
+
+    /**
+     * @var Collection<int, ContactosEmergencia>
+     */
+    #[ORM\OneToMany(targetEntity: ContactosEmergencia::class, mappedBy: 'informacionPersonal', orphanRemoval: true)]
+    private Collection $contactosEmergencias;
+
+    #[ORM\OneToOne(mappedBy: 'informacionPersonal', cascade: ['persist', 'remove'])]
+    private ?InformacionLaboral $informacionLaboral = null;
+
+    public function __construct()
+    {
+        $this->contactosEmergencias = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -214,6 +230,53 @@ class InformacionPersonal
         }
 
         $this->usuario = $usuario;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ContactosEmergencia>
+     */
+    public function getContactosEmergencias(): Collection
+    {
+        return $this->contactosEmergencias;
+    }
+
+    public function addContactosEmergencia(ContactosEmergencia $contactosEmergencia): static
+    {
+        if (!$this->contactosEmergencias->contains($contactosEmergencia)) {
+            $this->contactosEmergencias->add($contactosEmergencia);
+            $contactosEmergencia->setInformacionPersonal($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContactosEmergencia(ContactosEmergencia $contactosEmergencia): static
+    {
+        if ($this->contactosEmergencias->removeElement($contactosEmergencia)) {
+            // set the owning side to null (unless already changed)
+            if ($contactosEmergencia->getInformacionPersonal() === $this) {
+                $contactosEmergencia->setInformacionPersonal(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getInformacionLaboral(): ?InformacionLaboral
+    {
+        return $this->informacionLaboral;
+    }
+
+    public function setInformacionLaboral(InformacionLaboral $informacionLaboral): static
+    {
+        // set the owning side of the relation if necessary
+        if ($informacionLaboral->getInformacionPersonal() !== $this) {
+            $informacionLaboral->setInformacionPersonal($this);
+        }
+
+        $this->informacionLaboral = $informacionLaboral;
+
         return $this;
     }
 }
