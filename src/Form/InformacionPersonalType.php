@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\InformacionPersonal;
 use App\Entity\InformacionLaboral;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -25,10 +26,6 @@ class InformacionPersonalType extends AbstractType
             ->add('estadoCivil')
             ->add('domicilio')
             ->add('imagen')
-        ;
-        $builder
-            ->add('numeroAfiliado')
-
         ;
     }
 

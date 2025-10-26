@@ -4,42 +4,34 @@
 
 {% block body %}
     <h1>InformacionPersonal index</h1>
-
+    <a href="{{ path('app_informacion_personal_new') }}">Create new</a>
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Nombre</th>
-                <th>ApPaterno</th>
-                <th>ApMaterno</th>
-                <th>TelefonoFijo</th>
-                <th>TelefonoCelular</th>
+                <th>Telefono Fijo</th>
+                <th>Telefono Celular</th>
                 <th>Correo</th>
                 <th>Curp</th>
                 <th>Rfc</th>
                 <th>Nss</th>
-                <th>EstadoCivil</th>
+                <th>Estado Civil</th>
                 <th>Domicilio</th>
-                <th>Imagen</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
         {% for informacion_personal in informacion_personals %}
             <tr>
-                <td>{{ informacion_personal.id }}</td>
-                <td>{{ informacion_personal.nombre }}</td>
-                <td>{{ informacion_personal.apellidoPaterno }}</td>
-                <td>{{ informacion_personal.apellidoMaterno }}</td>
+                <td>{{ informacion_personal.__ToString }}</td>
                 <td>{{ informacion_personal.telefonoFijo }}</td>
                 <td>{{ informacion_personal.telefonoCelular }}</td>
                 <td>{{ informacion_personal.correo }}</td>
                 <td>{{ informacion_personal.curp }}</td>
                 <td>{{ informacion_personal.rfc }}</td>
                 <td>{{ informacion_personal.nss }}</td>
-                <td>{{ informacion_personal.estadoCivil ? 'Yes' : 'No' }}</td>
+                <td>{{ informacion_personal.estadoCivil ? 'Casado' : 'Soltero' }}</td>
                 <td>{{ informacion_personal.domicilio }}</td>
-                <td>{{ informacion_personal.imagen }}</td>
                 <td>
                     <a href="{{ path('app_informacion_personal_show', {'id': informacion_personal.id}) }}">show</a>
                     <a href="{{ path('app_informacion_personal_edit', {'id': informacion_personal.id}) }}">edit</a>
@@ -53,5 +45,4 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_informacion_personal_new') }}">Create new</a>
 {% endblock %}
