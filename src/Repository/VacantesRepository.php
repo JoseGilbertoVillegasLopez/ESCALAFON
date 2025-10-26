@@ -2,39 +2,39 @@
 
 namespace App\Repository;
 
-use App\Entity\InformacionLaboral;
+use App\Entity\Vacantes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<InformacionLaboral>
+ * @extends ServiceEntityRepository<Vacantes>
  */
-class InformacionLaboralRepository extends ServiceEntityRepository
+class VacantesRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, InformacionLaboral::class);
+        parent::__construct($registry, Vacantes::class);
     }
 
     //    /**
-    //     * @return InformacionLaboral[] Returns an array of InformacionLaboral objects
+    //     * @return Vacantes[] Returns an array of Vacantes objects
     //     */
     //    public function findByExampleField($value): array
     //    {
-    //        return $this->createQueryBuilder('i')
-    //            ->andWhere('i.exampleField = :val')
+    //        return $this->createQueryBuilder('v')
+    //            ->andWhere('v.exampleField = :val')
     //            ->setParameter('val', $value)
-    //            ->orderBy('i.id', 'ASC')
+    //            ->orderBy('v.id', 'ASC')
     //            ->setMaxResults(10)
     //            ->getQuery()
     //            ->getResult()
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?InformacionLaboral
+    //    public function findOneBySomeField($value): ?Vacantes
     //    {
-    //        return $this->createQueryBuilder('i')
-    //            ->andWhere('i.exampleField = :val')
+    //        return $this->createQueryBuilder('v')
+    //            ->andWhere('v.exampleField = :val')
     //            ->setParameter('val', $value)
     //            ->getQuery()
     //            ->getOneOrNullResult()

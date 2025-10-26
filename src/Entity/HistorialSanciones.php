@@ -2,12 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\HistorialAscensoRepository;
+use App\Repository\HistorialSancionesRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: HistorialAscensoRepository::class)]
-class HistorialAscenso
+#[ORM\Entity(repositoryClass: HistorialSancionesRepository::class)]
+class HistorialSanciones
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,12 +18,15 @@ class HistorialAscenso
     private ?\DateTime $fecha = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $puestoAnterior = null;
+    private ?string $motivo = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $descripcion = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $puestoActual = null;
+    private ?string $comprovante = null;
 
-    #[ORM\ManyToOne(inversedBy: 'historialAscensos')]
+    #[ORM\ManyToOne(inversedBy: 'historialSanciones')]
     private ?InformacionLaboral $informacionLaboral = null;
 
     public function getId(): ?int
@@ -43,26 +46,38 @@ class HistorialAscenso
         return $this;
     }
 
-    public function getPuestoAnterior(): ?string
+    public function getMotivo(): ?string
     {
-        return $this->puestoAnterior;
+        return $this->motivo;
     }
 
-    public function setPuestoAnterior(string $puestoAnterior): static
+    public function setMotivo(string $motivo): static
     {
-        $this->puestoAnterior = $puestoAnterior;
+        $this->motivo = $motivo;
 
         return $this;
     }
 
-    public function getPuestoActual(): ?string
+    public function getDescripcion(): ?string
     {
-        return $this->puestoActual;
+        return $this->descripcion;
     }
 
-    public function setPuestoActual(string $puestoActual): static
+    public function setDescripcion(string $descripcion): static
     {
-        $this->puestoActual = $puestoActual;
+        $this->descripcion = $descripcion;
+
+        return $this;
+    }
+
+    public function getComprovante(): ?string
+    {
+        return $this->comprovante;
+    }
+
+    public function setComprovante(string $comprovante): static
+    {
+        $this->comprovante = $comprovante;
 
         return $this;
     }
