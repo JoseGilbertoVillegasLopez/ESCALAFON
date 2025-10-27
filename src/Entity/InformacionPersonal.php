@@ -72,10 +72,24 @@ class InformacionPersonal
     #[ORM\OneToMany(targetEntity: Capacitacion::class, mappedBy: 'informacionPersonal', cascade: ['persist', 'remove'])]
     private Collection $capacitacions;
 
+    /**
+     * @var Collection<int, HistorialAscenso>
+     */
+    #[ORM\OneToMany(targetEntity: HistorialAscenso::class, mappedBy: 'informacionPersonal')]
+    private Collection $historialAscensos;
+
+    /**
+     * @var Collection<int, HistorialSanciones>
+     */
+    #[ORM\OneToMany(targetEntity: HistorialSanciones::class, mappedBy: 'informacionPersonal')]
+    private Collection $historialSanciones;
+
     public function __construct()
     {
         $this->contactosEmergencias = new ArrayCollection();
         $this->capacitacions = new ArrayCollection();
+        $this->historialAscensos = new ArrayCollection();
+        $this->historialSanciones = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -331,6 +345,66 @@ class InformacionPersonal
             // set the owning side to null (unless already changed)
             if ($capacitacion->getInformacionPersonal() === $this) {
                 $capacitacion->setInformacionPersonal(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, HistorialAscenso>
+     */
+    public function getHistorialAscensos(): Collection
+    {
+        return $this->historialAscensos;
+    }
+
+    public function addHistorialAscenso(HistorialAscenso $historialAscenso): static
+    {
+        if (!$this->historialAscensos->contains($historialAscenso)) {
+            $this->historialAscensos->add($historialAscenso);
+            $historialAscenso->setInformacionPersonal($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistorialAscenso(HistorialAscenso $historialAscenso): static
+    {
+        if ($this->historialAscensos->removeElement($historialAscenso)) {
+            // set the owning side to null (unless already changed)
+            if ($historialAscenso->getInformacionPersonal() === $this) {
+                $historialAscenso->setInformacionPersonal(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, HistorialSanciones>
+     */
+    public function getHistorialSanciones(): Collection
+    {
+        return $this->historialSanciones;
+    }
+
+    public function addHistorialSancione(HistorialSanciones $historialSancione): static
+    {
+        if (!$this->historialSanciones->contains($historialSancione)) {
+            $this->historialSanciones->add($historialSancione);
+            $historialSancione->setInformacionPersonal($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistorialSancione(HistorialSanciones $historialSancione): static
+    {
+        if ($this->historialSanciones->removeElement($historialSancione)) {
+            // set the owning side to null (unless already changed)
+            if ($historialSancione->getInformacionPersonal() === $this) {
+                $historialSancione->setInformacionPersonal(null);
             }
         }
 
