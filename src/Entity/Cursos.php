@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\CursosRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: CursosRepository::class)]
 class Cursos
@@ -22,6 +24,9 @@ class Cursos
 
     #[ORM\Column]
     private ?int $valor = null;
+    #[ORM\OneToMany(mappedBy: 'curso', targetEntity: Capacitacion::class, cascade: ['persist', 'remove'])]
+private Collection $capacitaciones;
+
 
     public function getId(): ?int
     {

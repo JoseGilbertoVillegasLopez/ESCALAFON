@@ -33,6 +33,14 @@ class InformacionLaboral
     #[ORM\JoinColumn(nullable: false)]
     private ?InformacionPersonal $informacionPersonal = null;
 
+    #[ORM\ManyToOne (inversedBy: 'informacionLaboral')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Puesto $puesto = null;
+
+    #[ORM\ManyToOne (inversedBy: 'informacionLaboral')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Categoria $categoria = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -106,6 +114,30 @@ class InformacionLaboral
     public function setInformacionPersonal(InformacionPersonal $informacionPersonal): static
     {
         $this->informacionPersonal = $informacionPersonal;
+
+        return $this;
+    }
+
+    public function getPuesto(): ?Puesto
+    {
+        return $this->puesto;
+    }
+
+    public function setPuesto(?Puesto $puesto): static
+    {
+        $this->puesto = $puesto;
+
+        return $this;
+    }
+
+    public function getCategoria(): ?Categoria
+    {
+        return $this->categoria;
+    }
+
+    public function setCategoria(?Categoria $categoria): static
+    {
+        $this->categoria = $categoria;
 
         return $this;
     }

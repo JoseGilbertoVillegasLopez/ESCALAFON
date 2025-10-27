@@ -63,9 +63,19 @@ class InformacionPersonal
     #[ORM\OneToOne(mappedBy: 'informacionPersonal', cascade: ['persist', 'remove'])]
     private ?InformacionLaboral $informacionLaboral = null;
 
+    #[ORM\OneToOne(mappedBy: 'informacionPersonal', cascade: ['persist', 'remove'])]
+    private ?FormacionAcademica $formacionAcademica = null;
+
+    /**
+     * @var Collection<int, Capacitacion>
+     */
+    #[ORM\OneToMany(targetEntity: Capacitacion::class, mappedBy: 'informacionPersonal', cascade: ['persist', 'remove'])]
+    private Collection $capacitacions;
+
     public function __construct()
     {
         $this->contactosEmergencias = new ArrayCollection();
+        $this->capacitacions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -276,6 +286,53 @@ class InformacionPersonal
         }
 
         $this->informacionLaboral = $informacionLaboral;
+
+        return $this;
+    }
+
+    public function getFormacionAcademica(): ?FormacionAcademica
+    {
+        return $this->formacionAcademica;
+    }
+
+    public function setFormacionAcademica(FormacionAcademica $formacionAcademica): static
+    {
+        // set the owning side of the relation if necessary
+        if ($formacionAcademica->getInformacionPersonal() !== $this) {
+            $formacionAcademica->setInformacionPersonal($this);
+        }
+
+        $this->formacionAcademica = $formacionAcademica;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Capacitacion>
+     */
+    public function getCapacitacions(): Collection
+    {
+        return $this->capacitacions;
+    }
+
+    public function addCapacitacion(Capacitacion $capacitacion): static
+    {
+        if (!$this->capacitacions->contains($capacitacion)) {
+            $this->capacitacions->add($capacitacion);
+            $capacitacion->setInformacionPersonal($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCapacitacion(Capacitacion $capacitacion): static
+    {
+        if ($this->capacitacions->removeElement($capacitacion)) {
+            // set the owning side to null (unless already changed)
+            if ($capacitacion->getInformacionPersonal() === $this) {
+                $capacitacion->setInformacionPersonal(null);
+            }
+        }
 
         return $this;
     }
