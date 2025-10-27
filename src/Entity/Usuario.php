@@ -33,7 +33,7 @@ class Usuario implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\OneToOne(inversedBy:'usuario', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'usuario', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?InformacionPersonal $trabajador = null;
 

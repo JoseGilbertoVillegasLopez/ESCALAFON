@@ -43,12 +43,12 @@ private Collection $informacionLaboral;
 
     public function __construct()
 {
-    $this->informacionesLaborales = new ArrayCollection();
+    $this->informacionLaboral = new ArrayCollection();
 }
 /**
  * @return Collection<int, InformacionLaboral>
  */
-public function getInformacionesLaborales(): Collection
+public function getInformacionLaboral(): Collection
 {
     return $this->informacionLaboral;
 }
