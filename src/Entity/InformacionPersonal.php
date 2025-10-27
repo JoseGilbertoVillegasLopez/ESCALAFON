@@ -70,7 +70,7 @@ class InformacionPersonal
      * @var Collection<int, Capacitacion>
      */
     #[ORM\OneToMany(targetEntity: Capacitacion::class, mappedBy: 'informacionPersonal', cascade: ['persist', 'remove'])]
-    private Collection $capacitacions;
+    private Collection $capacitacion;
 
     /**
      * @var Collection<int, HistorialAscenso>
@@ -326,13 +326,13 @@ class InformacionPersonal
      */
     public function getCapacitacions(): Collection
     {
-        return $this->capacitacions;
+        return $this->capacitacion;
     }
 
     public function addCapacitacion(Capacitacion $capacitacion): static
     {
-        if (!$this->capacitacions->contains($capacitacion)) {
-            $this->capacitacions->add($capacitacion);
+        if (!$this->capacitacion->contains($capacitacion)) {
+            $this->capacitacion->add($capacitacion);
             $capacitacion->setInformacionPersonal($this);
         }
 
@@ -341,7 +341,7 @@ class InformacionPersonal
 
     public function removeCapacitacion(Capacitacion $capacitacion): static
     {
-        if ($this->capacitacions->removeElement($capacitacion)) {
+        if ($this->capacitacion->removeElement($capacitacion)) {
             // set the owning side to null (unless already changed)
             if ($capacitacion->getInformacionPersonal() === $this) {
                 $capacitacion->setInformacionPersonal(null);
@@ -409,5 +409,10 @@ class InformacionPersonal
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->nombre . ' ' . $this->apellidoPaterno . ' ' . $this->apellidoMaterno;
     }
 }

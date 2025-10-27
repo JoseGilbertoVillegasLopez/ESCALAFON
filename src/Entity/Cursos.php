@@ -25,7 +25,7 @@ class Cursos
     #[ORM\Column]
     private ?int $valor = null;
     #[ORM\OneToMany(mappedBy: 'curso', targetEntity: Capacitacion::class, cascade: ['persist', 'remove'])]
-private Collection $capacitaciones;
+    private Collection $capacitacion;
 
 
     public function getId(): ?int

@@ -13,11 +13,11 @@ class Capacitacion
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'capacitacions')]
+    #[ORM\ManyToOne(inversedBy: 'capacitacion')]
     #[ORM\JoinColumn(nullable: false)]
     private ?InformacionPersonal $informacionPersonal = null;
 
-    #[ORM\ManyToOne(inversedBy: 'capacitaciones')]
+    #[ORM\ManyToOne(inversedBy: 'capacitacion')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Cursos $curso = null;
 
