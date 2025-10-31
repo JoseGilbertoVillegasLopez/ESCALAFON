@@ -1,5 +1,4 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}New InformacionPersonal{% endblock %}
 
 {% block body %}
@@ -8,4 +7,7 @@
     {{ include('admin/informacion_personal/_form.html.twig') }}
 
     <a href="{{ path('app_informacion_personal_index') }}">back to list</a>
+{% endblock %}
+{% block javascripts %}
+    <script src="{{asset('js/admin/informacionPersonal/preview.js')}}"></script>
 {% endblock %}

@@ -15,13 +15,9 @@ class CapacitacionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('informacionPersonal', EntityType::class, [
-                'class' => InformacionPersonal::class,
-                'choice_label' => 'id',
-            ])
             ->add('curso', EntityType::class, [
                 'class' => Cursos::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nombre',
             ])
         ;
     }

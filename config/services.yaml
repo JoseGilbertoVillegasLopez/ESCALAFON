@@ -9,6 +9,8 @@ parameters: # aqui van los parametros de configuracion que se usaran en los serv
   app.mail.support:    '%env(APP_MAIL_SUPPORT)%'
   app.app_name:        '%env(APP_NAME)%'
   app.login_url:       '%env(APP_LOGIN_URL)%'
+  # 📸 Carpeta donde se almacenarán las imágenes subidas de InformacionPersonal
+  uploads_directory: '%kernel.project_dir%/public/uploads/imagenes'
 
 services:
     # default configuration for services in *this* file

@@ -16,10 +16,6 @@ class FormacionAcademicaType extends AbstractType
         $builder
             ->add('escolaridad')
             ->add('certificado')
-            ->add('informacionPersonal', EntityType::class, [
-                'class' => InformacionPersonal::class,
-                'choice_label' => 'id',
-            ])
         ;
     }
 

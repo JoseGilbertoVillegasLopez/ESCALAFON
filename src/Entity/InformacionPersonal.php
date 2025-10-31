@@ -57,7 +57,7 @@ class InformacionPersonal
     /**
      * @var Collection<int, ContactosEmergencia>
      */
-    #[ORM\OneToMany(targetEntity: ContactosEmergencia::class, mappedBy: 'informacionPersonal', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: ContactosEmergencia::class, mappedBy: 'informacionPersonal',cascade: ['persist', 'remove'])]
     private Collection $contactosEmergencias;
 
     #[ORM\OneToOne(mappedBy: 'informacionPersonal', cascade: ['persist', 'remove'])]
@@ -87,7 +87,7 @@ class InformacionPersonal
     public function __construct()
     {
         $this->contactosEmergencias = new ArrayCollection();
-        $this->capacitacions = new ArrayCollection();
+        $this->capacitacion = new ArrayCollection();
         $this->historialAscensos = new ArrayCollection();
         $this->historialSanciones = new ArrayCollection();
     }
@@ -324,7 +324,7 @@ class InformacionPersonal
     /**
      * @return Collection<int, Capacitacion>
      */
-    public function getCapacitacions(): Collection
+    public function getCapacitacion(): Collection
     {
         return $this->capacitacion;
     }

@@ -1,4 +1,62 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+
+<div class='container-entity-informacionPersonal'>
+
+    <div class="imagen">
+        <div class="preview">
+            {% if form.vars.value.imagen %}
+                <img id="preview" src="{{ asset('uploads/imagenes/' ~ form.vars.value.imagen) }}" alt="Imagen de perfil" width="150">
+            {% else %}
+                <img id="preview" src="{{ asset('uploads/imagenes/login_logo.png')}}" alt="Vista previa" class="img-thumbnail d-none" width="180">
+            {% endif %}
+        </div>
+        <div  class="ruta">{{ form_row(form.imagen) }}</div>
+    </div>
+    
+    <h2>Datos personales</h2>
+    <div class="informacion-personal">
+        <h3>Nombre completo</h3>
+        <div class="col-md-4">{{ form_row(form.nombre) }}</div>
+        <div class="col-md-4">{{ form_row(form.apellidoPaterno) }}</div>
+        <div class="col-md-4">{{ form_row(form.apellidoMaterno) }}</div>
+        <div class="col-md-4">{{ form_row(form.estadoCivil) }}</div>
+        <div class="col-md-4">{{ form_row(form.domicilio) }}</div>
+    </div>
+
+    <div class="informacion-contacto">
+        <h3>Información de contacto</h3>
+        <div class="col-md-6">{{ form_row(form.telefonoFijo) }}</div>
+        <div class="col-md-6">{{ form_row(form.telefonoCelular) }}</div>
+        <div class="col-md-6">{{ form_row(form.correo) }}</div>
+    </div>
+
+    
+    {{ form_row(form.curp) }}
+    {{ form_row(form.rfc) }}
+    {{ form_row(form.nss) }}
+</div>
+<hr>
+
+<h2>Información laboral</h2>
+{{ form_row(form.informacionLaboral) }}
+
+<hr>
+
+<h2>Contactos de emergencia</h2>
+{{ form_row(form.contactosEmergencias) }}
+
+<hr>
+
+<h2>Formación académica</h2>
+{{ form_row(form.formacionAcademica) }}
+
+<hr>
+
+<h2>Capacitación</h2>
+{{ form_row(form.capacitacion) }}
+
+<hr>
+
+<button class="btn btn-primary">{{ button_label|default('Guardar') }}</button>
+
 {{ form_end(form) }}
