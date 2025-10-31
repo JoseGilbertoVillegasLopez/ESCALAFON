@@ -17,8 +17,6 @@
     <div class="informacion-personal">
         <h3>Nombre completo</h3>
         <div class="col-md-4">{{ form_row(form.nombre) }}</div>
-        <div class="col-md-4">{{ form_row(form.apellidoPaterno) }}</div>
-        <div class="col-md-4">{{ form_row(form.apellidoMaterno) }}</div>
         <div class="col-md-4">{{ form_row(form.estadoCivil) }}</div>
         <div class="col-md-4">{{ form_row(form.domicilio) }}</div>
     </div>
@@ -37,34 +35,21 @@
 </div>
 <hr>
 
-<h2>Información laboral</h2>
-{{ form_row(form.informacionLaboral) }}
+
+<h2>Contactos de emergencia</h2>
+{{ form_row(form.contactosEmergencias) }}
 
 <hr>
-
-{# Contactos de emergencia #}
-<div class="mb-4">
-    <h5><i class="bi bi-people-fill"></i> Contactos de emergencia</h5>
-    <div class="collection-contactos" data-prototype="{{ form_widget(form.contactosEmergencias.vars.prototype)|e('html_attr') }}">
-        {{ form_widget(form.contactosEmergencias) }}
-    </div>
-</div>
 
 <h2>Formación académica</h2>
 {{ form_row(form.formacionAcademica) }}
 
-{# Capacitaciones #}
-<div class="mb-4">
-    <h5><i class="bi bi-journal-text"></i> Capacitaciones</h5>
-    <div class="collection-capacitacion" data-prototype="{{ form_widget(form.capacitacion.vars.prototype)|e('html_attr') }}">
-        {{ form_widget(form.capacitacion) }}
-    </div>
-</div>
+<hr>
 
-{# Carga del script JS #}
-{% block javascripts %}
-    <script src="{{ asset('js/admin/informacionPersonal/collection.js') }}"></script>
-{% endblock %}
+<h2>Capacitación</h2>
+{{ form_row(form.capacitacion) }}
+
+<hr>
 
 <button class="btn btn-primary">{{ button_label|default('Guardar') }}</button>
 

@@ -3,24 +3,29 @@
 namespace App\Form;
 
 use App\Entity\InformacionPersonal;
-use App\Entity\InformacionLaboral;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File; // Validador para archivos
 
-class InformacionPersonalType extends AbstractType
+class InformacionPersonalEditType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nombre')
-            ->add('apellidoPaterno')
-            ->add('apellidoMaterno')
+            ->add('nombre', TextType::class, [
+                'mapped' => false,                  // ⚠️ No está en la entidad
+                'label' => 'Nombre completo',       // Etiqueta que verá el usuario
+                'disabled' => true,                 // Solo lectura
+                'data' => $options['data'] ? $options['data']->__toString() : '', // Usa el método __toString()
+                'attr' => [
+                    'class' => 'form-control text-center fw-bold',
+        ],
+            ])
             ->add('telefonoFijo')
             ->add('telefonoCelular')
             ->add('correo')
@@ -65,20 +70,15 @@ class InformacionPersonalType extends AbstractType
                     ]),
                 ],
             ])
-
-            //iformationLaboral
-            ->add('informacionLaboral', InformacionLaboralType::class,[
-                'label' => false,
-            ])
             //contactosEmergencias
             ->add('contactosEmergencias', CollectionType::class, [
                 'entry_type' => ContactosEmergenciaType::class,
-                'label' => false,
+                'entry_options' => [
+                    'label' => false,
+                ],
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
-                'prototype' => true,
-                'attr' => ['class' => 'collection-contactos'],
             ])
 
             //formacionAcademica
@@ -89,12 +89,13 @@ class InformacionPersonalType extends AbstractType
             //capacitacion
             ->add('capacitacion', CollectionType::class, [
             'entry_type'   => CapacitacionType::class, // cada item es un subform de Capacitacion
+            'entry_options'=> [
+                'label' => false, // evita etiquetas repetidas en cada item
+            ],
             'allow_add'    => true,   // podrás agregar más items luego con JS
             'allow_delete' => true,   // podrás eliminarlos
             'by_reference' => false,  // importante para que llame a addCapacitacion()
             'label'        => false,  // no muestres una etiqueta general
-            'prototype'    => true,
-            'attr' => ['class' => 'collection-capacitacion'],
             ]) 
             ;
     }

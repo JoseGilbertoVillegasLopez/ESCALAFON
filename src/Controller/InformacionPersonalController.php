@@ -7,6 +7,7 @@ use App\Entity\ContactosEmergencia;
 use App\Entity\FormacionAcademica;
 use App\Entity\InformacionLaboral;
 use App\Entity\InformacionPersonal;
+use App\Form\InformacionPersonalEditType;
 use App\Form\InformacionPersonalType;
 use App\Repository\InformacionPersonalRepository;
 use App\Service\UserCreator;
@@ -105,7 +106,7 @@ final class InformacionPersonalController extends AbstractController
     #[Route('/{id}/edit', name: 'app_informacion_personal_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, InformacionPersonal $informacionPersonal, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(InformacionPersonalType::class, $informacionPersonal);
+        $form = $this->createForm(InformacionPersonalEditType::class, $informacionPersonal);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
