@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\String\Slugger\SluggerInterface;// Excepción para errores de archivos
 
 
+
 #[Route('/admin/informacion/personal')]
 final class InformacionPersonalController extends AbstractController
 {
@@ -54,34 +55,49 @@ final class InformacionPersonalController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // 📸 4. Obtener el archivo subido (del campo no mapeado)
+            // 📸 1. Procesar la imagen principal del trabajador
             $imagenFile = $form->get('imagen')->getData();
 
-            // Verificamos que efectivamente se haya seleccionado una imagen
             if ($imagenFile) {
-                // 🧩 5. Extraer el nombre original del archivo sin extensión
                 $originalFilename = pathinfo($imagenFile->getClientOriginalName(), PATHINFO_FILENAME);
-
-                // 🧩 6. Generar un nombre seguro sin espacios ni caracteres raros
                 $safeFilename = $slugger->slug($originalFilename);
-
-                // 🧩 7. Crear nombre único (ejemplo: juan-perez-654asd789.png)
                 $newFilename = $safeFilename . '-' . uniqid() . '.' . $imagenFile->guessExtension();
 
                 try {
-                    // 🧩 8. Mover el archivo desde la carpeta temporal a la carpeta definitiva
                     $imagenFile->move(
-                        $this->getParameter('uploads_directory'), // Usa el parámetro que creamos en services.yaml
+                        $this->getParameter('uploads_directory'),
                         $newFilename
                     );
                 } catch (FileException $e) {
-                    // ⚠️ Si algo falla, mostramos mensaje y no detenemos el flujo
                     $this->addFlash('error', 'Error al subir la imagen: ' . $e->getMessage());
                 }
 
-                // 🧩 9. Guardar el nombre del archivo en la entidad (no el binario)
                 $informacionPersonal->setImagen($newFilename);
             }
+
+
+            // 📄 2. Procesar los certificados del subformulario "formacionesAcademicas"
+            $formacion = $informacionPersonal->getFormacionAcademica(); // no array
+
+            $certificadoFile = $form->get('formacionAcademica')->get('certificado')->getData();
+
+            if ($certificadoFile) {
+                $originalFilename = pathinfo($certificadoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $certificadoFile->guessExtension();
+
+                try {
+                    $certificadoFile->move(
+                        $this->getParameter('certificados_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Error al subir el certificado: ' . $e->getMessage());
+                }
+
+                $formacion->setCertificado($newFilename);
+            }
+
             $entityManager->persist($informacionPersonal);
             $entityManager->flush();
             $this->userCreator->createFromPersonal($informacionPersonal);
@@ -104,12 +120,47 @@ final class InformacionPersonalController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_informacion_personal_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, InformacionPersonal $informacionPersonal, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, InformacionPersonal $informacionPersonal, EntityManagerInterface $entityManager, SluggerInterface $slugger ): Response
     {
         $form = $this->createForm(InformacionPersonalEditType::class, $informacionPersonal);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // 📸 1. Procesar la imagen principal del trabajador
+            $imagenFile = $form->get('imagen')->getData();
+
+            if ($imagenFile) {
+                // 🧩 1.1 Eliminar imagen anterior si existe
+                $imagenAnterior = $informacionPersonal->getImagen();
+                if ($imagenAnterior) {
+                    $rutaAnterior = $this->getParameter('uploads_directory') . '/' . $imagenAnterior;
+                    if (file_exists($rutaAnterior)) {
+                        unlink($rutaAnterior);
+                    }
+                }
+
+                // 🧩 1.2 Generar nombre nuevo y guardar
+                $originalFilename = pathinfo($imagenFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imagenFile->guessExtension();
+
+                try {
+                    $imagenFile->move(
+                        $this->getParameter('uploads_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Error al subir la nueva imagen: ' . $e->getMessage());
+                }
+
+                $informacionPersonal->setImagen($newFilename);
+            }
+
+
+
+            
+
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_informacion_personal_index', [], Response::HTTP_SEE_OTHER);
@@ -132,3 +183,4 @@ final class InformacionPersonalController extends AbstractController
         return $this->redirectToRoute('app_informacion_personal_index', [], Response::HTTP_SEE_OTHER);
     }
 }
+

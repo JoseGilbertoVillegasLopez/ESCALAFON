@@ -1,0 +1,169 @@
+/* ===========================
+   🌙 ESTILO OSCURO GLOBAL
+   =========================== */
+body {
+  background-color: #121212;
+  color: #e5e5e5;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+main.container-fluid {
+  background-color: #121212;
+  min-height: 100vh;
+}
+
+.card {
+    background-color: #1e1e1e !important;
+    border-radius: 1rem;
+    border: 1px solid #2c2c2c;
+}
+
+/* ===========================
+    🧱 TÍTULOS Y SECCIONES
+   =========================== */
+h1, h4 {
+    color: #f1f1f1;
+}
+
+h4 i {
+  color: #0dcaf0; /* celeste tipo info */
+    margin-right: 8px;
+}
+
+section {
+    margin-bottom: 2.5rem;
+}
+
+.border-bottom {
+    border-color: #2b2b2b !important;
+}
+
+/* ===========================
+    🧍 CAMPOS DE FORMULARIO
+   =========================== */
+.form-control,
+.form-select {
+    background-color: #2b2b2b !important;
+    border: 1px solid #3e3e3e !important;
+    color: #e5e5e5 !important;
+    border-radius: 0.5rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #0dcaf0 !important;
+    box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.25);
+}
+
+.form-label {
+    font-weight: 500;
+    color: #cfcfcf;
+}
+
+/* ===========================
+    🧍 BOTONES
+   =========================== */
+.btn-outline-light {
+    border-color: #e5e5e5 !important;
+    color: #e5e5e5 !important;
+}
+
+.btn-outline-light:hover {
+    background-color: #e5e5e5 !important;
+    color: #121212 !important;
+}
+
+.btn-success {
+    background-color: #198754 !important;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #157347 !important;
+}
+
+.btn-danger {
+    background-color: #dc3545 !important;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #b02a37 !important;
+}
+
+/* ===========================
+    🖼️ IMAGEN DE PERFIL
+   =========================== */
+.imagen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.preview img {
+    border-radius: 50%;
+    border: 3px solid #0dcaf0;
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    box-shadow: 0 0 10px rgba(13, 202, 240, 0.2);
+}
+
+.preview .d-none {
+    display: none !important;
+}
+
+/* ===========================
+    🧱 COLECCIONES (Contactos/Capacitación)
+   =========================== */
+.collection-contactos,
+.collection-capacitacion {
+    padding: 1rem;
+    background-color: #1b1b1b;
+    border-radius: 0.75rem;
+    border: 1px dashed #2f2f2f;
+}
+
+.collection-contactos > div,
+.collection-capacitacion > div {
+    background-color: #2b2b2b;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid #3e3e3e;
+}
+
+/* ===========================
+   ⚙️ DETALLES GENERALES
+   =========================== */
+.text-secondary {
+    color: #b0b0b0 !important;
+}
+
+.shadow-lg {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6) !important;
+}
+/* ===========================
+   💾 BOTÓN GUARDAR PERSONALIZADO
+   =========================== */
+.btn-guardar {
+  background: linear-gradient(145deg, #198754, #157347);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 28px;
+  border-radius: 0.75rem;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+}
+
+.btn-guardar:hover {
+  background: linear-gradient(145deg, #1faa6a, #198754);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(25, 135, 84, 0.5);
+}
+
+.btn-guardar i {
+  margin-right: 6px;
+}

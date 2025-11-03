@@ -1,42 +1,59 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
+# =====================================================
+# CONFIGURACIÓN GLOBAL DE SERVICIOS Y PARÁMETROS
+# =====================================================
 
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
-parameters: # aqui van los parametros de configuracion que se usaran en los servicios
+# -------------------------------
+# 🔧 Parámetros globales
+# -------------------------------
+parameters:
+  # Parámetros usados por los servicios de correo
   app.mail.from_email: '%env(APP_MAIL_FROM_EMAIL)%'
   app.mail.from_name:  '%env(APP_MAIL_FROM_NAME)%'
   app.mail.support:    '%env(APP_MAIL_SUPPORT)%'
   app.app_name:        '%env(APP_NAME)%'
   app.login_url:       '%env(APP_LOGIN_URL)%'
+
   # 📸 Carpeta donde se almacenarán las imágenes subidas de InformacionPersonal
   uploads_directory: '%kernel.project_dir%/public/uploads/imagenes'
 
-services:
-    # default configuration for services in *this* file
-  _defaults:
-    autowire: true      # Automatically injects dependencies in your services.
-    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+  # 🗂️ Carpeta base de subidas (padre de /imagenes y /certificados)
+  uploads_base_directory: '%kernel.project_dir%/public/uploads'
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
+  # 🎓 Carpeta donde se almacenarán los certificados académicos
+  certificados_directory: '%kernel.project_dir%/public/uploads/certificados'
+
+
+# -------------------------------
+# 🧩 Definición de servicios
+# -------------------------------
+services:
+  # Configuración por defecto de todos los servicios
+  _defaults:
+    autowire: true       # Symfony inyecta dependencias automáticamente
+    autoconfigure: true  # Registra servicios automáticamente (commands, event listeners, etc.)
+
+  # Hace que todas las clases dentro de src/ sean detectadas automáticamente como servicios
   App\:
     resource: '../src/'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+  # =====================================================
+  # SERVICIO: WelcomeMailer (envío de correo al crear usuarios)
+  # =====================================================
   App\Service\WelcomeMailer:
-    arguments: #Parámetros que Symfony inyectará al crear el servicio WelcomeMailer
-      $fromEmail: '%app.mail.from_email%'   #este campo es el que envia los correos
-      $fromName:  '%app.mail.from_name%'    # este campo es el nombre que aparece en el correo
-      $soporteEmail: '%app.mail.support%'   # Correo de soporte al que los usuarios pueden responder en caso de dudas
-      $appName: '%app.app_name%'            # este campo es el nombre de la aplicacion
-      $loginUrl: '%app.login_url%'          # este campo es la url de inicio de sesion
-  
+    arguments:
+      $fromEmail: '%app.mail.from_email%'
+      $fromName:  '%app.mail.from_name%'
+      $soporteEmail: '%app.mail.support%'
+      $appName: '%app.app_name%'
+      $loginUrl: '%app.login_url%'
+
+  # =====================================================
+  # SERVICIO: ActualizacionMailer (envío de correo al actualizar usuarios)
+  # =====================================================
   App\Service\ActualizacionMailer:
-    arguments: #Parámetros que Symfony inyectará al crear el servicio WelcomeMailer
-      $fromEmail: '%app.mail.from_email%'   #este campo es el que envia los correos
-      $fromName:  '%app.mail.from_name%'    # este campo es el nombre que aparece en el correo
-      $soporteEmail: '%app.mail.support%'   # Correo de soporte al que los usuarios pueden responder en caso de dudas
-      $appName: '%app.app_name%'            # este campo es el nombre de la aplicacion
+    arguments:
+      $fromEmail: '%app.mail.from_email%'
+      $fromName:  '%app.mail.from_name%'
+      $soporteEmail: '%app.mail.support%'
+      $appName: '%app.app_name%'
       $loginUrl: '%app.login_url%'

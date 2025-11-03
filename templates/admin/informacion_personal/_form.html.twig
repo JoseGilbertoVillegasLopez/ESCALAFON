@@ -1,71 +1,201 @@
 {{ form_start(form) }}
 
-<div class='container-entity-informacionPersonal'>
+{# _form.html.twig #}
 
-    <div class="imagen">
-        <div class="preview">
-            {% if form.vars.value.imagen %}
-                <img id="preview" src="{{ asset('uploads/imagenes/' ~ form.vars.value.imagen) }}" alt="Imagen de perfil" width="150">
-            {% else %}
-                <img id="preview" src="{{ asset('uploads/imagenes/login_logo.png')}}" alt="Vista previa" class="img-thumbnail d-none" width="180">
-            {% endif %}
+{# Inicia el formulario con ID para vincular el botón de submit externo #}
+{{ form_start(form, {'attr': {'id': 'form_informacion_personal', 'class': 'needs-validation'}}) }}
+
+{# =========================
+   🧍 SECCIÓN 0: FOTO / IMAGEN DE PERFIL
+   ========================= #}
+<section class="mb-5">
+  <h4 class="border-bottom pb-2 mb-3">
+    <i class="bi bi-image-fill"></i> Imagen de perfil
+  </h4>
+
+  <div class="row g-4 align-items-start">
+    {# Columna de vista previa #}
+    <div class="col-md-4">
+      <div class="imagen">
+        <div class="preview text-center">
+          {% if form.vars.value and form.vars.value.imagen %}
+            <img id="preview" src="{{ asset('uploads/imagenes/' ~ form.vars.value.imagen) }}"
+                 alt="Imagen de perfil" class="img-thumbnail" width="180">
+          {% else %}
+            {# Oculta la vista previa hasta que el usuario seleccione una imagen #}
+            <img id="preview" src="{{ asset('uploads/imagenes/login_logo.png') }}"
+                 alt="Vista previa" class="img-thumbnail d-none" width="180">
+          {% endif %}
         </div>
-        <div  class="ruta">{{ form_row(form.imagen) }}</div>
-    </div>
-    
-    <h2>Datos personales</h2>
-    <div class="informacion-personal">
-        <h3>Nombre completo</h3>
-        <div class="col-md-4">{{ form_row(form.nombre) }}</div>
-        <div class="col-md-4">{{ form_row(form.apellidoPaterno) }}</div>
-        <div class="col-md-4">{{ form_row(form.apellidoMaterno) }}</div>
-        <div class="col-md-4">{{ form_row(form.estadoCivil) }}</div>
-        <div class="col-md-4">{{ form_row(form.domicilio) }}</div>
+      </div>
     </div>
 
-    <div class="informacion-contacto">
-        <h3>Información de contacto</h3>
-        <div class="col-md-6">{{ form_row(form.telefonoFijo) }}</div>
-        <div class="col-md-6">{{ form_row(form.telefonoCelular) }}</div>
-        <div class="col-md-6">{{ form_row(form.correo) }}</div>
+    {# Columna del input de archivo #}
+    <div class="col-md-8">
+      <div class="ruta">
+        {# Campo de subida de imagen del formulario #}
+        {{ form_row(form.imagen, {
+          attr: {
+            accept: 'image/*',
+            'data-preview-target': '#preview'   # lo usaremos luego en el JS para actualizar la vista previa
+          },
+          help: 'Formatos permitidos: JPG, PNG, SVG. Tamaño recomendado ~ 400x400.'
+        }) }}
+      </div>
+    </div>
+  </div>
+</section>
+
+{# =========================
+   🧍 SECCIÓN 1: DATOS PERSONALES
+   ========================= #}
+<section class="mb-5">
+  <h4 class="border-bottom pb-2 mb-3">
+    <i class="bi bi-person-badge"></i> Datos personales
+  </h4>
+  <div class="row g-3">
+    <div class="col-md-4">
+      {{ form_row(form.nombre) }}
+    </div>
+    <div class="col-md-4">
+      {{ form_row(form.apellidoPaterno) }}
+    </div>
+    <div class="col-md-4">
+      {{ form_row(form.apellidoMaterno) }}
+    </div>
+    <div class="col-md-6">
+      {{ form_row(form.curp) }}
+    </div>
+    <div class="col-md-6">
+      {{ form_row(form.rfc) }}
+    </div>
+    <div class="col-md-4">
+      {{ form_row(form.nss) }}
+    </div>
+    <div class="col-md-4">
+      {{ form_row(form.estadoCivil) }}
+    </div>
+  </div>
+</section>
+{# =========================
+   🧳 SECCIÓN 3: INFORMACIÓN LABORAL
+   ========================= #}
+<section class="mb-5">
+  <h4 class="border-bottom pb-2 mb-3">
+    <i class="bi bi-briefcase-fill"></i> Información laboral
+  </h4>
+
+  <div class="row g-3">
+    <div class="col-md-4">
+      {{ form_row(form.informacionLaboral.numeroAfiliado) }}
     </div>
 
-    
-    {{ form_row(form.curp) }}
-    {{ form_row(form.rfc) }}
-    {{ form_row(form.nss) }}
+    <div class="col-md-4">
+      {{ form_row(form.informacionLaboral.fechaIncorporacion) }}
+    </div>
+    <div class="col-md-4">
+      {{ form_row(form.informacionLaboral.tipoPlaza) }}
+    </div>
+    <div class="col-md-4">
+      {{ form_row(form.informacionLaboral.turnoactual) }}
+    </div>
+
+    <div class="col-md-6">
+      {{ form_row(form.informacionLaboral.jornada) }}
+    </div>
+    <div class="col-md-6">
+      {{ form_row(form.informacionLaboral.puesto) }}
+    </div>
+
+    <div class="col-md-6">
+      {{ form_row(form.informacionLaboral.categoria) }}
+    </div>
+  </div>
+</section>
+
+
+
+
+{# =========================
+   📞 SECCIÓN 2: CONTACTO
+   ========================= #}
+<section class="mb-5">
+  <h4 class="border-bottom pb-2 mb-3">
+    <i class="bi bi-telephone-fill"></i> Contacto
+  </h4>
+  <div class="row g-3">
+    <div class="col-md-6">
+      {{ form_row(form.telefonoFijo) }}
+    </div>
+    <div class="col-md-6">
+      {{ form_row(form.telefonoCelular) }}
+    </div>
+    <div class="col-md-6">
+      {{ form_row(form.correo) }}
+    </div>
+    <div class="col-md-12">
+      {{ form_row(form.domicilio) }}
+    </div>
+  </div>
+</section>
+
+{# =========================
+   🧠 SECCIÓN 3: FORMACIÓN ACADÉMICA
+   ========================= #}
+<section class="mb-5">
+  <h4 class="border-bottom pb-2 mb-3">
+    <i class="bi bi-mortarboard-fill"></i> Formación académica
+  </h4>
+  <div class="row g-3">
+    {{ form_row(form.formacionAcademica) }}
+  </div>
+</section>
+
+{# =========================
+   🧩 SECCIÓN 4: CAPACITACIÓN
+   ========================= #}
+<section class="mb-5">
+  <h4 class="border-bottom pb-2 mb-3">
+    <i class="bi bi-journal-text"></i> Capacitaciones
+  </h4>
+
+  <div class="collection-capacitacion"
+     data-prototype="{{ form_widget(form.capacitacion.vars.prototype)|e('html_attr') }}">
+    {% for item in form.capacitacion %}
+        <div class="border rounded p-3 mb-2 bg-body-secondary">
+            {{ form_widget(item) }}
+        </div>
+    {% endfor %}
 </div>
-<hr>
 
-<h2>Información laboral</h2>
-{{ form_row(form.informacionLaboral) }}
+</section>
 
-<hr>
+{# =========================
+   🚨 SECCIÓN 5: CONTACTOS DE EMERGENCIA
+   ========================= #}
+<section class="mb-5">
+  <h4 class="border-bottom pb-2 mb-3">
+    <i class="bi bi-people-fill"></i> Contactos de emergencia
+  </h4>
 
-{# Contactos de emergencia #}
-<div class="mb-4">
-    <h5><i class="bi bi-people-fill"></i> Contactos de emergencia</h5>
-    <div class="collection-contactos" data-prototype="{{ form_widget(form.contactosEmergencias.vars.prototype)|e('html_attr') }}">
-        {{ form_widget(form.contactosEmergencias) }}
-    </div>
+  <div class="collection-contactos"
+     data-prototype="{{ form_widget(form.contactosEmergencias.vars.prototype)|e('html_attr') }}">
+    {% for item in form.contactosEmergencias %}
+        <div class="border rounded p-3 mb-2 bg-body-secondary">
+            {{ form_widget(item) }}
+        </div>
+    {% endfor %}
 </div>
-
-<h2>Formación académica</h2>
-{{ form_row(form.formacionAcademica) }}
-
-{# Capacitaciones #}
-<div class="mb-4">
-    <h5><i class="bi bi-journal-text"></i> Capacitaciones</h5>
-    <div class="collection-capacitacion" data-prototype="{{ form_widget(form.capacitacion.vars.prototype)|e('html_attr') }}">
-        {{ form_widget(form.capacitacion) }}
-    </div>
-</div>
+</section>
 
 {# Carga del script JS #}
 {% block javascripts %}
     <script src="{{ asset('js/admin/informacionPersonal/collection.js') }}"></script>
 {% endblock %}
 
-<button class="btn btn-primary">{{ button_label|default('Guardar') }}</button>
-
+<div class="text-center mt-4">
+    <button type="submit" class="btn-guardar">
+        <i class="bi bi-save"></i> Guardar registro
+    </button>
+</div>
 {{ form_end(form) }}

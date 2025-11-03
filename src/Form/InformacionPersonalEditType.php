@@ -29,9 +29,6 @@ class InformacionPersonalEditType extends AbstractType
             ->add('telefonoFijo')
             ->add('telefonoCelular')
             ->add('correo')
-            ->add('curp')
-            ->add('rfc')
-            ->add('nss')
             ->add('estadoCivil', ChoiceType::class, [
                 'label' => 'Estado Civil',
                 'required' => true,
@@ -81,10 +78,7 @@ class InformacionPersonalEditType extends AbstractType
                 'by_reference' => false,
             ])
 
-            //formacionAcademica
-            ->add('formacionAcademica', FormacionAcademicaType::class, [
-                'label' => false,
-            ])  
+            
 
             //capacitacion
             ->add('capacitacion', CollectionType::class, [

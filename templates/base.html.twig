@@ -6,6 +6,7 @@
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}
         <link rel="stylesheet" href="{{asset('css/bootstrap/bootstrap.min.css')}}">
+        <link rel="stylesheet" href="{{ asset('css/informacionPersonal/new.css') }}">
         {% endblock %}
 
         {% block javascripts %}
@@ -19,6 +20,14 @@
             background: #222;
             color: #eee;
             padding: 5px 20px 0 20px;
+        }
+        tr{
+            border-bottom: 3px solid #3809f6ff;
+            background: #10ec26ff;
+        }
+        th{
+            background-color: #f07e05ff;
+            color: #222;
         }
     </style>
         {% block body %}{% endblock %}

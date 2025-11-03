@@ -22,3 +22,4 @@ function previewImage(event) {
     preview.classList.add('d-none');
     }
 }
+
