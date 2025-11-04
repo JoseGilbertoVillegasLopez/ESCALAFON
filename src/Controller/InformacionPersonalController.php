@@ -24,9 +24,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;// Excepción para errores
 #[Route('/admin/informacion/personal')]
 final class InformacionPersonalController extends AbstractController
 {
-
     private UserCreator $userCreator;
-
     public function __construct(UserCreator $userCreator)
     {
         $this->userCreator = $userCreator;

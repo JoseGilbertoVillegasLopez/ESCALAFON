@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Vacantes{% endblock %}
+
+{% block body %}
+    <style>
+    /* Botón de regreso */
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.5rem 1rem;
+    background-color: var(--bs-secondary);
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-back i {
+    font-size: 1.1rem;
+}
+
+.btn-back:hover {
+    background-color: var(--bs-secondary-hover, #6c757d);
+    transform: translateY(-2px);
+    color: #fff;
+    text-decoration: none;
+}
+
+.btn-back:active {
+    transform: scale(0.97);
+}
+
+/* Versión modo oscuro */
+@media (prefers-color-scheme: dark) {
+    .btn-back {
+        background-color: #444;
+        color: #fff;
+    }
+    .btn-back:hover {
+        background-color: #555;
+    }
+}
+    </style>
+    <h1>Crear Vacantes</h1>
+    <a href="{{ path('app_vacantes_index') }}" class="btn-back">
+        <i class="bi bi-arrow-left-circle"></i> Volver a la lista
+    </a>
+    {{ include('admin/vacantes/_form.html.twig') }}
+
+    
+
+{% endblock %}

@@ -18,6 +18,7 @@ class RequisitosVacantes
     private ?Cursos $curso = null;
 
     #[ORM\ManyToOne(inversedBy: 'requisitos')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Vacantes $vacante = null;
 
     public function getId(): ?int

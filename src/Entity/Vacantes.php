@@ -32,7 +32,7 @@ class Vacantes
     /**
      * @var Collection<int, RequisitosVacantes>
      */
-    #[ORM\OneToMany(targetEntity: RequisitosVacantes::class, mappedBy: 'vacante')]
+    #[ORM\OneToMany(targetEntity: RequisitosVacantes::class, mappedBy: 'vacante',cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $requisitos;
 
     public function __construct()

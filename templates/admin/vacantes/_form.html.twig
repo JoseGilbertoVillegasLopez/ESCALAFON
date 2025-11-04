@@ -1,0 +1,62 @@
+{{ form_start(form, {'attr': {'class': 'vacante-form'}}) }}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/admin/vacantes/vacantes.css') }}">
+{% endblock %}
+
+<div class="card p-4 shadow-sm form-container">
+    <h4 class="section-title mb-4">Información de la Vacante</h4>
+
+    <div class="vacante-fields mb-4">
+        <div class="form-group mb-3">
+            {{ form_label(form.nombre, 'Nombre de la vacante', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+            {{ form_widget(form.nombre, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="form-group mb-3">
+            {{ form_label(form.antiguedad, 'Antigüedad requerida (años)', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+            {{ form_widget(form.antiguedad, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="form-group mb-3">
+            {{ form_label(form.puesto, 'Puesto asociado', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+            {{ form_widget(form.puesto, {'attr': {'class': 'form-select'}}) }}
+        </div>
+        <div class="form-group mb-3">
+            {{ form_label(form.categoria, 'Categoría', {'label_attr': {'class': 'form-label fw-semibold'}}) }}
+            {{ form_widget(form.categoria, {'attr': {'class': 'form-select'}}) }}
+        </div>
+    </div>
+
+    <hr class="divider">
+
+    <h4 class="section-title mb-3">Requisitos</h4>
+    <div data-prototype="{{ form_widget(form.requisitos.vars.prototype)|e('html_attr') }}" class="collection-requisitos requisitos-list">
+        {% for requisito in form.requisitos %}
+            <div class="requisito-item p-3 rounded shadow-sm mb-3">
+                <div class="requisito-fields d-flex align-items-center justify-content-between gap-3">
+                    <div class="flex-fill">
+                        {{ form_widget(requisito, {'attr': {'class': 'form-select requisito-curso'}}) }}
+                    </div>
+                    <button type="button" class="btn btn-outline-danger btn-sm remove-requisito">
+                        <i class="bi bi-trash"></i> Eliminar
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="actions mt-3">
+        <button type="button" class="btn btn-outline-primary btn-add add-requisito">
+            <i class="bi bi-plus-circle"></i> Agregar requisito
+        </button>
+    </div>
+
+    <div class="mt-4 text-end">
+        <button class="btn btn-success btn-save">
+            <i class="bi bi-save"></i> {{ button_label|default('Guardar') }}
+        </button>
+    </div>
+</div>
+
+{% block javascripts %}
+    <script src="{{ asset('js/admin/vacantes/requisitos.js') }}"></script>
+{% endblock %}
+{{ form_end(form) }}

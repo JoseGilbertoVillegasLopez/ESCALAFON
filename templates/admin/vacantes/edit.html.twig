@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Vacantes{% endblock %}
+
+{% block body %}
+    <h1>Edit Vacantes</h1>
+
+    {{ include('vacantes/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_vacantes_index') }}">back to list</a>
+
+    {{ include('vacantes/_delete_form.html.twig') }}
+{% endblock %}

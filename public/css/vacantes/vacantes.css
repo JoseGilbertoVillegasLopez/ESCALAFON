@@ -1,0 +1,182 @@
+/* Contenedor general del formulario */
+.vacante-form .form-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+}
+
+/* Títulos de sección */
+.vacante-form .section-title {
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--bs-primary);
+}
+
+/* Divisor */
+.vacante-form .divider {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Campos del formulario */
+.vacante-form .form-label {
+    font-weight: 500;
+}
+
+.vacante-form .form-control,
+.vacante-form .form-select {
+    border-radius: 0.5rem;
+    border: 1px solid var(--bs-border-color, #444);
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    transition: all 0.2s ease;
+}
+
+.vacante-form .form-control:focus,
+.vacante-form .form-select:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Requisitos */
+.requisitos-list {
+    margin-top: 1rem;
+}
+
+.requisito-item {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.75rem;
+}
+
+.requisito-item:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Botones */
+.btn-add {
+    font-weight: 500;
+    border-radius: 0.5rem;
+}
+
+.btn-add i {
+    margin-right: 5px;
+}
+
+.btn-save {
+    padding: 0.6rem 1.4rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+}
+
+.btn-outline-danger {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0.3rem 0.7rem;
+}
+
+/* Animación al agregar/eliminar requisitos */
+.requisito-item {
+    transition: all 0.2s ease;
+}
+
+.requisito-item.added {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Modo oscuro (si usas body.dark o prefers-color-scheme) */
+@media (prefers-color-scheme: dark) {
+    .vacante-form .form-container {
+        background-color: #1e1e1e;
+        color: #fff;
+    }
+    .vacante-form .form-control,
+    .vacante-form .form-select {
+        background-color: #2a2a2a;
+        color: #fff;
+        border-color: #444;
+    }
+    .vacante-form .form-control:focus,
+    .vacante-form .form-select:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.4);
+    }
+}
+
+
+/* ---------- SHOW VIEW ---------- */
+.vacante-show-container {
+    max-width: 850px;
+    margin-top: 2rem;
+    border-radius: 1rem;
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+}
+
+/* Info boxes */
+.info-box {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.5rem;
+    padding: 0.6rem 1rem;
+    color: var(--bs-body-color);
+}
+
+/* Divider line */
+.divider {
+    border-color: rgba(255, 255, 255, 0.15);
+    margin: 1.5rem 0;
+}
+
+/* Requisitos */
+.requisitos-list .requisito-item {
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.requisitos-list .requisito-item:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+/* Botón volver */
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.5rem 1rem;
+    background-color: var(--bs-secondary);
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+    background-color: var(--bs-secondary-hover, #6c757d);
+    transform: translateY(-2px);
+    color: #fff;
+    text-decoration: none;
+}
+
+.btn-back i {
+    font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .vacante-show-container {
+        padding: 1.2rem;
+    }
+}

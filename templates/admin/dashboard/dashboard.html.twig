@@ -1,15 +1,17 @@
 {% extends 'base.html.twig' %}
 {% block title %}Dashboard Admin{% endblock %}
-
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{asset('css/buttons/enlaces.css')}}">
+{% endblock %}
 {% block body %}
     <h1>Dashboard Admin</h1>
 
     <div class="buttons-container">
-        {{ include('/buttons/button_enlace.html.twig', {
-            url: path('app_informacion_personal_index'),
-            text: 'Informacion Personal'
-        }) }}
-        
-        {# Agrega más botones según sea necesario #}
+        <button>
+            <a href="{{ path('app_vacantes_index') }}">Vacantes</a>
+        </button>
+        <button>
+            <a href="{{ path('app_informacion_personal_index') }}">Personal</a>
+        </button>
     </div>
-{% endblock %}
+{% endblock %} 
