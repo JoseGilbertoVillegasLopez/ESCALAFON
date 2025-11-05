@@ -1,55 +1,70 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const initCollection = (selector, addBtnText) => {
+    const collectionHolder = document.querySelector(selector);
+    if (!collectionHolder) return;
 
-    const initCollection = (selector, addBtnText) => {
-        const collectionHolder = document.querySelector(selector);
-        if (!collectionHolder) return;
+    // Clase de item según la colección
+    const itemClass = selector.includes('capacitacion')
+      ? 'capacitacion-item'
+      : 'contacto-item';
 
-        // ✅ índice inicial correcto
-        collectionHolder.dataset.index = collectionHolder.querySelectorAll('div.form-group, fieldset, div.mb-2').length;
+    // Índice inicial correcto
+    collectionHolder.dataset.index =
+      collectionHolder.querySelectorAll(`.${itemClass}`).length;
 
-        // ✅ botón agregar
-        const addButton = document.createElement('button');
-        addButton.type = 'button';
-        addButton.className = 'btn btn-success btn-sm mt-2';
-        addButton.innerHTML = `<i class="bi bi-plus-circle"></i> ${addBtnText}`;
-        collectionHolder.parentNode.insertBefore(addButton, collectionHolder.nextSibling);
+    // Botón "Agregar"
+    const addButton = document.createElement('button');
+    addButton.type = 'button';
+    addButton.className = 'btn btn-success btn-sm mt-2';
+    addButton.innerHTML = `<i class="bi bi-plus-circle"></i> ${addBtnText}`;
+    collectionHolder.parentNode.insertBefore(addButton, collectionHolder.nextSibling);
 
-        addButton.addEventListener('click', () => {
-            const prototype = collectionHolder.dataset.prototype;
+    // Click en "Agregar"
+    addButton.addEventListener('click', () => {
+      const prototype = collectionHolder.dataset.prototype;
+      if (!prototype) {
+        console.error('❌ data-prototype no encontrado en', selector);
+        return;
+      }
 
-            // Seguridad: si prototype está vacío, abortar
-            if (!prototype) {
-                console.error('❌ data-prototype no encontrado en', selector);
-                return;
-            }
+      const index = collectionHolder.dataset.index;
+      const newForm = prototype.replace(/__name__/g, index);
 
-            const index = collectionHolder.dataset.index;
-            const newForm = prototype.replace(/__name__/g, index);
+      // Crear bloque
+      const item = document.createElement('div');
+      item.classList.add(itemClass);
+      item.innerHTML = newForm;
 
-            // Crear el nuevo bloque
-            const item = document.createElement('div');
-            item.innerHTML = newForm;
-            item.classList.add('border', 'rounded', 'p-3', 'mb-2', 'bg-body-secondary');
+      // Crear botón eliminar
+      const removeButton = document.createElement('button');
+      removeButton.type = 'button';
+      removeButton.className = 'btn btn-danger btn-sm remove-item';
+      removeButton.innerHTML = '<i class="bi bi-trash"></i> Eliminar';
+      removeButton.addEventListener('click', () => item.remove());
 
-            // Botón eliminar
-            const removeButton = document.createElement('button');
-            removeButton.type = 'button';
-            removeButton.className = 'btn btn-danger btn-sm mt-2';
-            removeButton.innerHTML = '<i class="bi bi-trash"></i> Eliminar';
-            removeButton.addEventListener('click', () => item.remove());
+      // ⬅️ INSERTAR EL BOTÓN DENTRO DEL HUECO DEL GRID
+      const slot = item.querySelector('.eliminar-container');
+      if (slot) {
+        slot.appendChild(removeButton);
+      } else {
+        // Fallback por si en algún prototipo faltara el hueco
+        item.appendChild(removeButton);
+      }
 
-            // Agregar botón eliminar dentro del bloque
-            item.appendChild(removeButton);
+      collectionHolder.appendChild(item);
+      collectionHolder.dataset.index++;
+    });
 
-            // Agregar al contenedor
-            collectionHolder.appendChild(item);
+    // Activar eliminación para los existentes
+    collectionHolder.querySelectorAll('.remove-item').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const container = e.target.closest(`.${itemClass}`);
+        if (container) container.remove();
+      });
+    });
+  };
 
-            // Incrementar índice
-            collectionHolder.dataset.index++;
-        });
-    };
-
-    // Inicializar ambas colecciones
-    initCollection('.collection-contactos', 'Agregar contacto');
-    initCollection('.collection-capacitacion', 'Agregar capacitación');
+  // Inicializar colecciones
+  initCollection('.collection-capacitacion', 'Agregar capacitación');
+  initCollection('.collection-contactos', 'Agregar contacto');
 });

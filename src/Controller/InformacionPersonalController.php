@@ -120,7 +120,7 @@ final class InformacionPersonalController extends AbstractController
     #[Route('/{id}/edit', name: 'app_informacion_personal_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, InformacionPersonal $informacionPersonal, EntityManagerInterface $entityManager, SluggerInterface $slugger ): Response
     {
-        $form = $this->createForm(InformacionPersonalEditType::class, $informacionPersonal);
+        $form = $this->createForm(InformacionPersonalType::class, $informacionPersonal);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

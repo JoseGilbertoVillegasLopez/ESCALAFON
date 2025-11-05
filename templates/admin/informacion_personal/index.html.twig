@@ -32,6 +32,7 @@
                 <td>{{ informacion_personal.nss }}</td>
                 <td>{{ informacion_personal.estadoCivil ? 'Casado' : 'Soltero' }}</td>
                 <td>{{ informacion_personal.domicilio }}</td>
+                
                 <td>
                     <a href="{{ path('app_informacion_personal_show', {'id': informacion_personal.id}) }}">show</a>
                     <a href="{{ path('app_informacion_personal_edit', {'id': informacion_personal.id}) }}">edit</a>

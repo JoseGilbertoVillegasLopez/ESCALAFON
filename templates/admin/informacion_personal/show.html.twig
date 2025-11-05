@@ -33,176 +33,244 @@
         {# =========================
            🧍 SECCIÓN 0: FOTO / IMAGEN DE PERFIL
            ========================= #}
-        <section class="mb-5">
-          <h4 class="border-bottom pb-2 mb-3"><i class="bi bi-image-fill"></i> Imagen de perfil</h4>
-          <div class="row g-4 align-items-start">
-            <div class="col-md-4 text-center">
-              {% if informacion_personal.imagen %}
-                <img src="{{ asset('uploads/imagenes/' ~ informacion_personal.imagen) }}" alt="Foto de perfil" class="img-thumbnail" width="180">
-              {% else %}
-                <img src="{{ asset('uploads/imagenes/login_logo.png') }}" alt="Sin foto" class="img-thumbnail" width="180">
-              {% endif %}
-            </div>
-            <div class="col-md-8 d-flex align-items-center">
-              <div>
-                <h4 class="mb-1">{{ informacion_personal.nombre }} {{ informacion_personal.apellidoPaterno }} {{ informacion_personal.apellidoMaterno }}</h4>
-              </div>
-            </div>
-          </div>
-        </section>
+        <section class="mb-5 text-center">
+  <div class="perfil-container">
+    <h2 class="perfil-nombre">
+      {{ informacion_personal.nombre }} {{ informacion_personal.apellidoPaterno }} {{ informacion_personal.apellidoMaterno }}
+    </h2>
+
+    <div class="perfil-imagen">
+      {% if informacion_personal.imagen %}
+        <img src="{{ asset('uploads/imagenes/' ~ informacion_personal.imagen) }}" alt="Foto de perfil">
+      {% else %}
+        <img src="{{ asset('uploads/imagenes/login_logo.png') }}" alt="Sin foto">
+      {% endif %}
+    </div>
+  </div>
+</section>
+
 
         {# =========================
            🧍 SECCIÓN 1: DATOS PERSONALES
            ========================= #}
         <section class="mb-5">
-          <h4 class="border-bottom pb-2 mb-3"><i class="bi bi-person-badge"></i> Datos personales</h4>
-          <div class="row g-3">
-            <div class="col-md-4"><strong>Nombre(s)</strong><br>{{ informacion_personal.nombre }}</div>
-            <div class="col-md-4"><strong>Apellido paterno</strong><br>{{ informacion_personal.apellidoPaterno }}</div>
-            <div class="col-md-4"><strong>Apellido materno</strong><br>{{ informacion_personal.apellidoMaterno }}</div>
-            <div class="col-md-6"><strong>CURP</strong><br>{{ informacion_personal.curp }}</div>
-            <div class="col-md-6"><strong>RFC</strong><br>{{ informacion_personal.rfc }}</div>
-            <div class="col-md-4"><strong>NSS</strong><br>{{ informacion_personal.nss }}</div>
-            <div class="col-md-4">
-                <strong>Estado civil</strong><br>
-                {% if informacion_personal.estadoCivil %}
-                    Soltero(a)
-                {% else %}
-                    Casado(a)
-                {% endif %}
-            </div>
-          </div>
-        </section>
+  <h4 class="border-bottom pb-2 mb-3">
+    <i class="bi bi-person-badge"></i> Datos personales
+  </h4>
+  <div class="row g-3">
+    <div class="col-md-4">
+      <span class="data-label">Nombre(s)</span>
+      <div class="info-field">{{ informacion_personal.nombre }}</div>
+    </div>
+    <div class="col-md-4">
+      <span class="data-label">Apellido paterno</span>
+      <div class="info-field">{{ informacion_personal.apellidoPaterno }}</div>
+    </div>
+    <div class="col-md-4">
+      <span class="data-label">Apellido materno</span>
+      <div class="info-field">{{ informacion_personal.apellidoMaterno }}</div>
+    </div>
+    <div class="col-md-4">
+      <span class="data-label">CURP</span>
+      <div class="info-field">{{ informacion_personal.curp }}</div>
+    </div>
+    <div class="col-md-4">
+      <span class="data-label">RFC</span>
+      <div class="info-field">{{ informacion_personal.rfc }}</div>
+    </div>
+    <div class="col-md-4">
+      <span class="data-label">NSS</span>
+      <div class="info-field">{{ informacion_personal.nss }}</div>
+    </div>
+    <div class="col-md-4">
+      <span class="data-label">Estado civil</span>
+      <div class="info-field">
+        {% if informacion_personal.estadoCivil %}
+          Soltero(a)
+        {% else %}
+          Casado(a)
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-md-4">
+        <span class="data-label">Telefono Fijo</span>
+        <div class="info-field">{{ informacion_personal.telefonoFijo }}</div>
+      </div>
+
+      <div class="col-md-4">
+        <span class="data-label">Telefono Celular</span>
+        <div class="info-field">{{ informacion_personal.telefonoCelular }}</div>
+      </div>
+
+      <div class="col-md-4">
+        <span class="data-label">Correo</span>
+        <div class="info-field">{{ informacion_personal.correo }}</div>
+      </div>
+  </div>
+</section>
+
 
         {# =========================
            🧳 SECCIÓN 3: INFORMACIÓN LABORAL
            ========================= #}
         <section class="mb-5">
-          <h4 class="border-bottom pb-2 mb-3"><i class="bi bi-briefcase-fill"></i> Información laboral</h4>
-          {% if informacion_personal.informacionLaboral %}
-            <div class="row g-3">
-              <div class="col-md-4"><strong>Número afiliado</strong><br>{{ informacion_personal.informacionLaboral.numeroAfiliado ?? '—' }}</div>
-              <div class="col-md-4"><strong>Fecha de incorporación</strong><br>
-                {{ informacion_personal.informacionLaboral.fechaIncorporacion ? informacion_personal.informacionLaboral.fechaIncorporacion|date('d/m/Y') : '—' }}
-              </div>
-              <div class="col-md-4"><strong>Tipo de plaza</strong><br>{{ informacion_personal.informacionLaboral.tipoPlaza ?? '—' }}</div>
-              <div class="col-md-4"><strong>Turno actual</strong><br>{{ informacion_personal.informacionLaboral.turnoactual ?? '—' }}</div>
-              <div class="col-md-6"><strong>Jornada</strong><br>{{ informacion_personal.informacionLaboral.jornada ?? '—' }}</div>
-              <div class="col-md-6"><strong>Puesto</strong><br>{{ informacion_personal.informacionLaboral.puesto ?? '—' }}</div>
-              <div class="col-md-6"><strong>Categoría</strong><br>{{ informacion_personal.informacionLaboral.categoria ?? '—' }}</div>
-            </div>
-          {% else %}
-            <span class="text-light-emphasis">Sin información laboral registrada.</span>
-          {% endif %}
-        </section>
+  <h4 class="border-bottom pb-2 mb-3">
+    <i class="bi bi-briefcase-fill"></i> Información laboral
+  </h4>
+  {% if informacion_personal.informacionLaboral %}
+    <div class="row g-3">
+      <div class="col-md-4">
+        <span class="data-label">Número afiliado</span>
+        <div class="info-field">{{ informacion_personal.informacionLaboral.numeroAfiliado ?? '—' }}</div>
+      </div>
+      <div class="col-md-4">
+        <span class="data-label">Fecha de incorporación</span>
+        <div class="info-field">
+          {{ informacion_personal.informacionLaboral.fechaIncorporacion
+            ? informacion_personal.informacionLaboral.fechaIncorporacion|date('d/m/Y')
+            : '—' }}
+        </div>
+      </div>
+      <div class="col-md-4">
+  <span class="data-label">Tipo de plaza</span>
+  <div class="info-field">
+    {% if informacion_personal.informacionLaboral.tipoPlaza is same as(true) %}
+        Base
+    {% elseif informacion_personal.informacionLaboral.tipoPlaza is same as(false) %}
+        Temporal
+    {% else %}
+        —
+    {% endif %}
+  </div>
+</div>
+
+      <div class="col-md-4">
+        <span class="data-label">Turno actual</span>
+        <div class="info-field">{{ informacion_personal.informacionLaboral.turnoactual ?? '—' }}</div>
+      </div>
+      <div class="col-md-4">
+        <span class="data-label">Jornada</span>
+        <div class="info-field">{{ informacion_personal.informacionLaboral.jornada ?? '—' }}</div>
+      </div>
+      <div class="col-md-4">
+        <span class="data-label">Puesto</span>
+        <div class="info-field">{{ informacion_personal.informacionLaboral.puesto.nombre ?? '—' }}</div>
+      </div>
+      <div class="col-md-4">
+        <span class="data-label">Categoría</span>
+        <div class="info-field">{{ informacion_personal.informacionLaboral.categoria.nombre ?? '—' }}</div>
+      </div>
+    </div>
+  {% else %}
+    <span class="text-light-emphasis">Sin información laboral registrada.</span>
+  {% endif %}
+</section>
+
 
         {# =========================
            📞 SECCIÓN 2: CONTACTO
            ========================= #}
         <section class="mb-5">
-          <h4 class="border-bottom pb-2 mb-3"><i class="bi bi-telephone-fill"></i> Contacto</h4>
-          <div class="row g-3">
-            <div class="col-md-6"><strong>Teléfono fijo</strong><br>{{ informacion_personal.telefonoFijo ?? '—' }}</div>
-            <div class="col-md-6"><strong>Teléfono celular</strong><br>{{ informacion_personal.telefonoCelular ?? '—' }}</div>
-            <div class="col-md-6"><strong>Correo</strong><br>{{ informacion_personal.correo ?? '—' }}</div>
-            <div class="col-md-12"><strong>Domicilio</strong><br>{{ informacion_personal.domicilio ?? '—' }}</div>
+  <h4 class="border-bottom pb-2 mb-3">
+    <i class="bi bi-people-fill"></i> Contactos de emergencia
+  </h4>
+
+  {% if informacion_personal.contactosEmergencias is defined and informacion_personal.contactosEmergencias|length > 0 %}
+    <div class="contactos-grid">
+      {% for contacto in informacion_personal.contactosEmergencias %}
+        <div class="contacto-item">
+          <div class="col-nombre">
+            <span class="data-label">Nombre</span>
+            <div class="info-field">{{ contacto.nombre ?? '—' }}</div>
           </div>
-        </section>
+          <div class="col-parentesco">
+            <span class="data-label">Parentesco</span>
+            <div class="info-field">{{ contacto.parentesco ?? '—' }}</div>
+          </div>
+          <div class="col-telefono">
+            <span class="data-label">Teléfono</span>
+            <div class="info-field">{{ contacto.telefono ?? '—' }}</div>
+          </div>
+          <div class="col-correo">
+            <span class="data-label">Correo</span>
+            <div class="info-field">{{ contacto.correo ?? '—' }}</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <span class="text-light-emphasis">Sin contactos de emergencia registrados.</span>
+  {% endif %}
+</section>
+
+
 
         {# =========================
            🧠 SECCIÓN 3: FORMACIÓN ACADÉMICA
            ========================= #}
         <section class="mb-5">
-          <h4 class="border-bottom pb-2 mb-3"><i class="bi bi-mortarboard-fill"></i> Formación académica</h4>
-          {% if informacion_personal.formacionAcademica %}
-            <div class="row g-3">
-              <div class="col-md-6"><strong>Escolaridad</strong><br>{{ informacion_personal.formacionAcademica.escolaridad ?? '—' }}</div>
-              <div class="col-md-6"><strong>Certificado</strong><br>
-                {% if informacion_personal.formacionAcademica.certificado %}
-                  {% set cert = informacion_personal.formacionAcademica.certificado %}
-                  {% if cert ends with '.pdf' %}
-                    <a href="{{ asset('uploads/certificados/' ~ cert) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                      <i class="bi bi-file-earmark-pdf-fill"></i> Ver certificado (PDF)
-                    </a>
-                  {% else %}
-                    <img src="{{ asset('uploads/certificados/' ~ cert) }}" alt="Certificado" class="img-thumbnail" width="150">
-                  {% endif %}
-                {% else %}
-                  <span class="text-light-emphasis">Sin archivo adjunto.</span>
-                {% endif %}
-              </div>
-            </div>
+  <h4 class="border-bottom pb-2 mb-3">
+    <i class="bi bi-mortarboard-fill"></i> Formación académica
+  </h4>
+
+  {% if informacion_personal.formacionAcademica %}
+    <div class="formacion-grid">
+      <div>
+        <span class="data-label">Escolaridad</span>
+        <div class="info-field">{{ informacion_personal.formacionAcademica.escolaridad ?? '—' }}</div>
+      </div>
+
+      <div>
+        <span class="data-label">Certificado</span>
+        {% if informacion_personal.formacionAcademica.certificado %}
+          {% set cert = informacion_personal.formacionAcademica.certificado %}
+          {% if cert ends with '.pdf' %}
+            <a href="{{ asset('uploads/certificados/' ~ cert) }}" target="_blank" class="btn btn-sm btn-outline-info w-100">
+              <i class="bi bi-file-earmark-pdf"></i> Ver PDF
+            </a>
           {% else %}
-            <span class="text-light-emphasis">Sin formación académica registrada.</span>
+            <img src="{{ asset('uploads/certificados/' ~ cert) }}" alt="Certificado" class="img-thumbnail mt-1" width="120">
           {% endif %}
-        </section>
+        {% else %}
+          <div class="info-field">Sin archivo</div>
+        {% endif %}
+      </div>
+    </div>
+  {% else %}
+    <span class="text-light-emphasis">Sin formación académica registrada.</span>
+  {% endif %}
+</section>
+
 
         {# =========================
-           🧩 SECCIÓN 4: CAPACITACIÓN (colección)
-           ========================= #}
-        <section class="mb-5">
-            <h4 class="border-bottom pb-2 mb-3">
-                <i class="bi bi-journal-text"></i> Capacitaciones
-            </h4>
+   🧩 SECCIÓN 4: CAPACITACIÓN (colección)
+   ========================= #}
+<section class="mb-5">
+  <h4 class="border-bottom pb-2 mb-3">
+    <i class="bi bi-journal-text"></i> Capacitaciones
+  </h4>
 
-            {% if informacion_personal.capacitacion is defined and informacion_personal.capacitacion|length > 0 %}
-                <div class="row">
-                {% for cap in informacion_personal.capacitacion %}
-                    <div class="col-12 mb-2">
-                        <div class="border rounded p-3 bg-body-secondary">
-                            <div class="row g-2">
-                            <div class="col-md-6">
-                                <strong>Curso</strong><br>
-                                {{ cap.nombre ?? cap.curso.nombre ?? '—' }}
-                            </div>
-                            
-                        </div>
-                        </div>
-                    </div>
-                {% endfor %}
-                </div>
-            {% else %}
-                <span class="text-light-emphasis">Sin capacitaciones registradas.</span>
-            {% endif %}
-        </section>
+  {% if informacion_personal.capacitacion is defined and informacion_personal.capacitacion|length > 0 %}
+    <div class="capacitaciones-grid">
+      {% for cap in informacion_personal.capacitacion %}
+        <div class="capacitacion-item">
+          <span class="data-label">Curso</span>
+          <div class="info-field">
+            {{ cap.nombre ?? cap.curso.nombre ?? '—' }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <span class="text-light-emphasis">Sin capacitaciones registradas.</span>
+  {% endif %}
+</section>
 
-        {# =========================
-           🚨 SECCIÓN 5: CONTACTOS DE EMERGENCIA (colección)
-           ========================= #}
-        <section class="mb-5">
-            <h4 class="border-bottom pb-2 mb-3">
-                <i class="bi bi-people-fill"></i> Contactos de emergencia
-            </h4>
 
-            {% if informacion_personal.contactosEmergencias is defined and informacion_personal.contactosEmergencias|length > 0 %}
-                <div class="row">
-                    {% for contacto in informacion_personal.contactosEmergencias %}
-                        <div class="col-12 mb-2">
-                            <div class="border rounded p-3 bg-body-secondary">
-                                <div class="row g-2">
-                                    <div class="col-md-4">
-                                        <strong>Nombre</strong><br>
-                                        {{ contacto.nombre ?? '—' }}
-                                    </div>
-                                    <div class="col-md-4">
-                                        <strong>Parentesco</strong><br>
-                                        {{ contacto.parentesco ?? '—' }}
-                                    </div>
-                                    <div class="col-md-4">
-                                        <strong>Teléfono</strong><br>
-                                        {{ contacto.telefono ?? '—' }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <span class="text-light-emphasis">Sin contactos de emergencia registrados.</span>
-            {% endif %}
-        </section>
+
       </div>
     </div>
   </div>
 </main>
+
 {% endblock %}

@@ -1,201 +1,269 @@
-{{ form_start(form) }}
-
-{# _form.html.twig #}
-
-{# Inicia el formulario con ID para vincular el botón de submit externo #}
-{{ form_start(form, {'attr': {'id': 'form_informacion_personal', 'class': 'needs-validation'}}) }}
+{{ form_start(form, {'attr': {'id': 'form_informacion_personal'}}) }}
 
 {# =========================
-   🧍 SECCIÓN 0: FOTO / IMAGEN DE PERFIL
+   🧍 PERFIL (nombre + imagen centrada)
    ========================= #}
-<section class="mb-5">
-  <h4 class="border-bottom pb-2 mb-3">
-    <i class="bi bi-image-fill"></i> Imagen de perfil
-  </h4>
+<section class="mb-5 text-center">
+  <div class="perfil-container">
 
-  <div class="row g-4 align-items-start">
-    {# Columna de vista previa #}
-    <div class="col-md-4">
-      <div class="imagen">
-        <div class="preview text-center">
-          {% if form.vars.value and form.vars.value.imagen %}
-            <img id="preview" src="{{ asset('uploads/imagenes/' ~ form.vars.value.imagen) }}"
-                 alt="Imagen de perfil" class="img-thumbnail" width="180">
-          {% else %}
-            {# Oculta la vista previa hasta que el usuario seleccione una imagen #}
-            <img id="preview" src="{{ asset('uploads/imagenes/login_logo.png') }}"
-                 alt="Vista previa" class="img-thumbnail d-none" width="180">
-          {% endif %}
-        </div>
-      </div>
-    </div>
+    {# 🔹 Cambia el título dinámicamente según si es nuevo o edición #}
+    <h2 class="perfil-nombre" id="nombre-preview">
+      {% if form.vars.value and form.vars.value.id %}
+        {{ informacion_personal.nombre }} {{ informacion_personal.apellidoPaterno }} {{ informacion_personal.apellidoMaterno }}
+      {% else %}
+        Nuevo registro
+      {% endif %}
+    </h2>
 
-    {# Columna del input de archivo #}
-    <div class="col-md-8">
-      <div class="ruta">
-        {# Campo de subida de imagen del formulario #}
-        {{ form_row(form.imagen, {
-          attr: {
-            accept: 'image/*',
-            'data-preview-target': '#preview'   # lo usaremos luego en el JS para actualizar la vista previa
-          },
-          help: 'Formatos permitidos: JPG, PNG, SVG. Tamaño recomendado ~ 400x400.'
-        }) }}
-      </div>
-    </div>
-  </div>
-</section>
-
-{# =========================
-   🧍 SECCIÓN 1: DATOS PERSONALES
-   ========================= #}
-<section class="mb-5">
-  <h4 class="border-bottom pb-2 mb-3">
-    <i class="bi bi-person-badge"></i> Datos personales
-  </h4>
-  <div class="row g-3">
-    <div class="col-md-4">
-      {{ form_row(form.nombre) }}
-    </div>
-    <div class="col-md-4">
-      {{ form_row(form.apellidoPaterno) }}
-    </div>
-    <div class="col-md-4">
-      {{ form_row(form.apellidoMaterno) }}
-    </div>
-    <div class="col-md-6">
-      {{ form_row(form.curp) }}
-    </div>
-    <div class="col-md-6">
-      {{ form_row(form.rfc) }}
-    </div>
-    <div class="col-md-4">
-      {{ form_row(form.nss) }}
-    </div>
-    <div class="col-md-4">
-      {{ form_row(form.estadoCivil) }}
-    </div>
-  </div>
-</section>
-{# =========================
-   🧳 SECCIÓN 3: INFORMACIÓN LABORAL
-   ========================= #}
-<section class="mb-5">
-  <h4 class="border-bottom pb-2 mb-3">
-    <i class="bi bi-briefcase-fill"></i> Información laboral
-  </h4>
-
-  <div class="row g-3">
-    <div class="col-md-4">
-      {{ form_row(form.informacionLaboral.numeroAfiliado) }}
+    <div class="perfil-imagen mt-3">
+      {# 🔹 Si hay imagen en la entidad, mostrarla. Si no, mostrar el ícono por defecto #}
+      {% if form.vars.value and form.vars.value.imagen %}
+        <img id="preview"
+             src="{{ asset('uploads/imagenes/' ~ form.vars.value.imagen) }}"
+             alt="Foto del trabajador"
+             class="img-preview">
+      {% else %}
+        <img id="preview"
+             src="{{ asset('uploads/imagenes/login_logo.png') }}"
+             alt="Vista previa"
+             class="img-preview">
+      {% endif %}
     </div>
 
-    <div class="col-md-4">
-      {{ form_row(form.informacionLaboral.fechaIncorporacion) }}
-    </div>
-    <div class="col-md-4">
-      {{ form_row(form.informacionLaboral.tipoPlaza) }}
-    </div>
-    <div class="col-md-4">
-      {{ form_row(form.informacionLaboral.turnoactual) }}
-    </div>
-
-    <div class="col-md-6">
-      {{ form_row(form.informacionLaboral.jornada) }}
-    </div>
-    <div class="col-md-6">
-      {{ form_row(form.informacionLaboral.puesto) }}
-    </div>
-
-    <div class="col-md-6">
-      {{ form_row(form.informacionLaboral.categoria) }}
+    {# Campo de carga de imagen #}
+    <div class="col-md-6 mx-auto mt-3">
+      {{ form_widget(form.imagen, {
+        attr: {
+          accept: 'image/*',
+          'data-preview-target': '#preview'
+        },
+        help: 'Formatos permitidos: JPG, PNG, SVG.'
+      }) }}
+      {{ form_errors(form.imagen) }}
     </div>
   </div>
 </section>
 
 
-
-
 {# =========================
-   📞 SECCIÓN 2: CONTACTO
+   🧍 DATOS PERSONALES
    ========================= #}
 <section class="mb-5">
-  <h4 class="border-bottom pb-2 mb-3">
-    <i class="bi bi-telephone-fill"></i> Contacto
-  </h4>
-  <div class="row g-3">
-    <div class="col-md-6">
-      {{ form_row(form.telefonoFijo) }}
+  <h4><i class="bi bi-person-badge"></i> Datos personales</h4>
+  <div class="info-grid">
+    <div>
+      <span class="data-label">Nombre(s)</span>
+      {{ form_widget(form.nombre, {'attr': {'class': 'info-input', 'id': 'input-nombre'}}) }}
+      {{ form_errors(form.nombre) }}
     </div>
-    <div class="col-md-6">
-      {{ form_row(form.telefonoCelular) }}
+    <div>
+      <span class="data-label">Apellido paterno</span>
+      {{ form_widget(form.apellidoPaterno, {'attr': {'class': 'info-input', 'id': 'input-apellido-p'}}) }}
+      {{ form_errors(form.apellidoPaterno) }}
     </div>
-    <div class="col-md-6">
-      {{ form_row(form.correo) }}
+    <div>
+      <span class="data-label">Apellido materno</span>
+      {{ form_widget(form.apellidoMaterno, {'attr': {'class': 'info-input', 'id': 'input-apellido-m'}}) }}
+      {{ form_errors(form.apellidoMaterno) }}
     </div>
-    <div class="col-md-12">
-      {{ form_row(form.domicilio) }}
+    <div>
+      <span class="data-label">CURP</span>
+      {{ form_widget(form.curp, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">RFC</span>
+      {{ form_widget(form.rfc, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">NSS</span>
+      {{ form_widget(form.nss, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Estado civil</span>
+      {{ form_widget(form.estadoCivil, {'attr': {'class': 'info-input'}}) }}
     </div>
   </div>
 </section>
 
 {# =========================
-   🧠 SECCIÓN 3: FORMACIÓN ACADÉMICA
+   🧳 INFORMACIÓN LABORAL
    ========================= #}
 <section class="mb-5">
-  <h4 class="border-bottom pb-2 mb-3">
-    <i class="bi bi-mortarboard-fill"></i> Formación académica
-  </h4>
-  <div class="row g-3">
-    {{ form_row(form.formacionAcademica) }}
+  <h4><i class="bi bi-briefcase-fill"></i> Información laboral</h4>
+  <div class="info-grid">
+    <div>
+      <span class="data-label">Número afiliado</span>
+      {{ form_widget(form.informacionLaboral.numeroAfiliado, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Fecha de incorporación</span>
+      {{ form_widget(form.informacionLaboral.fechaIncorporacion, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Tipo de plaza</span>
+      {{ form_widget(form.informacionLaboral.tipoPlaza, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Turno actual</span>
+      {{ form_widget(form.informacionLaboral.turnoactual, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Jornada</span>
+      {{ form_widget(form.informacionLaboral.jornada, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Puesto</span>
+      {{ form_widget(form.informacionLaboral.puesto, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Categoría</span>
+      {{ form_widget(form.informacionLaboral.categoria, {'attr': {'class': 'info-input'}}) }}
+    </div>
   </div>
 </section>
 
 {# =========================
-   🧩 SECCIÓN 4: CAPACITACIÓN
+   📞 CONTACTO
    ========================= #}
 <section class="mb-5">
-  <h4 class="border-bottom pb-2 mb-3">
-    <i class="bi bi-journal-text"></i> Capacitaciones
-  </h4>
+  <h4><i class="bi bi-telephone-fill"></i> Contacto</h4>
+  <div class="info-grid">
+    <div>
+      <span class="data-label">Teléfono fijo</span>
+      {{ form_widget(form.telefonoFijo, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Teléfono celular</span>
+      {{ form_widget(form.telefonoCelular, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Correo</span>
+      {{ form_widget(form.correo, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Domicilio</span>
+      {{ form_widget(form.domicilio, {'attr': {'class': 'info-input'}}) }}
+    </div>
+  </div>
+</section>
+
+{# =========================
+   🧠 FORMACIÓN ACADÉMICA
+   ========================= #}
+<section class="mb-5">
+  <h4><i class="bi bi-mortarboard-fill"></i> Formación académica</h4>
+
+  <div class="formacion-grid">
+    <div>
+      <span class="data-label">Escolaridad</span>
+      {{ form_widget(form.formacionAcademica.escolaridad, {'attr': {'class': 'info-input'}}) }}
+      {{ form_errors(form.formacionAcademica.escolaridad) }}
+    </div>
+
+    <div>
+      <span class="data-label">Certificado (PDF o imagen)</span>
+      {{ form_widget(form.formacionAcademica.certificado, {'attr': {'class': 'info-input'}}) }}
+      {{ form_errors(form.formacionAcademica.certificado) }}
+    </div>
+  </div>
+</section>
+
+
+{# =========================
+   🧩 CAPACITACIONES
+   ========================= #}
+<section class="mb-5">
+  <h4><i class="bi bi-journal-text"></i> Capacitaciones</h4>
 
   <div class="collection-capacitacion"
-     data-prototype="{{ form_widget(form.capacitacion.vars.prototype)|e('html_attr') }}">
+       data-prototype="{{ form_widget(form.capacitacion.vars.prototype)|e('html_attr') }}">
     {% for item in form.capacitacion %}
-        <div class="border rounded p-3 mb-2 bg-body-secondary">
-            {{ form_widget(item) }}
+      <div class="capacitacion-item">
+        <div class="capacitacion-inner">
+          {{ form_row(item.curso) }}
+          <button type="button" class="btn btn-danger btn-sm remove-item">
+            <i class="bi bi-trash"></i> Eliminar
+          </button>
         </div>
+      </div>
     {% endfor %}
-</div>
-
+  </div>
 </section>
 
 {# =========================
-   🚨 SECCIÓN 5: CONTACTOS DE EMERGENCIA
+   🚨 CONTACTOS DE EMERGENCIA
    ========================= #}
 <section class="mb-5">
-  <h4 class="border-bottom pb-2 mb-3">
-    <i class="bi bi-people-fill"></i> Contactos de emergencia
-  </h4>
+  <h4><i class="bi bi-people-fill"></i> Contactos de emergencia</h4>
 
   <div class="collection-contactos"
-     data-prototype="{{ form_widget(form.contactosEmergencias.vars.prototype)|e('html_attr') }}">
-    {% for item in form.contactosEmergencias %}
-        <div class="border rounded p-3 mb-2 bg-body-secondary">
-            {{ form_widget(item) }}
+       data-prototype="
+        <div class='contacto-item'>
+          <div class='contacto-grid'>
+            <div class='form-group'>
+              {{ form_label(form.contactosEmergencias.vars.prototype.nombre)|e('html_attr') }}
+              {{ form_widget(form.contactosEmergencias.vars.prototype.nombre)|e('html_attr') }}
+            </div>
+            <div class='form-group'>
+              {{ form_label(form.contactosEmergencias.vars.prototype.parentesco)|e('html_attr') }}
+              {{ form_widget(form.contactosEmergencias.vars.prototype.parentesco)|e('html_attr') }}
+            </div>
+            <div class='form-group'>
+              {{ form_label(form.contactosEmergencias.vars.prototype.telefono)|e('html_attr') }}
+              {{ form_widget(form.contactosEmergencias.vars.prototype.telefono)|e('html_attr') }}
+            </div>
+            <div class='form-group'>
+              {{ form_label(form.contactosEmergencias.vars.prototype.correo)|e('html_attr') }}
+              {{ form_widget(form.contactosEmergencias.vars.prototype.correo)|e('html_attr') }}
+            </div>
+            <div class='form-group eliminar-container'>
+            </div>
+          </div>
         </div>
+      ">
+
+    {% for item in form.contactosEmergencias %}
+      <div class="contacto-item">
+        <div class="contacto-grid">
+          <div class="form-group">
+            {{ form_label(item.nombre) }}
+            {{ form_widget(item.nombre) }}
+          </div>
+          <div class="form-group">
+            {{ form_label(item.parentesco) }}
+            {{ form_widget(item.parentesco) }}
+          </div>
+          <div class="form-group">
+            {{ form_label(item.telefono) }}
+            {{ form_widget(item.telefono) }}
+          </div>
+          <div class="form-group">
+            {{ form_label(item.correo) }}
+            {{ form_widget(item.correo) }}
+          </div>
+          <div class="form-group eliminar-container">
+            <button type="button" class="btn btn-danger btn-sm remove-item">
+              <i class="bi bi-trash"></i> Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
     {% endfor %}
-</div>
+  </div>
 </section>
 
-{# Carga del script JS #}
-{% block javascripts %}
-    <script src="{{ asset('js/admin/informacionPersonal/collection.js') }}"></script>
-{% endblock %}
+
+
+
+
+
+
+
 
 <div class="text-center mt-4">
-    <button type="submit" class="btn-guardar">
-        <i class="bi bi-save"></i> Guardar registro
-    </button>
+  <button type="submit" class="btn-guardar">
+    <i class="bi bi-save"></i> Guardar registro
+  </button>
 </div>
+
 {{ form_end(form) }}

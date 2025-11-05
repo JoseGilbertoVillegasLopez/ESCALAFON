@@ -1,43 +1,35 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Registrar información personal{% endblock %}
+
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/informacionPersonal/new.css') }}">
+  {# Reutilizamos los estilos de new para mantener el mismo diseño #}
+  <link rel="stylesheet" href="{{ asset('css/informacionPersonal/new.css') }}">
 {% endblock %}
 
 {% block body %}
-<main class="container-fluid bg-dark text-light min-vh-100 py-4">
-    <div class="container-lg">
+<main class="container-fluid py-4">
+  <div class="container-lg">
 
-        {# 🔙 Botón volver #}
-        <div class="mb-3">
-            <a href="{{ path('app_informacion_personal_index') }}" class="btn btn-outline-light btn-sm">
-                <i class="bi bi-arrow-left"></i> Volver
-            </a>
-        </div>
+    
 
-        {# 🧾 Título principal #}
-        <div class="text-center mb-4">
-            <h1 class="fw-bold">
-                <i class="bi bi-person-fill-add"></i> Nueva información personal
-            </h1>
-            <p class="text-secondary">Completa todos los campos para registrar un nuevo trabajador</p>
-        </div>
-
-        {# 🧱 Contenedor del formulario #}
-        <div class="card bg-secondary border-0 shadow-lg p-4 rounded-4">
-            <div class="card-body">
-
-                {# Incluye el formulario principal #}
-                {{ include('admin/informacion_personal/_form.html.twig') }}
-
-                
-            </div>
-        </div>
+    <div class="card border-0 shadow-lg p-4 rounded-4">
+    {# 🔙 Volver #}
+    <div class="mb-3 d-flex gap-2">
+        <a href="{{ path('app_informacion_personal_index') }}" class="btn-volver">
+            <i class="bi bi-arrow-left-circle"></i> Volver
+        </a>
     </div>
+      <div class="card-body">
+        {{ include('admin/informacion_personal/_form.html.twig') }}
+      </div>
+    </div>
+
+  </div>
 </main>
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{asset('js/admin/informacionPersonal/preview.js')}}"></script>
+  <script src="{{ asset('js/admin/informacionPersonal/preview.js') }}"></script>
+  <script src="{{ asset('js/admin/informacionPersonal/collection.js') }}"></script>
 {% endblock %}

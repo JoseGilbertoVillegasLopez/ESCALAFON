@@ -57,7 +57,7 @@ class InformacionPersonal
     /**
      * @var Collection<int, ContactosEmergencia>
      */
-    #[ORM\OneToMany(targetEntity: ContactosEmergencia::class, mappedBy: 'informacionPersonal',cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: ContactosEmergencia::class, mappedBy: 'informacionPersonal',cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $contactosEmergencias;
 
     #[ORM\OneToOne(mappedBy: 'informacionPersonal', cascade: ['persist', 'remove'])]
@@ -69,7 +69,7 @@ class InformacionPersonal
     /**
      * @var Collection<int, Capacitacion>
      */
-    #[ORM\OneToMany(targetEntity: Capacitacion::class, mappedBy: 'informacionPersonal', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: Capacitacion::class, mappedBy: 'informacionPersonal', cascade: ['persist', 'remove'],orphanRemoval: true)]
     private Collection $capacitacion;
 
     /**
