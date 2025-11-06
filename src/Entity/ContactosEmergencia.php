@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ContactosEmergenciaRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ContactosEmergenciaRepository::class)]
 class ContactosEmergencia
@@ -20,6 +21,7 @@ class ContactosEmergencia
     private ?string $parentesco = null;
 
     #[ORM\Column(length: 20)]
+    #[Assert\Regex(pattern: '/^\+?[0-9\s\-\(\)]+$/', message: 'El número de teléfono no es válido.')]
     private ?string $telefono = null;
 
     #[ORM\Column(length: 255, nullable: true)]

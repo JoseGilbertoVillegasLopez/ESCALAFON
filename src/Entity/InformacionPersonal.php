@@ -6,6 +6,7 @@ use App\Repository\InformacionPersonalRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: InformacionPersonalRepository::class)]
 class InformacionPersonal
@@ -25,21 +26,27 @@ class InformacionPersonal
     private ?string $apellidoMaterno = null;
 
     #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Regex(pattern: '/^\+?[0-9\s\-\(\)]+$/', message: 'El número de teléfono no es válido.')]
     private ?string $telefonoFijo = null;
 
     #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Regex(pattern: '/^\+?[0-9\s\-\(\)]+$/', message: 'El número de teléfono no es válido.')]
     private ?string $telefonoCelular = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Regex(pattern: '/^[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\.)+[A-Z]{2,}$/i', message: 'Ingresa un correo válido')]
     private ?string $correo = null;
 
     #[ORM\Column(length: 18)]
+    #[Assert\Regex(pattern: '/^[A-Z]{4}\d{6}[HM][A-Z]{5}[0-9A-Z]{2}$/', message: 'La CURP no tiene un formato válido.')]
     private ?string $curp = null;
 
     #[ORM\Column(length: 13)]
+    #[Assert\Regex(pattern:'/^[A-ZÑ&]{4}\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])[A-Z\d]{3}$/i',message: 'El RFC no tiene un formato válido.')]
     private ?string $rfc = null;
 
     #[ORM\Column(length: 11)]
+    #[Assert\Regex(pattern:'/^\d{11}$/', message: 'El NSS no tiene un formato válido.')]
     private ?string $nss = null;
 
     #[ORM\Column]
