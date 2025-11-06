@@ -9,6 +9,7 @@ use App\Entity\InformacionLaboral;
 use App\Entity\InformacionPersonal;
 use App\Form\InformacionPersonalEditType;
 use App\Form\InformacionPersonalType;
+use App\Repository\InformacionLaboralRepository;
 use App\Repository\InformacionPersonalRepository;
 use App\Service\UserCreator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,6 +18,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException; 
+use App\Repository\PuestoRepository;
+use App\Repository\CategoriaRepository;
 use Symfony\Component\String\Slugger\SluggerInterface;// Excepción para errores de archivos
 
 
@@ -31,10 +34,23 @@ final class InformacionPersonalController extends AbstractController
     }
 
     #[Route(name: 'app_informacion_personal_index', methods: ['GET'])]
-    public function index(InformacionPersonalRepository $informacionPersonalRepository): Response
+    public function index(
+        Request $request,
+        InformacionPersonalRepository $repo,
+        CategoriaRepository $categoriaRepo,
+        PuestoRepository $puestoRepo): Response
     {
+        $search = $request->query->get('search');
+        $categoria = $request->query->get('categoria');
+        $puesto = $request->query->get('puesto');
+        $antiguedad = $request->query->get('antiguedad');
+
+        $informacion_personals = $repo->buscarFiltrado($search, $categoria, $puesto, $antiguedad);
+
         return $this->render('admin/informacion_personal/index.html.twig', [
-            'informacion_personals' => $informacionPersonalRepository->findAll(),
+            'informacion_personals' => $informacion_personals,
+            'categorias' => $categoriaRepo->findAllNombres(),
+            'puestos' => $puestoRepo->findAllNombres(),
         ]);
     }
 

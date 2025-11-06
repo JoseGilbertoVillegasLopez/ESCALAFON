@@ -1,49 +1,143 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}InformacionPersonal index{% endblock %}
+{% block title %}Información Personal{% endblock %}
 
 {% block body %}
-    <h1>InformacionPersonal index</h1>
-    <a href="{{ path('app_informacion_personal_new') }}">Create new</a>
-    <table class="table">
+<main class="container-fluid py-4">
+  <div class="card">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1><i class="bi bi-people-fill text-info"></i> Información Personal</h1>
+    </div>
+
+    {# ===========================
+       🔍 BUSCADOR Y FILTROS
+       =========================== #}
+    <form method="get" action="{{ path('app_informacion_personal_index') }}" class="mb-4">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label for="search" class="data-label">Buscar por nombre</label>
+          <input type="text" name="search" id="search" value="{{ app.request.get('search') }}" class="form-control info-input" placeholder="Escribe un nombre...">
+        </div>
+
+        <div class="col-md-3">
+          <label for="categoria" class="data-label">Filtrar por categoría</label>
+          <select name="categoria" id="categoria" class="form-select info-input">
+            <option value="">Todas</option>
+            {% for cat in categorias %}
+              <option value="{{ cat }}" {% if app.request.get('categoria') == cat %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <label for="puesto" class="data-label">Filtrar por puesto</label>
+          <select name="puesto" id="puesto" class="form-select info-input">
+            <option value="">Todos</option>
+            {% for p in puestos %}
+              <option value="{{ p }}" {% if app.request.get('puesto') == p %}selected{% endif %}>{{ p }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-md-2">
+          <label for="antiguedad" class="data-label">Ordenar por antigüedad</label>
+          <select name="antiguedad" id="antiguedad" class="form-select info-input">
+            <option value="">Sin ordenar</option>
+            <option value="asc" {% if app.request.get('antiguedad') == 'asc' %}selected{% endif %}>Ascendente</option>
+            <option value="desc" {% if app.request.get('antiguedad') == 'desc' %}selected{% endif %}>Descendente</option>
+          </select>
+        </div>
+
+        <div class="col-md-12 d-flex justify-content-end">
+          <button type="submit" class="btn-guardar me-2">
+            <i class="bi bi-funnel"></i> Aplicar filtros
+          </button>
+          <a href="{{ path('app_informacion_personal_index') }}" class="btn btn-outline-light">
+            <i class="bi bi-x-circle"></i> Limpiar
+          </a>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mb-4">
+      <a href="{{ path('app_informacion_personal_new') }}" class="btn-guardar">
+        <i class="bi bi-plus-circle"></i> Nuevo Registro
+      </a>
+    </div>
+    </form>
+
+    {# ===========================
+       📋 TABLA DE RESULTADOS
+       =========================== #}
+    <div class="table-responsive mt-4">
+      <table class="table table-dark table-hover align-middle">
         <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Telefono Fijo</th>
-                <th>Telefono Celular</th>
-                <th>Correo</th>
-                <th>Curp</th>
-                <th>Rfc</th>
-                <th>Nss</th>
-                <th>Estado Civil</th>
-                <th>Domicilio</th>
-                <th>actions</th>
-            </tr>
+          <tr>
+            <th>Foto</th>
+            <th>Nombre</th>
+            <th>CURP</th>
+            <th>RFC</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>Puesto</th>
+            <th>Categoría</th>
+            <th>Antigüedad</th>
+            <th class="text-center">Acciones</th>
+          </tr>
         </thead>
         <tbody>
-        {% for informacion_personal in informacion_personals %}
-            <tr>
-                <td>{{ informacion_personal.__ToString }}</td>
-                <td>{{ informacion_personal.telefonoFijo }}</td>
-                <td>{{ informacion_personal.telefonoCelular }}</td>
-                <td>{{ informacion_personal.correo }}</td>
-                <td>{{ informacion_personal.curp }}</td>
-                <td>{{ informacion_personal.rfc }}</td>
-                <td>{{ informacion_personal.nss }}</td>
-                <td>{{ informacion_personal.estadoCivil ? 'Casado' : 'Soltero' }}</td>
-                <td>{{ informacion_personal.domicilio }}</td>
-                
-                <td>
-                    <a href="{{ path('app_informacion_personal_show', {'id': informacion_personal.id}) }}">show</a>
-                    <a href="{{ path('app_informacion_personal_edit', {'id': informacion_personal.id}) }}">edit</a>
-                </td>
-            </tr>
+        {% for info in informacion_personals %}
+          <tr>
+            <td>
+              {% if info.imagen %}
+                <img src="{{ asset('uploads/imagenes/' ~ info.imagen) }}" alt="Foto" style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
+              {% else %}
+                <img src="{{ asset('uploads/imagenes/login_logo.png') }}" alt="Foto" style="width:50px; height:50px; border-radius:50%; opacity:0.5;">
+              {% endif %}
+            </td>
+            <td>{{ info.nombre }} {{ info.apellidoPaterno }} {{ info.apellidoMaterno }}</td>
+            <td>{{ info.curp }}</td>
+            <td>{{ info.rfc }}</td>
+            <td>{{ info.correo }}</td>
+            <td>{{ info.telefonoCelular ?: info.telefonoFijo }}</td>
+            <td>
+                {{ info.informacionLaboral and info.informacionLaboral.puesto ? info.informacionLaboral.puesto.nombre : '—' }}
+            </td>
+
+            <td>
+                {{ info.informacionLaboral and info.informacionLaboral.categoria ? info.informacionLaboral.categoria.nombre : '—' }}
+            </td>
+
+            <td>
+              {% if info.informacionLaboral and info.informacionLaboral.fechaIncorporacion %}
+                {{ info.informacionLaboral.fechaIncorporacion|date('Y') }} ({{ "now"|date('Y') - info.informacionLaboral.fechaIncorporacion|date('Y') }} años)
+              {% else %}
+                —
+              {% endif %}
+            </td>
+           <td class="text-center">
+  <a href="{{ path('app_informacion_personal_show', {'id': info.id}) }}"
+     class="btn btn-sm btn-outline-info me-2"
+     title="Ver detalles">
+     <i class="bi bi-eye-fill"></i>
+  </a>
+
+  <a href="{{ path('app_informacion_personal_edit', {'id': info.id}) }}"
+     class="btn btn-sm btn-outline-warning"
+     title="Editar información">
+     <i class="bi bi-pencil-fill"></i>
+  </a>
+</td>
+
+
+          </tr>
         {% else %}
-            <tr>
-                <td colspan="14">no records found</td>
-            </tr>
+          <tr>
+            <td colspan="10" class="text-center text-secondary">No se encontraron registros</td>
+          </tr>
         {% endfor %}
         </tbody>
-    </table>
-
+      </table>
+    </div>
+  </div>
+</main>
 {% endblock %}

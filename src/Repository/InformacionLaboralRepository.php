@@ -16,28 +16,30 @@ class InformacionLaboralRepository extends ServiceEntityRepository
         parent::__construct($registry, InformacionLaboral::class);
     }
 
-    //    /**
-    //     * @return InformacionLaboral[] Returns an array of InformacionLaboral objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('i')
-    //            ->andWhere('i.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('i.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+  public function findDistinctCategorias(): array
+    {
+        $resultados = $this->createQueryBuilder('l')
+            ->leftJoin('l.categoria', 'c')
+            ->select('DISTINCT c.nombre AS nombre')
+            ->where('c.nombre IS NOT NULL')
+            ->orderBy('c.nombre', 'ASC')
+            ->getQuery()
+            ->getResult();
 
-    //    public function findOneBySomeField($value): ?InformacionLaboral
-    //    {
-    //        return $this->createQueryBuilder('i')
-    //            ->andWhere('i.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        return array_column($resultados, 'nombre');
+    }
+
+    // 🧩 Lista todos los puestos distintos
+    public function findDistinctPuestos(): array
+    {
+        $resultados = $this->createQueryBuilder('l')
+            ->leftJoin('l.puesto', 'p')
+            ->select('DISTINCT p.nombre AS nombre')
+            ->where('p.nombre IS NOT NULL')
+            ->orderBy('p.nombre', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        return array_column($resultados, 'nombre');
+    }
 }

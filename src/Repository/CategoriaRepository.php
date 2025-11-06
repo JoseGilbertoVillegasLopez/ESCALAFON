@@ -15,29 +15,15 @@ class CategoriaRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Categoria::class);
     }
+    public function findAllNombres(): array
+    {
+        $resultados = $this->createQueryBuilder('c')
+            ->select('c.nombre AS nombre')
+            ->orderBy('c.nombre', 'ASC')
+            ->getQuery()
+            ->getResult();
 
-    //    /**
-    //     * @return Categoria[] Returns an array of Categoria objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        return array_column($resultados, 'nombre');
+    }
 
-    //    public function findOneBySomeField($value): ?Categoria
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }

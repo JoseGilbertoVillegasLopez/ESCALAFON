@@ -835,6 +835,28 @@ select.info-input option {
 }
 
 
+.btn i {
+  font-size: 1.2rem;
+  vertical-align: middle;
+}
+
+.btn-outline-info {
+  border: none;
+  color: #0dcaf0;
+}
+.btn-outline-info:hover {
+  background-color: #0dcaf0;
+  color: #fff;
+}
+
+.btn-outline-warning {
+  border: none;
+  color: #ffc107;
+}
+.btn-outline-warning:hover {
+  background-color: #ffc107;
+  color: #000;
+}
 
 
 
