@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Vacantes;
 use App\Form\VacantesType;
+use App\Repository\CategoriaRepository;
+use App\Repository\PuestoRepository;
 use App\Repository\VacantesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,10 +17,28 @@ use Symfony\Component\Routing\Attribute\Route;
 final class VacantesController extends AbstractController
 {
     #[Route(name: 'app_vacantes_index', methods: ['GET'])]
-    public function index(VacantesRepository $vacantesRepository): Response
+    public function index(Request $request,
+        VacantesRepository $vacantesRepository,
+        PuestoRepository $puestoRepository,
+        CategoriaRepository $categoriaRepository): Response
     {
+        // 🔍 Obtener filtros
+        $nombre = $request->query->get('nombre');
+        $puesto = $request->query->get('puesto');
+        $categoria = $request->query->get('categoria');
+
+        // 🧠 Buscar vacantes filtradas
+        $vacantes = $vacantesRepository->buscarFiltrado($nombre, $puesto, $categoria);
+
         return $this->render('admin/vacantes/index.html.twig', [
-            'vacantes' => $vacantesRepository->findAll(),
+            'vacantes' => $vacantes,
+            'puestos' => $puestoRepository->findAll(),
+            'categorias' => $categoriaRepository->findAll(),
+            'filtros' => [
+                'nombre' => $nombre,
+                'puesto' => $puesto,
+                'categoria' => $categoria,
+            ],
         ]);
     }
 
@@ -26,6 +46,11 @@ final class VacantesController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $vacante = new Vacantes();
+         // ✅ Agregamos un requisito por defecto al cargar el formulario
+    if ($vacante->getRequisitos()->isEmpty()) {
+        $requisito = new \App\Entity\RequisitosVacantes();
+        $vacante->addRequisito($requisito);
+    }
         $form = $this->createForm(VacantesType::class, $vacante);
         $form->handleRequest($request);
 

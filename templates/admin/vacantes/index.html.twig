@@ -1,41 +1,101 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Vacantes index{% endblock %}
+{% block title %}Vacantes{% endblock %}
 
 {% block body %}
-    <h1>Vacantes index</h1>
+<main class="container-fluid py-4">
+  <div class="card">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1><i class="bi bi-briefcase-fill text-info"></i> Vacantes</h1>
+    </div>
 
-    <table class="table">
+    <!-- 🔍 FILTROS -->
+    <form method="get" class="row g-3 mb-4">
+      <div class="col-md-4">
+        <label class="form-label text-light">Buscar por nombre</label>
+        <input type="text" name="nombre" value="{{ filtros.nombre }}" class="form-control" placeholder="Nombre de la vacante...">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label text-light">Puesto</label>
+        <select name="puesto" class="form-select">
+          <option value="">Todos</option>
+          {% for p in puestos %}
+            <option value="{{ p.id }}" {% if filtros.puesto == p.id %}selected{% endif %}>{{ p.nombre }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label text-light">Categoría</label>
+        <select name="categoria" class="form-select">
+          <option value="">Todas</option>
+          {% for c in categorias %}
+            <option value="{{ c.id }}" {% if filtros.categoria == c.id %}selected{% endif %}>{{ c.nombre }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2 d-flex align-items-end justify-content-between">
+        <button class="btn btn-outline-info w-100 me-2">
+          <i class="bi bi-funnel"></i> Filtrar
+        </button>
+      </div>
+      
+    </form>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a href="{{ path('app_vacantes_new') }}" class="btn-guardar">
+            <i class="bi bi-plus-circle"></i> Nueva Vacante
+        </a>
+    </div>
+    <!-- 🔹 TABLA -->
+    <div class="table-responsive mt-3">
+      <table class="table table-dark table-hover align-middle">
         <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Puesto</th>
-                <th>Categoria</th>
-                <th>Antiguedad minima</th>
-                <th>Requisitos</th>
-                <th>actions</th>
-            </tr>
+          <tr>
+            <th>Nombre</th>
+            <th>Puesto</th>
+            <th>Categoría</th>
+            <th>Antigüedad mínima</th>
+            <th>Requisitos</th>
+            <th class="text-center">Acciones</th>
+          </tr>
         </thead>
         <tbody>
-        {% for vacante in vacantes %}
+          {% for vacante in vacantes %}
             <tr>
-                <td>{{ vacante.nombre }}</td>
-                <td>{{ vacante.puesto.nombre }}</td>
-                <td>{{ vacante.categoria.nombre }}</td>
-                <td>{{ vacante.antiguedad }} años</td>
-                <td>######</td>
-                <td>
-                    <a href="{{ path('app_vacantes_show', {'id': vacante.id}) }}">show</a>
-                    {{ include('admin/vacantes/_delete_form.html.twig') }}
-                </td>
+              <td>{{ vacante.nombre }}</td>
+              <td>{{ vacante.puesto }}</td>
+              <td>{{ vacante.categoria }}</td>
+              <td>{{ vacante.antiguedad }} año(s)</td>
+              <td>
+  {% if vacante.requisitos is not empty %}
+    <ul class="list-unstyled mb-0">
+      {% for req in vacante.requisitos %}
+        <li><i class="bi bi-bookmark-check text-info"></i> {{ req.curso.nombre }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <span class="text-muted">Sin requisitos</span>
+  {% endif %}
+</td>
+              <td class="text-center">
+                <a href="{{ path('app_vacantes_show', {'id': vacante.id}) }}"
+                   class="btn btn-outline-info btn-sm me-2" title="Ver detalles">
+                   <i class="bi bi-eye-fill"></i>
+                </a>
+                <a href="{{ path('app_vacantes_edit', {'id': vacante.id}) }}"
+                   class="btn btn-outline-warning btn-sm" title="Editar">
+                   <i class="bi bi-pencil-fill"></i>
+                </a>
+                {{ include('admin/vacantes/_delete_form.html.twig') }}
+              </td>
             </tr>
-        {% else %}
+          {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+              <td colspan="6" class="text-center text-secondary">No hay vacantes registradas</td>
             </tr>
-        {% endfor %}
+          {% endfor %}
         </tbody>
-    </table>
-
-    <a href="{{ path('app_vacantes_new') }}">Create new</a>
+      </table>
+    </div>
+  </div>
+</main>
 {% endblock %}

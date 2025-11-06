@@ -68,4 +68,8 @@ class Cursos
 
         return $this;
     }
+    public function __toString(): string
+{
+    return $this->nombre;
+}
 }

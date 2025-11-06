@@ -15,6 +15,33 @@ class VacantesRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Vacantes::class);
     }
+    public function buscarFiltrado(?string $nombre, ?string $puesto, ?string $categoria): array
+{
+    $qb = $this->createQueryBuilder('v')
+        ->leftJoin('v.puesto', 'p')
+        ->leftJoin('v.categoria', 'c')
+        ->addSelect('p', 'c');
+
+    if ($nombre) {
+        $qb->andWhere('v.nombre LIKE :nombre')
+           ->setParameter('nombre', '%' . $nombre . '%');
+    }
+
+    if ($puesto) {
+        $qb->andWhere('p.id = :puesto')
+           ->setParameter('puesto', $puesto);
+    }
+
+    if ($categoria) {
+        $qb->andWhere('c.id = :categoria')
+           ->setParameter('categoria', $categoria);
+    }
+
+    $qb->orderBy('v.nombre', 'ASC');
+
+    return $qb->getQuery()->getResult();
+}
+
 
     //    /**
     //     * @return Vacantes[] Returns an array of Vacantes objects

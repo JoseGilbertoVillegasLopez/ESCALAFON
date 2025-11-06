@@ -1,56 +1,89 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Vacantes{% endblock %}
+{% block title %}Nueva Vacante{% endblock %}
 
 {% block body %}
-    <style>
-    /* Botón de regreso */
-.btn-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 0.5rem 1rem;
-    background-color: var(--bs-secondary);
+<style>
+label.required {
     color: #fff;
-    border: none;
-    border-radius: 0.5rem;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.2s ease;
 }
-
-.btn-back i {
-    font-size: 1.1rem;
-}
-
-.btn-back:hover {
-    background-color: var(--bs-secondary-hover, #6c757d);
-    transform: translateY(-2px);
-    color: #fff;
-    text-decoration: none;
-}
-
-.btn-back:active {
-    transform: scale(0.97);
-}
-
-/* Versión modo oscuro */
-@media (prefers-color-scheme: dark) {
-    .btn-back {
-        background-color: #444;
-        color: #fff;
-    }
-    .btn-back:hover {
-        background-color: #555;
-    }
-}
-    </style>
-    <h1>Crear Vacantes</h1>
-    <a href="{{ path('app_vacantes_index') }}" class="btn-back">
+</style>
+<main class="container-fluid py-4">
+  <div class="card p-4 shadow-sm">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1><i class="bi bi-briefcase-fill text-info"></i> Crear Vacante</h1>
+      <a href="{{ path('app_vacantes_index') }}" class="btn-volver">
         <i class="bi bi-arrow-left-circle"></i> Volver a la lista
-    </a>
-    {{ include('admin/vacantes/_form.html.twig') }}
+      </a>
+    </div>
 
-    
+    {{ form_start(form, {'attr': {'class': 'vacante-form'}}) }}
 
+    <section class="mb-4">
+      <h4><i class="bi bi-info-circle"></i> Información de la vacante</h4>
+
+      <div class="info-grid">
+        <div>
+          {{ form_label(form.nombre, 'Nombre de la vacante', {'label_attr': {'class': 'data-label'}}) }}
+          {{ form_widget(form.nombre, {'attr': {'class': 'info-input'}}) }}
+        </div>
+
+        <div>
+          {{ form_label(form.antiguedad, 'Antigüedad requerida (años)', {'label_attr': {'class': 'data-label'}}) }}
+          {{ form_widget(form.antiguedad, {'attr': {'class': 'info-input'}}) }}
+        </div>
+
+        <div>
+          {{ form_label(form.puesto, 'Puesto asociado', {'label_attr': {'class': 'data-label'}}) }}
+          {{ form_widget(form.puesto, {'attr': {'class': 'info-input'}}) }}
+        </div>
+
+        <div>
+          {{ form_label(form.categoria, 'Categoría', {'label_attr': {'class': 'data-label'}}) }}
+          {{ form_widget(form.categoria, {'attr': {'class': 'info-input'}}) }}
+        </div>
+      </div>
+    </section>
+
+    <hr class="my-4">
+
+    <section>
+      <h4><i class="bi bi-list-check"></i> Requisitos</h4>
+
+      <div data-prototype="{{ form_widget(form.requisitos.vars.prototype)|e('html_attr') }}" 
+           class="collection-requisitos requisitos-list mt-3">
+        {% for requisito in form.requisitos %}
+          <div class="requisito-item p-3 rounded shadow-sm mb-3" style="background-color:#2a323c;">
+            <div class="d-flex align-items-center justify-content-between gap-3">
+              <div class="flex-fill">
+                {{ form_widget(requisito, {'attr': {'class': 'form-select requisito-curso'}}) }}
+              </div>
+              <button type="button" class="btn btn-outline-danger btn-sm remove-requisito">
+                <i class="bi bi-trash"></i> Eliminar
+              </button>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="actions mt-3">
+        <button type="button" class="btn btn-outline-primary btn-add add-requisito">
+          <i class="bi bi-plus-circle"></i> Agregar requisito
+        </button>
+      </div>
+    </section>
+
+    <div class="mt-4 text-end">
+      <button class="btn-guardar">
+        <i class="bi bi-save"></i> Guardar vacante
+      </button>
+    </div>
+
+    {{ form_end(form) }}
+  </div>
+</main>
+
+{% block javascripts %}
+  <script src="{{ asset('js/admin/vacantes/requisitos.js') }}"></script>
+{% endblock %}
 {% endblock %}
