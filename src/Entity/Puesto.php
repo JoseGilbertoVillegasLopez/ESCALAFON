@@ -24,6 +24,9 @@ class Puesto
 #[ORM\OneToMany(mappedBy: 'puesto', targetEntity: InformacionLaboral::class)]
 private Collection $informacionLaboral;
 
+#[ORM\Column(length: 255, nullable: true)]
+private ?string $descripcion = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -77,5 +80,17 @@ public function removeInformacionLaboral(InformacionLaboral $informacionLaboral)
 public function __toString(): string
 {
     return $this->nombre;
+}
+
+public function getDescripcion(): ?string
+{
+    return $this->descripcion;
+}
+
+public function setDescripcion(?string $descripcion): static
+{
+    $this->descripcion = $descripcion;
+
+    return $this;
 }
 }

@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Categorías{% endblock %}
+
+{% block body %}
+<main class="container-fluid py-5" style="min-height: 100vh;">
+  <div class="card p-4 shadow-sm mx-auto" style="max-width: 1000px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1><i class="bi bi-tags-fill text-info"></i> Lista de Categorías</h1>
+    </div>
+
+    {# 🔍 FILTRO POR NOMBRE #}
+    <form method="get" class="mb-4">
+      <div class="row g-2 align-items-end">
+        <div class="col-md-8">
+          <label for="nombre" class="data-label">Buscar por nombre</label>
+          <input type="text" name="nombre" id="nombre" value="{{ app.request.get('nombre') }}" 
+                 class="form-control info-input" placeholder="Ejemplo: Docente, Administrativo...">
+        </div>
+        <div class="col-md-4 d-flex gap-2">
+          <button class="btn btn-outline-info flex-fill" type="submit">
+            <i class="bi bi-search"></i> Buscar
+          </button>
+          <a href="{{ path('app_categoria_index') }}" class="btn btn-outline-warning flex-fill">
+            <i class="bi bi-arrow-clockwise"></i> Limpiar
+          </a>
+        </div>
+      </div>
+    </form>
+
+    {# 🧾 TABLA DE CATEGORÍAS #}
+    <div class="table-responsive mt-4">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <a href="{{ path('app_categoria_new') }}" class="btn-guardar d-flex align-items-center gap-2">
+        <i class="bi bi-plus-circle"></i> Nueva Categoría
+      </a>
+    </div>
+
+      <table class="table table-dark table-striped align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th class="text-center" style="width: 150px;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for categoria in categorias %}
+            <tr>
+              <td>{{ categoria.nombre }}</td>
+              <td>{{ categoria.descripcion ?: 'Sin descripción' }}</td>
+              <td class="text-center">
+                <a href="{{ path('app_categoria_show', {'id': categoria.id}) }}" 
+                   class="btn btn-outline-info btn-sm" title="Ver">
+                  <i class="bi bi-eye"></i>
+                </a>
+                <a href="{{ path('app_categoria_edit', {'id': categoria.id}) }}" 
+                   class="btn btn-outline-warning btn-sm" title="Editar">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="3" class="text-center text-muted py-3">
+                <i class="bi bi-inbox"></i> No se encontraron categorías.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+{% endblock %}

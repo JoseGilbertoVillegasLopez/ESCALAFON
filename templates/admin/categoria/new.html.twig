@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+{% block title %}Nueva Categoría{% endblock %}
+
+{% block body %}
+<main class="container-fluid py-5" style="min-height: 100vh;">
+  <div class="card p-4 shadow-sm mx-auto" style="max-width: 800px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1><i class="bi bi-tag-fill text-info"></i> Crear Categoría</h1>
+      <a href="{{ path('app_categoria_index') }}" class="btn-volver">
+        <i class="bi bi-arrow-left-circle"></i> Volver a la lista
+      </a>
+    </div>
+
+    {{ form_start(form) }}
+
+    <section class="mb-4">
+      <h4><i class="bi bi-info-circle"></i> Información de la categoría</h4>
+
+      <div class="info-grid">
+        <div>
+          {{ form_label(form.nombre, 'Nombre de la categoría', {'label_attr': {'class': 'data-label'}}) }}
+          {{ form_widget(form.nombre, {'attr': {'class': 'info-input', 'placeholder': 'Ejemplo: Personal docente'}}) }}
+        </div>
+
+        <div style="grid-column: span 2;">
+          {{ form_label(form.descripcion, 'Descripción', {'label_attr': {'class': 'data-label'}}) }}
+          {{ form_widget(form.descripcion, {'attr': {'class': 'info-input', 'rows': 4, 'placeholder': 'Describe brevemente la categoría'}}) }}
+        </div>
+      </div>
+    </section>
+
+    <div class="text-end mt-4">
+      <button class="btn-guardar">
+        <i class="bi bi-save"></i> Guardar categoría
+      </button>
+    </div>
+
+    {{ form_end(form) }}
+  </div>
+</main>
+{% endblock %}

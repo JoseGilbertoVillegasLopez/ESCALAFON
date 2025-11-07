@@ -15,15 +15,21 @@ class CategoriaRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Categoria::class);
     }
-    public function findAllNombres(): array
-    {
-        $resultados = $this->createQueryBuilder('c')
-            ->select('c.nombre AS nombre')
-            ->orderBy('c.nombre', 'ASC')
-            ->getQuery()
-            ->getResult();
+    // src/Repository/CategoriaRepository.php
+public function findByNombreParcial(?string $nombre): array
+{
+    $qb = $this->createQueryBuilder('c');
 
-        return array_column($resultados, 'nombre');
+    if ($nombre) {
+        $qb->andWhere('LOWER(c.nombre) LIKE LOWER(:nombre)')
+           ->setParameter('nombre', '%' . strtolower($nombre) . '%');
     }
+
+    return $qb->orderBy('c.nombre', 'ASC')
+              ->getQuery()
+              ->getResult();
+}
+
+
 
 }

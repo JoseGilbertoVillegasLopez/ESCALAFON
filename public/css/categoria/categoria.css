@@ -1,0 +1,124 @@
+/* 🌌 Fondo oscuro y texto claro */
+body, html {
+  background-color: #1e242b !important;
+  color: #f1f3f5 !important;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* 🔹 Contenedor general */
+main.container-fluid {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  padding: 2rem;
+}
+
+/* 💼 Tarjeta principal */
+.card {
+  background-color: #2a323c !important;
+  border-radius: 1rem;
+  border: 1px solid #3b4652;
+  padding: 2rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  color: #f1f3f5;
+}
+
+/* 🔎 Filtro */
+.filter-box {
+  background-color: #2a323c;
+  border: 1px solid #3b4652;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter-input {
+  background-color: #323a45;
+  border: 1px solid #495563;
+  color: #f1f3f5;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  width: 250px;
+}
+
+.filter-input:focus {
+  border-color: #0dcaf0;
+  box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.25);
+  outline: none;
+}
+
+/* 📋 Tabla */
+.table {
+  background-color: #2a323c !important;
+  color: #f1f3f5;
+  border-color: #3b4652 !important;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.table thead {
+  background-color: #1e242b !important;
+}
+
+.table tbody tr:hover {
+  background-color: #323a45 !important;
+}
+
+/* 🧩 Botones */
+.btn {
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.btn-info {
+  background-color: #0dcaf0;
+  border: none;
+  color: #1e242b;
+}
+
+.btn-info:hover {
+  background-color: #09a6c9;
+}
+
+.btn-warning {
+  background-color: #f9c74f;
+  border: none;
+  color: #000;
+}
+
+.btn-warning:hover {
+  background-color: #f7d36e;
+}
+
+.btn-danger {
+  background-color: #e63946;
+  border: none;
+}
+
+.btn-danger:hover {
+  background-color: #b02a37;
+}
+
+/* 🔙 Botón volver */
+.btn-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: #00e0c6;
+  border: 1.5px solid #00e0c6;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
+}
+
+.btn-volver:hover {
+  background: rgba(0, 255, 255, 0.1);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
+  transform: translateY(-2px);
+}

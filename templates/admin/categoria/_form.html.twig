@@ -1,0 +1,14 @@
+{{ form_start(form, {'attr': {'class': 'categoria-form'}}) }}
+<div class="card p-4 shadow-sm">
+  <div class="mb-3">
+    {{ form_label(form.nombre, 'Nombre de la categoría', {'label_attr': {'class': 'data-label'}}) }}
+    {{ form_widget(form.nombre, {'attr': {'class': 'info-input form-control'}}) }}
+  </div>
+
+  <div class="text-end">
+    <button class="btn btn-info">
+      <i class="bi bi-save"></i> {{ button_label|default('Guardar') }}
+    </button>
+  </div>
+</div>
+{{ form_end(form) }}

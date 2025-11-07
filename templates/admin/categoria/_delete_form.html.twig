@@ -1,0 +1,8 @@
+<form method="post" action="{{ path('app_categoria_delete', {'id': categorium.id}) }}" 
+      onsubmit="return confirm('¿Seguro que deseas eliminar esta categoría?');" 
+      style="display:inline;">
+  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ categorium.id) }}">
+  <button class="btn btn-outline-danger" title="Eliminar">
+    <i class="bi bi-trash"></i> Eliminar
+  </button>
+</form>
