@@ -42,7 +42,7 @@ class Vacantes
     private ?int $numero_vacantes = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $Vacantes_usadas = null;
+    private ?int $vacantes_usadas = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $vacantes_libres = null;
@@ -164,7 +164,7 @@ class Vacantes
 
     public function getVacantesUsadas(): ?int
     {
-        return $this->Vacantes_usadas;
+        return $this->vacantes_usadas;
     }
 
     public function setVacantesUsadas(?int $Vacantes_usadas): static

@@ -28,6 +28,12 @@ private ?string $descripcion = null;
 #[ORM\OneToMany(mappedBy: 'categoria', targetEntity: InformacionLaboral::class)]
 private Collection $informacionLaboral;
 
+/**
+ * @var Collection<int, Puesto>
+ */
+#[ORM\OneToMany(targetEntity: Puesto::class, mappedBy: 'categoria')]
+private Collection $puestos;
+
 
 
     public function getId(): ?int
@@ -60,6 +66,7 @@ public function setDescripcion(?string $descripcion): static
     public function __construct()
 {
     $this->informacionLaboral = new ArrayCollection();
+    $this->puestos = new ArrayCollection();
 }
 
 /**
@@ -93,6 +100,36 @@ public function removeInformacionLaboral(InformacionLaboral $informacionLaboral)
 public function __toString(): string
 {
     return $this->nombre;
+}
+
+/**
+ * @return Collection<int, Puesto>
+ */
+public function getPuestos(): Collection
+{
+    return $this->puestos;
+}
+
+public function addPuesto(Puesto $puesto): static
+{
+    if (!$this->puestos->contains($puesto)) {
+        $this->puestos->add($puesto);
+        $puesto->setCategoria($this);
+    }
+
+    return $this;
+}
+
+public function removePuesto(Puesto $puesto): static
+{
+    if ($this->puestos->removeElement($puesto)) {
+        // set the owning side to null (unless already changed)
+        if ($puesto->getCategoria() === $this) {
+            $puesto->setCategoria(null);
+        }
+    }
+
+    return $this;
 }
 
 }

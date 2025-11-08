@@ -29,6 +29,9 @@ class HistorialSanciones
     #[ORM\ManyToOne(inversedBy: 'historialSanciones')]
     private ?InformacionPersonal $informacionPersonal = null;
 
+    #[ORM\Column]
+    private ?int $puntosSancion = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +93,18 @@ class HistorialSanciones
     public function setInformacionPersonal(?InformacionPersonal $informacionPersonal): static
     {
         $this->informacionPersonal = $informacionPersonal;
+
+        return $this;
+    }
+
+    public function getPuntosSancion(): ?int
+    {
+        return $this->puntosSancion;
+    }
+
+    public function setPuntosSancion(int $puntosSancion): static
+    {
+        $this->puntosSancion = $puntosSancion;
 
         return $this;
     }

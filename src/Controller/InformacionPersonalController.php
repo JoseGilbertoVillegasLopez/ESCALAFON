@@ -169,6 +169,28 @@ final class InformacionPersonalController extends AbstractController
 
                 $informacionPersonal->setImagen($newFilename);
             }
+            // 📄 2. Procesar los certificados del subformulario "formacionesAcademicas"
+            $formacion = $informacionPersonal->getFormacionAcademica(); // no array
+
+            $certificadoFile = $form->get('formacionAcademica')->get('certificado')->getData();
+
+            if ($certificadoFile) {
+                $originalFilename = pathinfo($certificadoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $certificadoFile->guessExtension();
+
+                try {
+                    $certificadoFile->move(
+                        $this->getParameter('certificados_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    $this->addFlash('error', 'Error al subir el certificado: ' . $e->getMessage());
+                }
+
+                $formacion->setCertificado($newFilename);
+            }
+            
 
 
 

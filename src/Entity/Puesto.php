@@ -27,6 +27,9 @@ private Collection $informacionLaboral;
 #[ORM\Column(length: 255, nullable: true)]
 private ?string $descripcion = null;
 
+#[ORM\ManyToOne(inversedBy: 'puestos')]
+private ?Categoria $categoria = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +93,18 @@ public function getDescripcion(): ?string
 public function setDescripcion(?string $descripcion): static
 {
     $this->descripcion = $descripcion;
+
+    return $this;
+}
+
+public function getCategoria(): ?Categoria
+{
+    return $this->categoria;
+}
+
+public function setCategoria(?Categoria $categoria): static
+{
+    $this->categoria = $categoria;
 
     return $this;
 }

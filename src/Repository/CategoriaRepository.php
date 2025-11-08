@@ -29,6 +29,13 @@ public function findByNombreParcial(?string $nombre): array
               ->getQuery()
               ->getResult();
 }
+public function findAllNombres(): array
+{
+    return $this->createQueryBuilder('c')
+        ->orderBy('c.nombre', 'ASC')
+        ->getQuery()
+        ->getResult(); // 👈 importante: getResult() (no getArrayResult)
+}
 
 
 

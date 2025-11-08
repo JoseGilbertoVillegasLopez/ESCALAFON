@@ -1,0 +1,252 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Escalafón de Personal{% endblock %}
+
+{% block body %}
+<style>
+/* 🌙 Estilo oscuro consistente con el sistema */
+html, body {
+    background-color: #1e242b !important;
+    color: #f1f3f5 !important;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+}
+
+main.container-fluid {
+    width: 100%;
+    max-width: 100%;
+    padding: 2rem;
+}
+
+/* 💼 Tarjeta principal */
+.card {
+    background-color: #2a3038;
+    border: 1px solid #3c444f;
+    border-radius: 1rem;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    color: #f8f9fa;
+    overflow: hidden;
+}
+
+/* 🧾 Título */
+h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+/* 📊 Tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #f1f3f5;
+}
+
+th, td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+}
+
+th {
+    background-color: #343b45;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.9rem;
+}
+
+tr:nth-child(even) {
+    background-color: #2f353e;
+}
+
+/* 🧭 Botones */
+.btn {
+    border-radius: 0.5rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-volver {
+    background-color: #49515d;
+    color: #fff;
+}
+
+.btn-volver:hover {
+    background-color: #5a6371;
+}
+
+.btn-notificar {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.btn-notificar:hover {
+    background-color: #0069d9;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+    table thead {
+        display: none;
+    }
+    table, table tbody, table tr, table td {
+        display: block;
+        width: 100%;
+    }
+    table tr {
+        margin-bottom: 1rem;
+        background: #2f353e;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+    }
+    table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+    table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 1rem;
+        font-weight: bold;
+        text-align: left;
+        color: #adb5bd;
+    }
+}
+</style>
+
+<main class="container-fluid">
+    <div class="card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1><i class="bi bi-bar-chart-steps"></i> Escalafón de Personal</h1>
+        </div>
+
+        {% if items is empty %}
+            <div class="alert alert-secondary text-center mt-4">
+                <i class="bi bi-info-circle"></i> No hay registros para mostrar.
+            </div>
+        {% else %}
+        <!-- 🔎 Filtros de búsqueda -->
+<!-- 🔎 Filtros de búsqueda -->
+<form method="get" class="mb-4">
+    <div class="row g-3 align-items-end">
+        <!-- Filtro por nombre -->
+        <div class="col-md-5">
+            <label for="nombre" class="form-label fw-semibold">Buscar trabajador</label>
+            <input 
+                type="text" 
+                id="nombre" 
+                name="nombre" 
+                value="{{ app.request.get('nombre') }}" 
+                class="form-control bg-dark text-light border-secondary" 
+                placeholder="Escribe el nombre o apellido">
+        </div>
+
+        <!-- Filtro por categoría -->
+        <div class="col-md-4">
+            <label for="categoria" class="form-label fw-semibold">Categoría</label>
+            <select 
+                id="categoria" 
+                name="categoria" 
+                class="form-select bg-dark text-light border-secondary">
+                <option value="">Todas las categorías</option>
+                {% for c in categorias %}
+                    <option value="{{ c.id }}" {{ app.request.get('categoria') == c.id ? 'selected' : '' }}>
+                        {{ c }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Botones -->
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-primary w-50">
+                <i class="bi bi-search"></i> Buscar
+            </button>
+            <a href="{{ path('admin_escalafon_index') }}" class="btn btn-secondary w-50">
+                <i class="bi bi-x-circle"></i> Limpiar
+            </a>
+        </div>
+    </div>
+</form>
+
+
+            <div class="table-responsive">
+                <table class="table table-dark table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Puesto</th>
+                            <th>Categoría</th>
+                            <th>Antigüedad</th>
+                            <th>P. Capacitación</th>
+                            <th>P. Sanción</th>
+                            <th>Puntaje Total</th>
+                            <th>Vacantes Disponibles</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in items %}
+                            <tr>
+                                <td>{{ loop.index + ((pagination.page - 1) * pagination.per_page) }}</td>
+                                <td>{{ t.nombre }}</td>
+                                <td>{{ t.puesto }}</td>
+                                <td>{{ t.categoria }}</td>
+                                <td>{{ t.antiguedad }}</td>
+                                <td>{{ t.puntos_capacitacion }}</td>
+                                <td>{{ t.puntos_sancion }}</td>
+                                <td>
+                                    <strong style="color: {{ t.puntaje_total > 0 ? '#00e676' : '#ff5252' }}">
+                                        {{ t.puntaje_total }}
+                                    </strong>
+                                </td>
+                                <td>
+                                    {% if t.vacantes is not empty %}
+                                        <ul class="m-0 ps-3">
+                                            {% for v in t.vacantes %}
+                                                <li>{{ v }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if t.vacantes is not empty %}
+                                        <a href="#" class="btn btn-notificar btn-sm">
+                                            <i class="bi bi-envelope"></i> Notificar
+                                        </a>
+                                    {% else %}
+                                        <span class="text-muted">No aplica</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 📄 Paginación básica -->
+            <div class="d-flex justify-content-center mt-3">
+                <nav>
+                    <ul class="pagination">
+                        {% for i in 1..pagination.total_pages %}
+                            <li class="page-item {{ i == pagination.page ? 'active' : '' }}">
+                                <a class="page-link" href="{{ path('admin_escalafon_index', {page: i, categoria: filters.categoria}) }}">
+                                    {{ i }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+            </div>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}
