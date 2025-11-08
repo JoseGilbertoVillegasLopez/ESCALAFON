@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+{% block title %}Historial de Sanciones{% endblock %}
+
+{% block body %}
+<main class="container-fluid py-5" style="min-height: 100vh;">
+  <div class="card p-4 shadow-sm mx-auto"">
+    
+    {# 🧭 Título y botón de nueva sanción #}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="m-0"><i class="bi bi-exclamation-triangle-fill text-danger"></i> Historial de Sanciones</h1>
+    </div>
+
+    {# 🔍 FILTROS #}
+    <form method="get" class="filter-box mb-4">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label for="nombre" class="data-label">Empleado</label>
+          <input type="text" id="nombre" name="nombre" class="form-control info-input"
+                 value="{{ nombre }}" placeholder="Buscar por nombre...">
+        </div>
+        <div class="col-md-3">
+          <label for="desde" class="data-label">Desde</label>
+          <input type="date" id="desde" name="desde" class="form-control info-input" value="{{ desde }}">
+        </div>
+        <div class="col-md-3">
+          <label for="hasta" class="data-label">Hasta</label>
+          <input type="date" id="hasta" name="hasta" class="form-control info-input" value="{{ hasta }}">
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+          <button class="btn btn-outline-info flex-fill" type="submit">
+            <i class="bi bi-search"></i> Buscar
+          </button>
+          <a href="{{ path('app_historial_sanciones_index') }}" class="btn btn-outline-warning flex-fill">
+            <i class="bi bi-arrow-clockwise"></i> Limpiar
+          </a>
+        </div>
+      </div>
+    </form>
+
+    {# 📋 TABLA DE RESULTADOS #}
+    <div class="table-responsive mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <a href="{{ path('app_historial_sanciones_new') }}" class="btn-guardar d-flex align-items-center gap-2">
+        <i class="bi bi-plus-circle"></i> Nueva sanción
+      </a>
+    </div>
+      <table class="table table-dark table-striped align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Empleado</th>
+            <th>Fecha</th>
+            <th>Motivo</th>
+            <th>Comprobante</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in historial_sanciones %}
+            <tr>
+              <td>{{ s.informacionPersonal }}</td>
+              <td>{{ s.fecha ? s.fecha|date('d/m/Y') : '—' }}</td>
+              <td>{{ s.motivo }}</td>
+              <td>{{ s.comprovante }}</td>
+              <td class="text-center">
+                <a href="{{ path('app_historial_sanciones_show', {'id': s.id}) }}" 
+                   class="btn btn-outline-info btn-sm" title="Ver">
+                  <i class="bi bi-eye"></i>
+                </a>
+                <a href="{{ path('app_historial_sanciones_edit', {'id': s.id}) }}" 
+                   class="btn btn-outline-warning btn-sm" title="Editar">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="5" class="text-center text-muted py-3">
+                <i class="bi bi-inbox"></i> No se encontraron registros.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</main>
+{% endblock %}

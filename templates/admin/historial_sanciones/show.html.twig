@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+{% block title %}Detalles de la Sanción{% endblock %}
+
+{% block body %}
+<main class="container-fluid py-5" style="min-height: 100vh;">
+  <div class="card p-4 shadow-sm mx-auto" style="max-width: 1100px;">
+    
+    {# 🔙 Título y botón de volver #}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="m-0">
+        <i class="bi bi-exclamation-circle text-danger"></i> Detalles de la sanción
+      </h1>
+      <a href="{{ path('app_historial_sanciones_index') }}" class="btn-volver">
+        <i class="bi bi-arrow-left"></i> Volver
+      </a>
+    </div>
+
+    {# 📋 Detalles de la sanción #}
+    <table class="table table-dark table-striped align-middle">
+      <tbody>
+        <tr>
+          <th style="width: 40%;">Empleado</th>
+          <td>{{ historial_sancione.informacionPersonal }}</td>
+        </tr>
+        <tr>
+          <th>Fecha</th>
+          <td>{{ historial_sancione.fecha ? historial_sancione.fecha|date('d/m/Y') : '—' }}</td>
+        </tr>
+        <tr>
+          <th>Motivo</th>
+          <td>{{ historial_sancione.motivo }}</td>
+        </tr>
+        <tr>
+          <th>Descripción</th>
+          <td>{{ historial_sancione.descripcion }}</td>
+        </tr>
+        <tr>
+          <th>Comprobante</th>
+          <td>
+            {% if historial_sancione.comprovante %}
+              <a href="{{ asset('uploads/sanciones/' ~ historial_sancione.comprovante) }}" 
+                 class="btn btn-outline-info btn-sm d-flex align-items-center gap-2" 
+                 target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-box-arrow-up-right"></i> Ver comprobante
+              </a>
+            {% else %}
+              <span class="text-muted fst-italic">No se adjuntó comprobante</span>
+            {% endif %}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    {# 🧩 Botones de acción #}
+    <div class="d-flex justify-content-end gap-2 mt-4">
+      <a href="{{ path('app_historial_sanciones_edit', {'id': historial_sancione.id}) }}" 
+         class="btn btn-outline-warning d-flex align-items-center gap-2">
+        <i class="bi bi-pencil-square"></i> Editar
+      </a>
+
+      {{ include('admin/historial_sanciones/_delete_form.html.twig') }}
+    </div>
+  </div>
+</main>
+{% endblock %}

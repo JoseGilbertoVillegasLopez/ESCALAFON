@@ -3,91 +3,11 @@
 {% block title %}Editar Vacante{% endblock %}
 
 {% block body %}
-<style>
-/* 🌌 Fondo oscuro total */
-html,
-body {
-  background-color: #1e242b !important;
-  color: #f1f3f5 !important;
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  min-height: 100vh;
-}
 
-/* 🔹 Contenedor principal */
-main.container-fluid {
-  width: 100vw !important;
-  max-width: 100vw !important;
-  padding: 2rem !important;
-  background-color: #1e242b !important;
-}
 
-/* 💼 Card principal */
-main.container-fluid .card {
-  width: 100% !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-  border-radius: 1rem;
-  border: 1px solid #3b4652;
-  background-color: #2a323c !important;
-  color: #f1f3f5 !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-  padding: 2rem;
-}
-
-/* Inputs */
-.info-input {
-  background-color: #323a45 !important;
-  border: 1px solid #495563 !important;
-  color: #f1f3f5 !important;
-  border-radius: 0.5rem;
-}
-.info-input:focus {
-  border-color: #0dcaf0 !important;
-  box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.25);
-}
-
-/* Botones */
-.btn-guardar {
-  background-color: #0dcaf0;
-  color: #1e242b;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.6rem 1.4rem;
-  font-weight: 500;
-  transition: 0.3s;
-}
-.btn-guardar:hover {
-  background-color: #09a6c9;
-}
-
-.btn-volver {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: transparent;
-  color: #00e0c6;
-  border: 1.5px solid #00e0c6;
-  padding: 0.6rem 1.2rem;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
-}
-.btn-volver:hover {
-  background: rgba(0, 255, 255, 0.1);
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
-  transform: translateY(-2px);
-}
-.btn-volver i {
-  font-size: 1.2rem;
-}
-</style>
-
-<main class="container-fluid py-4">
+<main class="container-fluid py-5">
   <div class="card shadow-sm p-4">
+    <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h1><i class="bi bi-pencil-square text-info"></i> Editar Vacante</h1>
       <a href="{{ path('app_vacantes_index') }}" class="btn-volver">
@@ -97,10 +17,11 @@ main.container-fluid .card {
 
     {{ form_start(form, {'attr': {'class': 'vacante-form'}}) }}
 
+    <!-- 🧾 Información principal -->
     <section class="mb-4">
-      <h4><i class="bi bi-info-circle"></i> Información de la vacante</h4>
+      <h4><i class="bi bi-info-circle"></i> Información general</h4>
 
-      <div class="info-grid">
+      <div class="info-grid mt-3">
         <div>
           {{ form_label(form.nombre, 'Nombre de la vacante', {'label_attr': {'class': 'data-label'}}) }}
           {{ form_widget(form.nombre, {'attr': {'class': 'info-input'}}) }}
@@ -125,6 +46,31 @@ main.container-fluid .card {
 
     <hr class="my-4">
 
+    <!-- 📄 Detalles adicionales -->
+    <section class="mb-4">
+      <h4><i class="bi bi-file-text"></i> Detalles adicionales</h4>
+
+      <div class="info-grid mt-3">
+        <div class="col-12">
+          {{ form_label(form.descripcion, 'Descripción de la vacante', {'label_attr': {'class': 'data-label'}}) }}
+          {{ form_widget(form.descripcion, {'attr': {'class': 'info-input', 'rows': 3}}) }}
+        </div>
+
+        <div>
+          {{ form_label(form.numeroVacantes, 'Número total de vacantes', {'label_attr': {'class': 'data-label'}}) }}
+          {{ form_widget(form.numeroVacantes, {'attr': {'class': 'info-input', 'min': 1}}) }}
+        </div>
+
+        <div>
+          {{ form_label(form.activo, '¿Vacante activa?', {'label_attr': {'class': 'data-label'}}) }}
+          {{ form_widget(form.activo, {'attr': {'class': 'form-check-input ms-2'}}) }}
+        </div>
+      </div>
+    </section>
+
+    <hr class="my-4">
+
+    <!-- 📋 Requisitos -->
     <section>
       <h4><i class="bi bi-list-check"></i> Requisitos</h4>
 
@@ -151,7 +97,10 @@ main.container-fluid .card {
       </div>
     </section>
 
-    <div class="mt-4 text-end">
+    <!-- ⚙️ Botones -->
+    <div class="d-flex justify-content-between align-items-center mt-4">
+      {{ include('admin/vacantes/_delete_form.html.twig') }}
+
       <button class="btn-guardar">
         <i class="bi bi-save"></i> Actualizar vacante
       </button>

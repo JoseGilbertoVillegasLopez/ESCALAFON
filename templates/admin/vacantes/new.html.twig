@@ -8,8 +8,9 @@ label.required {
     color: #fff;
 }
 </style>
-<main class="container-fluid py-4">
-  <div class="card p-4 shadow-sm">
+
+<main class="container-fluid py-5" style="min-height: 100vh;">
+  <div class="card p-4 shadow-sm mx-auto" style="max-width: 1300px;">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h1><i class="bi bi-briefcase-fill text-info"></i> Crear Vacante</h1>
       <a href="{{ path('app_vacantes_index') }}" class="btn-volver">
@@ -19,18 +20,19 @@ label.required {
 
     {{ form_start(form, {'attr': {'class': 'vacante-form'}}) }}
 
+    <!-- 🧾 INFORMACIÓN PRINCIPAL -->
     <section class="mb-4">
       <h4><i class="bi bi-info-circle"></i> Información de la vacante</h4>
 
-      <div class="info-grid">
+      <div class="info-grid mt-3">
         <div>
           {{ form_label(form.nombre, 'Nombre de la vacante', {'label_attr': {'class': 'data-label'}}) }}
-          {{ form_widget(form.nombre, {'attr': {'class': 'info-input'}}) }}
+          {{ form_widget(form.nombre, {'attr': {'class': 'info-input', 'placeholder': 'Ejemplo: Docente de tiempo completo'}}) }}
         </div>
 
         <div>
           {{ form_label(form.antiguedad, 'Antigüedad requerida (años)', {'label_attr': {'class': 'data-label'}}) }}
-          {{ form_widget(form.antiguedad, {'attr': {'class': 'info-input'}}) }}
+          {{ form_widget(form.antiguedad, {'attr': {'class': 'info-input', 'min': 0}}) }}
         </div>
 
         <div>
@@ -47,6 +49,26 @@ label.required {
 
     <hr class="my-4">
 
+    <!-- 📄 DETALLES ADICIONALES -->
+    <section class="mb-4">
+      <h4><i class="bi bi-file-text"></i> Detalles adicionales</h4>
+
+      <div class="info-grid mt-3">
+        <div class="col-12">
+          {{ form_label(form.descripcion, 'Descripción de la vacante', {'label_attr': {'class': 'data-label'}}) }}
+          {{ form_widget(form.descripcion, {'attr': {'class': 'info-input', 'rows': 3, 'placeholder': 'Describe brevemente las funciones del puesto'}}) }}
+        </div>
+
+        <div>
+          {{ form_label(form.numeroVacantes, 'Número total de vacantes', {'label_attr': {'class': 'data-label'}}) }}
+          {{ form_widget(form.numeroVacantes, {'attr': {'class': 'info-input', 'min': 1}}) }}
+        </div>
+      </div>
+    </section>
+
+    <hr class="my-4">
+
+    <!-- 📋 REQUISITOS -->
     <section>
       <h4><i class="bi bi-list-check"></i> Requisitos</h4>
 
@@ -73,6 +95,7 @@ label.required {
       </div>
     </section>
 
+    <!-- 💾 BOTÓN GUARDAR -->
     <div class="mt-4 text-end">
       <button class="btn-guardar">
         <i class="bi bi-save"></i> Guardar vacante

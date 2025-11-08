@@ -35,6 +35,21 @@ class Vacantes
     #[ORM\OneToMany(targetEntity: RequisitosVacantes::class, mappedBy: 'vacante',cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $requisitos;
 
+    #[ORM\Column(length: 255)]
+    private ?string $descripcion = null;
+
+    #[ORM\Column]
+    private ?int $numero_vacantes = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $Vacantes_usadas = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $vacantes_libres = null;
+
+    #[ORM\Column]
+    private ?bool $activo = null;
+
     public function __construct()
     {
         $this->requisitos = new ArrayCollection();
@@ -119,6 +134,66 @@ class Vacantes
                 $requisito->setVacante(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDescripcion(): ?string
+    {
+        return $this->descripcion;
+    }
+
+    public function setDescripcion(string $descripcion): static
+    {
+        $this->descripcion = $descripcion;
+
+        return $this;
+    }
+
+    public function getNumeroVacantes(): ?int
+    {
+        return $this->numero_vacantes;
+    }
+
+    public function setNumeroVacantes(int $numero_vacantes): static
+    {
+        $this->numero_vacantes = $numero_vacantes;
+
+        return $this;
+    }
+
+    public function getVacantesUsadas(): ?int
+    {
+        return $this->Vacantes_usadas;
+    }
+
+    public function setVacantesUsadas(?int $Vacantes_usadas): static
+    {
+        $this->Vacantes_usadas = $Vacantes_usadas;
+
+        return $this;
+    }
+
+    public function getVacantesLibres(): ?int
+    {
+        return $this->vacantes_libres;
+    }
+
+    public function setVacantesLibres(?int $vacantes_libres): static
+    {
+        $this->vacantes_libres = $vacantes_libres;
+
+        return $this;
+    }
+
+    public function isActivo(): ?bool
+    {
+        return $this->activo;
+    }
+
+    public function setActivo(bool $activo): static
+    {
+        $this->activo = $activo;
 
         return $this;
     }

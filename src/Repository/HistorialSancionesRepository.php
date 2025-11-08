@@ -15,29 +15,29 @@ class HistorialSancionesRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, HistorialSanciones::class);
     }
+public function findByFilters(?string $nombre, ?\DateTime $desde, ?\DateTime $hasta): array
+{
+    $qb = $this->createQueryBuilder('h')
+        ->leftJoin('h.informacionPersonal', 'p')
+        ->addSelect('p')
+        ->orderBy('h.fecha', 'DESC');
 
-    //    /**
-    //     * @return HistorialSanciones[] Returns an array of HistorialSanciones objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('h')
-    //            ->andWhere('h.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('h.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    if ($nombre) {
+        $qb->andWhere('LOWER(CONCAT(p.nombre, \' \', p.apellidoPaterno, \' \', p.apellidoMaterno)) LIKE :nombre')
+           ->setParameter('nombre', '%' . strtolower($nombre) . '%');
+    }
 
-    //    public function findOneBySomeField($value): ?HistorialSanciones
-    //    {
-    //        return $this->createQueryBuilder('h')
-    //            ->andWhere('h.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    if ($desde) {
+        $qb->andWhere('h.fecha >= :desde')
+           ->setParameter('desde', $desde->format('Y-m-d'));
+    }
+
+    if ($hasta) {
+        $qb->andWhere('h.fecha <= :hasta')
+           ->setParameter('hasta', $hasta->format('Y-m-d'));
+    }
+
+    return $qb->getQuery()->getResult();
+}
+
 }

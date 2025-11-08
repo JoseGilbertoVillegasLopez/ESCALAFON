@@ -22,23 +22,40 @@ final class VacantesController extends AbstractController
         PuestoRepository $puestoRepository,
         CategoriaRepository $categoriaRepository): Response
     {
-        // 🔍 Obtener filtros
-        $nombre = $request->query->get('nombre');
-        $puesto = $request->query->get('puesto');
-        $categoria = $request->query->get('categoria');
+        $filtros = [
+            'nombre' => $request->query->get('nombre', ''),
+            'puesto' => $request->query->get('puesto', ''),
+            'categoria' => $request->query->get('categoria', ''),
+        ];
 
-        // 🧠 Buscar vacantes filtradas
-        $vacantes = $vacantesRepository->buscarFiltrado($nombre, $puesto, $categoria);
+        // 🔍 Lógica de filtrado flexible
+        $query = $vacantesRepository->createQueryBuilder('v')
+            ->leftJoin('v.puesto', 'p')
+            ->leftJoin('v.categoria', 'c')
+            ->addSelect('p', 'c');
+
+        if ($filtros['nombre']) {
+            $query->andWhere('LOWER(v.nombre) LIKE LOWER(:nombre)')
+                  ->setParameter('nombre', '%' . $filtros['nombre'] . '%');
+        }
+
+        if ($filtros['puesto']) {
+            $query->andWhere('p.id = :puesto')
+                  ->setParameter('puesto', $filtros['puesto']);
+        }
+
+        if ($filtros['categoria']) {
+            $query->andWhere('c.id = :categoria')
+                  ->setParameter('categoria', $filtros['categoria']);
+        }
+
+        $vacantes = $query->getQuery()->getResult();
 
         return $this->render('admin/vacantes/index.html.twig', [
             'vacantes' => $vacantes,
+            'filtros' => $filtros,
             'puestos' => $puestoRepository->findAll(),
             'categorias' => $categoriaRepository->findAll(),
-            'filtros' => [
-                'nombre' => $nombre,
-                'puesto' => $puesto,
-                'categoria' => $categoria,
-            ],
         ]);
     }
 
@@ -55,6 +72,12 @@ final class VacantesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Asignar activo por defecto
+        $vacante->setActivo(true);
+
+        // Calcular vacantes libres si aplica
+        $libres = max($vacante->getNumeroVacantes() - ($vacante->getVacantesUsadas() ?? 0), 0);
+        $vacante->setVacantesLibres($libres);
             $entityManager->persist($vacante);
             $entityManager->flush();
 

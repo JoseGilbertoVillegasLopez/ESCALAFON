@@ -1,0 +1,7 @@
+<form method="post" action="{{ path('app_historial_sanciones_delete', {'id': historial_sancione.id}) }}" 
+      onsubmit="return confirm('¿Estás seguro de eliminar esta sanción?');">
+  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ historial_sancione.id) }}">
+  <button class="btn btn-outline-danger d-flex align-items-center gap-2">
+    <i class="bi bi-trash"></i> Eliminar
+  </button>
+</form>
