@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ appName }} - Notificación de ascenso</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body style="margin:0;padding:0;background:#f6f7fb;font-family:Arial, Helvetica, sans-serif;color:#111;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f6f7fb;padding:24px 0;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="background:#ffffff;border-radius:8px;overflow:hidden;">
+            <tr>
+              <td style="background:#1e40af;color:#fff;padding:16px 24px;font-size:18px;font-weight:bold;">
+                {{ appName }} — Notificación de ascenso
+              </td>
+            </tr>
+
+            <tr>
+              <td style="padding:24px;">
+                <p style="margin:0 0 12px 0;font-size:14px;color:#6b7280;">
+                  {{ fecha|date('d/m/Y H:i') }}
+                </p>
+                <h2 style="margin:0 0 12px 0;">Hola, {{ nombreCompleto|default('Trabajador') }}</h2>
+
+                <p style="margin:0 0 16px 0;line-height:1.5;">
+                  Se te informa que cuentas con una <strong>oportunidad de ascenso</strong> dentro del sistema <strong>{{ appName }}</strong>.
+                </p>
+
+                <p style="margin:0 0 16px 0;">
+                  Puesto disponible: <strong>{{ puestoDestino }}</strong>
+                </p>
+
+                <p style="margin:0 0 16px 0;">
+                  Puedes acudir al sindicato para solicitar más información sobre esta vacante.
+                </p>
+
+                <p style="margin:0 0 8px 0;color:#6b7280;">
+                  Si tienes dudas, contacta a <a href="mailto:{{ soporteEmail }}" style="color:#2563eb;">{{ soporteEmail }}</a>.
+                </p>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="background:#f3f4f6;color:#6b7280;padding:12px 24px;font-size:12px;">
+                {{ appName }} — Área de Sistemas
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

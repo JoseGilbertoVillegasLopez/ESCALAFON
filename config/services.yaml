@@ -57,3 +57,15 @@ services:
       $soporteEmail: '%app.mail.support%'
       $appName: '%app.app_name%'
       $loginUrl: '%app.login_url%'
+
+    # =====================================================
+  # SERVICIO: NotificacionAscensoMailer (correo de oportunidades de ascenso)
+  # =====================================================
+  App\Service\NotificacionAscensoMailer:
+    arguments:
+      $fromEmail: '%app.mail.from_email%'
+      $fromName:  '%app.mail.from_name%'
+      $soporteEmail: '%app.mail.support%'
+      $appName: '%app.app_name%'
+      $loginUrl: '%app.login_url%'
+

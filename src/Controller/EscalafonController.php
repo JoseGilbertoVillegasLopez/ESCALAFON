@@ -5,7 +5,11 @@ namespace App\Controller;
 
 use App\Repository\CategoriaRepository;
 use App\Service\EscalafonService;
+use App\Service\NotificacionAscensoMailer;
+use Doctrine\ORM\EntityManagerInterface;
+use Proxies\__CG__\App\Entity\InformacionPersonal;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -29,31 +33,58 @@ class EscalafonController extends AbstractController
     public function index(Request $request): Response
     {
          $categoriaId = $request->query->getInt('categoria', 0) ?: null;
-    $nombre      = trim((string) $request->query->get('nombre', ''));
-    $page        = max(1, $request->query->getInt('page', 1));
-    $perPage     = 20;
+        $nombre      = trim((string) $request->query->get('nombre', ''));
+        $page        = max(1, $request->query->getInt('page', 1));
+        $perPage     = 20;
 
-    // 🔹 Llamamos al servicio y le pasamos también el nombre
-    $data = $this->escalafonService->getEscalafonData(
-        categoriaId: $categoriaId ?: null,
-        page: $page,
-        perPage: $perPage,
-        nombre: $nombre // ← ¡este era el que faltaba!
-    );
+        // 🔹 Llamamos al servicio y le pasamos también el nombre
+        $data = $this->escalafonService->getEscalafonData(
+            categoriaId: $categoriaId ?: null,
+            page: $page,
+            perPage: $perPage,
+            nombre: $nombre // ← ¡este era el que faltaba!
+        );
 
-    return $this->render('admin/escalafon/index.html.twig', [
-        'items'      => $data['items'],
-        'pagination' => [
-            'page'        => $page,
-            'per_page'    => $perPage,
-            'total'       => $data['total'],
-            'total_pages' => $data['total_pages'],
-        ],
-        'filters'    => [
-            'categoria' => $categoriaId ?: null,
-            'nombre'    => $nombre,
-        ],
-        'categorias' => $this->categoriaRepo->findAll(),
-    ]);
+        return $this->render('admin/escalafon/index.html.twig', [
+            'items'      => $data['items'],
+            'pagination' => [
+                'page'        => $page,
+                'per_page'    => $perPage,
+                'total'       => $data['total'],
+                'total_pages' => $data['total_pages'],
+            ],
+            'filters'    => [
+                'categoria' => $categoriaId ?: null,
+                'nombre'    => $nombre,
+            ],
+            'categorias' => $this->categoriaRepo->findAll(),
+        ]);
     }
+    #[Route('/notificar/{id}/{vacante}', name: 'admin_escalafon_notificar', methods: ['GET'])]
+public function notificar(
+    int $id,
+    string $vacante,
+    EntityManagerInterface $em,
+    NotificacionAscensoMailer $mailer
+): RedirectResponse {
+    $trabajador = $em->getRepository(InformacionPersonal::class)->find($id);
+
+    if (!$trabajador) {
+        $this->addFlash('danger', 'No se encontró el trabajador.');
+        return $this->redirectToRoute('admin_escalafon_index');
+    }
+
+    // 👉 Ahora sí usamos la vacante que viene desde la vista
+    $puestoDestino = $vacante;
+
+    $mailer->sendNotificacion($trabajador, $puestoDestino);
+
+    $this->addFlash('success', sprintf(
+        'Se notificó a %s sobre la vacante "%s".',
+        $trabajador,
+        $puestoDestino
+    ));
+
+    return $this->redirectToRoute('admin_escalafon_index');
+}
 }
