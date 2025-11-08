@@ -1,0 +1,8 @@
+<form method="post" action="{{ path('app_cursos_delete', {'id': curso.id}) }}" 
+      onsubmit="return confirm('¿Estás seguro de que deseas eliminar este curso? Esta acción no se puede deshacer.');"
+      style="display:inline-block;">
+  <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ curso.id) }}">
+  <button class="btn btn-outline-danger">
+    <i class="bi bi-trash"></i> Eliminar
+  </button>
+</form>

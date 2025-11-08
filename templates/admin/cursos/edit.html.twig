@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Curso{% endblock %}
+
+{% block body %}
+<main class="container-fluid py-5" style="min-height: 100vh;">
+  <div class="card p-4 shadow-sm mx-auto" style="max-width: 900px;">
+
+    {# 🔹 ENCABEZADO #}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1><i class="bi bi-pencil-square text-warning"></i> Editar Curso</h1>
+      <a href="{{ path('app_cursos_index') }}" class="btn-volver">
+        <i class="bi bi-arrow-left-circle"></i> Volver a la lista
+      </a>
+    </div>
+
+    {# 🧾 FORMULARIO DE EDICIÓN #}
+    {{ form_start(form, {'attr': {'class': 'curso-form'}}) }}
+
+    <section class="mb-4">
+      <h4><i class="bi bi-info-circle"></i> Información del curso</h4>
+
+      <div class="info-grid mt-3">
+        <div>
+          {{ form_label(form.nombre, 'Nombre del curso', {'label_attr': {'class': 'data-label'}}) }}
+          {{ form_widget(form.nombre, {'attr': {'class': 'info-input'}}) }}
+        </div>
+
+        <div>
+          {{ form_label(form.categoria, 'Categoría', {'label_attr': {'class': 'data-label'}}) }}
+          {{ form_widget(form.categoria, {'attr': {'class': 'info-input'}}) }}
+        </div>
+
+        <div>
+          {{ form_label(form.valor, 'Valor (puntos)', {'label_attr': {'class': 'data-label'}}) }}
+          {{ form_widget(form.valor, {'attr': {'class': 'info-input', 'type': 'number', 'min': '1', 'max': '10'}}) }}
+        </div>
+      </div>
+    </section>
+
+    {# 💾 GUARDAR + 🗑️ ELIMINAR ALINEADOS #}
+<div class="d-flex justify-content-end gap-2 mt-4">
+  <button class="btn-guardar">
+    <i class="bi bi-save"></i> Actualizar curso
+  </button>
+  {{ include('admin/cursos/_delete_form.html.twig') }}
+</div>
+
+{{ form_end(form) }}
+
+
+  </div>
+</main>
+
+{# ⚙️ Validación JS para el límite 1–10 #}
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const valorInput = document.querySelector('input[name="cursos[valor]"]');
+  if (!valorInput) return;
+
+  valorInput.addEventListener('input', () => {
+    const value = parseInt(valorInput.value, 10);
+    if (value > 10) {
+      alert('⚠️ El valor máximo permitido es 10.');
+      valorInput.value = 10;
+    } else if (value < 1) {
+      alert('⚠️ El valor mínimo permitido es 1.');
+      valorInput.value = 1;
+    }
+  });
+});
+</script>
+{% endblock %}
+{% endblock %}

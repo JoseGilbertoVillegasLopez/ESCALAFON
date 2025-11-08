@@ -26,4 +26,18 @@ class PuestoRepository extends ServiceEntityRepository
 
         return array_column($resultados, 'nombre');
     }
+
+    public function findByNombreParcial(?string $nombre): array
+{
+    $qb = $this->createQueryBuilder('p');
+
+    if ($nombre) {
+        $qb->andWhere('p.nombre LIKE :nombre OR p.descripcion LIKE :nombre')
+           ->setParameter('nombre', '%' . $nombre . '%');
+    }
+
+    return $qb->orderBy('p.nombre', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
 }

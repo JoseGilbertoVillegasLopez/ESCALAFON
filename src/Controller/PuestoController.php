@@ -11,15 +11,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/puesto')]
+#[Route('/admin/puesto')]
 final class PuestoController extends AbstractController
 {
     #[Route(name: 'app_puesto_index', methods: ['GET'])]
-    public function index(PuestoRepository $puestoRepository): Response
+    public function index(Request $request, PuestoRepository $puestoRepository): Response
     {
-        return $this->render('puesto/index.html.twig', [
-            'puestos' => $puestoRepository->findAll(),
-        ]);
+        $nombre = $request->query->get('nombre');
+    $puestos = $puestoRepository->findByNombreParcial($nombre);
+
+    return $this->render('admin/puesto/index.html.twig', [
+        'puestos' => $puestos,
+        'nombre' => $nombre,
+    ]);
     }
 
     #[Route('/new', name: 'app_puesto_new', methods: ['GET', 'POST'])]
@@ -36,7 +40,7 @@ final class PuestoController extends AbstractController
             return $this->redirectToRoute('app_puesto_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('puesto/new.html.twig', [
+        return $this->render('admin/puesto/new.html.twig', [
             'puesto' => $puesto,
             'form' => $form,
         ]);
@@ -45,7 +49,7 @@ final class PuestoController extends AbstractController
     #[Route('/{id}', name: 'app_puesto_show', methods: ['GET'])]
     public function show(Puesto $puesto): Response
     {
-        return $this->render('puesto/show.html.twig', [
+        return $this->render('admin/puesto/show.html.twig', [
             'puesto' => $puesto,
         ]);
     }
@@ -62,7 +66,7 @@ final class PuestoController extends AbstractController
             return $this->redirectToRoute('app_puesto_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('puesto/edit.html.twig', [
+        return $this->render('admin/puesto/edit.html.twig', [
             'puesto' => $puesto,
             'form' => $form,
         ]);
@@ -76,6 +80,6 @@ final class PuestoController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_puesto_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin/app_puesto_index', [], Response::HTTP_SEE_OTHER);
     }
 }

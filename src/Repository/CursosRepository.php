@@ -15,29 +15,23 @@ class CursosRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Cursos::class);
     }
+    public function findByFilters(?string $nombre, ?string $categoria): array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->join('c.categoria', 'cat')
+            ->addSelect('cat')
+            ->orderBy('c.nombre', 'ASC');
 
-//    /**
-//     * @return Cursos[] Returns an array of Cursos objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+        if ($nombre) {
+            $qb->andWhere('LOWER(c.nombre) LIKE LOWER(:nombre)')
+               ->setParameter('nombre', "%$nombre%");
+        }
 
-//    public function findOneBySomeField($value): ?Cursos
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        if ($categoria) {
+            $qb->andWhere('cat.id = :categoria')
+               ->setParameter('categoria', $categoria);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Crear Curso{% endblock %}
+
+{% block body %}
+<main class="container-fluid py-5" style="min-height: 100vh;">
+  <div class="card p-4 shadow-sm mx-auto" style="max-width: 900px;">
+
+    {# 🔹 ENCABEZADO #}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1><i class="bi bi-journal-plus text-info"></i> Crear Curso</h1>
+      <a href="{{ path('app_cursos_index') }}" class="btn-volver">
+        <i class="bi bi-arrow-left-circle"></i> Volver a la lista
+      </a>
+    </div>
+
+    {# 📋 FORMULARIO #}
+    {{ form_start(form, {'attr': {'class': 'curso-form'}}) }}
+    
+    <section class="mb-4">
+      <h4><i class="bi bi-info-circle"></i> Información del curso</h4>
+
+      <div class="info-grid mt-3">
+        <div>
+          {{ form_label(form.nombre, 'Nombre del curso', {'label_attr': {'class': 'data-label'}}) }}
+          {{ form_widget(form.nombre, {'attr': {'class': 'info-input'}}) }}
+        </div>
+
+        <div>
+          {{ form_label(form.categoria, 'Categoría', {'label_attr': {'class': 'data-label'}}) }}
+          {{ form_widget(form.categoria, {'attr': {'class': 'info-input'}}) }}
+        </div>
+
+        <div>
+          {{ form_label(form.valor, 'Valor (puntos)', {'label_attr': {'class': 'data-label'}}) }}
+          {{ form_widget(form.valor, {'attr': {'class': 'info-input', 'min': '1'}}) }}
+        </div>
+      </div>
+    </section>
+
+    {# 🔘 BOTÓN GUARDAR #}
+    <div class="mt-4 text-end">
+      <button class="btn-guardar">
+        <i class="bi bi-save"></i> Guardar curso
+      </button>
+    </div>
+
+    {{ form_end(form) }}
+
+  </div>
+</main>
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const valorInput = document.querySelector('input[name="cursos[valor]"]');
+  valorInput?.addEventListener('input', () => {
+    const value = parseInt(valorInput.value, 10);
+    if (value > 10) {
+      alert('⚠️ El valor máximo permitido es 10.');
+      valorInput.value = 10;
+    } else if (value < 1) {
+      alert('⚠️ El valor mínimo permitido es 1.');
+      valorInput.value = 1;
+    }
+  });
+});
+</script>
+{% endblock %}
+
+{% endblock %}

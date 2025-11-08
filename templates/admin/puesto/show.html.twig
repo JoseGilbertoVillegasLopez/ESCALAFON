@@ -1,30 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Puesto{% endblock %}
+{% block title %}Detalles del Puesto{% endblock %}
 
 {% block body %}
-    <h1>Puesto</h1>
+<main class="container-fluid py-5" style="min-height: 100vh;">
+  <div class="card p-4 shadow-sm mx-auto" style="max-width: 700px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1><i class="bi bi-briefcase-fill text-info"></i> Detalles del Puesto</h1>
+      <a href="{{ path('app_puesto_index') }}" class="btn-volver">
+        <i class="bi bi-arrow-left-circle"></i> Volver a la lista
+      </a>
+    </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ puesto.id }}</td>
-            </tr>
-            <tr>
-                <th>Nombre</th>
-                <td>{{ puesto.nombre }}</td>
-            </tr>
-            <tr>
-                <th>Descripcion</th>
-                <td>{{ puesto.descripcion }}</td>
-            </tr>
-        </tbody>
-    </table>
+    <section class="mb-4">
+      <div class="mb-3">
+        <h5 class="data-label"><i class="bi bi-person-badge"></i> Nombre del Puesto</h5>
+        <div class="info-input p-2">{{ puesto.nombre }}</div>
+      </div>
 
-    <a href="{{ path('app_puesto_index') }}">back to list</a>
+      <div class="mb-3">
+        <h5 class="data-label"><i class="bi bi-card-text"></i> Descripción</h5>
+        <div class="info-input p-2">
+          {{ puesto.descripcion ?: 'Sin descripción disponible' }}
+        </div>
+      </div>
+    </section>
 
-    <a href="{{ path('app_puesto_edit', {'id': puesto.id}) }}">edit</a>
+    <div class="text-end mt-4 d-flex justify-content-end gap-2">
+      <a href="{{ path('app_puesto_edit', {'id': puesto.id}) }}" class="btn btn-warning d-flex align-items-center gap-2">
+        <i class="bi bi-pencil-square"></i> Editar
+      </a>
 
-    {{ include('puesto/_delete_form.html.twig') }}
+      {{ include('admin/puesto/_delete_form.html.twig') }}
+    </div>
+  </div>
+</main>
 {% endblock %}

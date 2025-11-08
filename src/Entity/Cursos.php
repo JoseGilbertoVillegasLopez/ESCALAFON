@@ -6,6 +6,7 @@ use App\Repository\CursosRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CursosRepository::class)]
 class Cursos
@@ -23,6 +24,12 @@ class Cursos
     private ?Categoria $categoria = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'El valor del curso es obligatorio.')]
+    #[Assert\Range(
+        notInRangeMessage: 'El valor debe estar entre {{ min }} y {{ max }} puntos.',
+        min: 1,
+        max: 10
+    )]
     private ?int $valor = null;
     #[ORM\OneToMany(mappedBy: 'curso', targetEntity: Capacitacion::class, cascade: ['persist', 'remove'])]
     private Collection $capacitacion;
