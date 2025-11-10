@@ -36,7 +36,7 @@ class EscalafonService
      * @param int $perPage Registros por página
      * @return array Estructura con trabajadores ordenados por puntaje
      */
- public function getEscalafonData(?int $categoriaId, int $page = 1, int $perPage = 20, ?string $nombre = null): array
+    public function getEscalafonData(?int $categoriaId, int $page = 1, int $perPage = 20, ?string $nombre = null): array
 {
     $qb = $this->em->createQueryBuilder()
         ->select('p', 'il', 'pu', 'c')
@@ -45,31 +45,41 @@ class EscalafonService
         ->leftJoin('il.puesto', 'pu')
         ->leftJoin('il.categoria', 'c');
 
-    // 🔹 Filtro por categoría
-    if ($categoriaId !== null) {
-        $qb->andWhere('c.id = :categoria')->setParameter('categoria', $categoriaId);
+    // 🔍 Filtro por nombre (independiente)
+    if (!empty($nombre)) {
+        $qb->andWhere('
+            p.nombre LIKE :q
+            OR p.apellidoPaterno LIKE :q
+            OR p.apellidoMaterno LIKE :q
+        ')
+        ->setParameter('q', '%' . $nombre . '%');
     }
 
-    // 🔹 Filtro por nombre o apellidos
-    if ($nombre) {
-        $qb->andWhere('p.nombre LIKE :q OR p.apellidoPaterno LIKE :q OR p.apellidoMaterno LIKE :q')
-           ->setParameter('q', '%'.$nombre.'%');
+    // 🧱 Filtro por categoría (independiente)
+    if (!empty($categoriaId)) {
+        $qb->andWhere('c.id = :categoria')
+           ->setParameter('categoria', $categoriaId);
     }
 
-    // 🔹 Conteo total (sin límites)
+    // 👉 (opcional) orden por apellidos+nombre para consistencia
+    $qb->addOrderBy('p.apellidoPaterno', 'ASC')
+       ->addOrderBy('p.apellidoMaterno', 'ASC')
+       ->addOrderBy('p.nombre', 'ASC');
+
+    // 🔹 Conteo total (antes de limitar)
     $countQb = clone $qb;
     $total = (int) $countQb->resetDQLPart('select')->select('COUNT(p.id)')
         ->setFirstResult(null)->setMaxResults(null)
         ->getQuery()->getSingleScalarResult();
 
     // 🔹 Paginación
-    $qb->setFirstResult(($page - 1) * $perPage)->setMaxResults($perPage);
+    $qb->setFirstResult(($page - 1) * $perPage)
+       ->setMaxResults($perPage);
 
     $trabajadores = $qb->getQuery()->getResult();
 
-    // 🔹 Procesamos los resultados
+    // 🔹 Procesamiento
     $items = [];
-
     foreach ($trabajadores as $t) {
         $laboral = $t->getInformacionLaboral();
         $puesto  = $laboral?->getPuesto();
@@ -82,12 +92,12 @@ class EscalafonService
         if ($fechaIngreso instanceof \DateTimeInterface) {
             $hoy = new \DateTime();
             $diff = $hoy->diff($fechaIngreso);
-            $puntosAntiguedad = $diff->y; // 1 punto por año
+            $puntosAntiguedad = $diff->y;
 
             $partes = [];
-            if ($diff->y > 0) $partes[] = $diff->y . ' año' . ($diff->y > 1 ? 's' : '');
-            if ($diff->m > 0) $partes[] = $diff->m . ' mes' . ($diff->m > 1 ? 'es' : '');
-            if ($diff->d > 0) $partes[] = $diff->d . ' día' . ($diff->d > 1 ? 's' : '');
+            if ($diff->y > 0) $partes[] = $diff->y.' año'.($diff->y>1?'s':'');
+            if ($diff->m > 0) $partes[] = $diff->m.' mes'.($diff->m>1?'es':'');
+            if ($diff->d > 0) $partes[] = $diff->d.' día'.($diff->d>1?'s':'');
             $antiguedadTexto = count($partes) ? implode(', ', $partes) : 'Menos de un día';
         }
 
@@ -95,12 +105,10 @@ class EscalafonService
         $puntosCapacitacion = 0;
         foreach ($t->getCapacitacion() as $cap) {
             $curso = $cap->getCurso();
-            if ($curso) {
-                $puntosCapacitacion += $curso->getValor() ?? 0;
-            }
+            if ($curso) $puntosCapacitacion += $curso->getValor() ?? 0;
         }
 
-        // ⚠️ Puntos de sanciones (restan)
+        // ⚠️ Puntos de sanciones
         $puntosSancion = 0;
         foreach ($t->getHistorialSanciones() as $sancion) {
             $puntosSancion += $sancion->getPuntosSancion() ?? 0;
@@ -109,7 +117,7 @@ class EscalafonService
         // 🧮 Puntaje total
         $puntajeTotal = $puntosAntiguedad + $puntosCapacitacion - $puntosSancion;
 
-        // 🧩 Vacantes compatibles (misma categoría)
+        // 🧩 Vacantes compatibles
         $vacantesCompatibles = [];
         $vacantes = $this->vacanteRepo->findBy(['categoria' => $categoria]);
         foreach ($vacantes as $v) {
@@ -138,6 +146,7 @@ class EscalafonService
         'total_pages' => (int) ceil($total / $perPage),
     ];
 }
+
 
 
 

@@ -8,6 +8,7 @@ use App\Service\EscalafonService;
 use App\Service\NotificacionAscensoMailer;
 use Doctrine\ORM\EntityManagerInterface;
 use Proxies\__CG__\App\Entity\InformacionPersonal;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,36 +31,37 @@ class EscalafonController extends AbstractController
     }
 
     #[Route('', name: 'admin_escalafon_index', methods: ['GET'])]
-    public function index(Request $request): Response
-    {
-         $categoriaId = $request->query->getInt('categoria', 0) ?: null;
-        $nombre      = trim((string) $request->query->get('nombre', ''));
-        $page        = max(1, $request->query->getInt('page', 1));
-        $perPage     = 20;
+public function index(Request $request, LoggerInterface $logger): Response
+{
+    $categoriaId = $request->query->get('categoria');
+    $categoriaId = ($categoriaId === '' ? null : (is_numeric($categoriaId) ? (int)$categoriaId : null));
+    $nombre   = trim((string) $request->query->get('nombre', '')); // <- puede venir vacío
+    $page    = max(1, $request->query->getInt('page', 1));
+    $perPage = 20;
 
-        // 🔹 Llamamos al servicio y le pasamos también el nombre
-        $data = $this->escalafonService->getEscalafonData(
-            categoriaId: $categoriaId ?: null,
-            page: $page,
-            perPage: $perPage,
-            nombre: $nombre // ← ¡este era el que faltaba!
-        );
+    $data = $this->escalafonService->getEscalafonData(
+        categoriaId: $categoriaId,
+        page: $page,
+        perPage: $perPage,
+        nombre: $nombre
+    );
 
-        return $this->render('admin/escalafon/index.html.twig', [
-            'items'      => $data['items'],
-            'pagination' => [
-                'page'        => $page,
-                'per_page'    => $perPage,
-                'total'       => $data['total'],
-                'total_pages' => $data['total_pages'],
-            ],
-            'filters'    => [
-                'categoria' => $categoriaId ?: null,
-                'nombre'    => $nombre,
-            ],
-            'categorias' => $this->categoriaRepo->findAll(),
-        ]);
-    }
+    return $this->render('admin/escalafon/index.html.twig', [
+        'items'      => $data['items'],
+        'pagination' => [
+            'page'        => $page,
+            'per_page'    => $perPage,
+            'total'       => $data['total'],
+            'total_pages' => $data['total_pages'],
+        ],
+        'filters'    => [
+            'categoria' => $categoriaId,
+            'nombre'    => $nombre,
+        ],
+        'categorias' => $this->categoriaRepo->findAll(),
+    ]);
+}
+
     #[Route('/notificar/{id}/{vacante}', name: 'admin_escalafon_notificar', methods: ['GET'])]
 public function notificar(
     int $id,

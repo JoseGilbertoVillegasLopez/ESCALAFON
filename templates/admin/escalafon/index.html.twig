@@ -132,47 +132,52 @@ tr:nth-child(even) {
         {% else %}
 
         <!-- 🔎 Filtros -->
-        <form method="get" class="mb-4">
-            <div class="row g-3 align-items-end">
-                <!-- 🔤 Filtro por nombre -->
-                <div class="col-md-5">
-                    <label for="nombre" class="form-label fw-semibold">Buscar trabajador</label>
-                    <input 
-                        type="text" 
-                        id="nombre" 
-                        name="nombre" 
-                        value="{{ app.request.get('nombre') }}" 
-                        class="form-control bg-dark text-light border-secondary" 
-                        placeholder="Escribe el nombre o apellido">
-                </div>
+        <!-- 🔎 Filtros -->
+<!-- 🔎 Filtros -->
+<form method="get" action="{{ path('admin_escalafon_index') }}" class="mb-4">
+  <div class="row g-3 align-items-end">
 
-                <!-- 🧱 Filtro por categoría -->
-                <div class="col-md-4">
-                    <label for="categoria" class="form-label fw-semibold">Categoría</label>
-                    <select 
-                        id="categoria" 
-                        name="categoria" 
-                        class="form-select bg-dark text-light border-secondary">
-                        <option value="">Todas las categorías</option>
-                        {% for c in categorias %}
-                            <option value="{{ c.id }}" {{ app.request.get('categoria') == c.id ? 'selected' : '' }}>
-                                {{ c }}
-                            </option>
-                        {% endfor %}
-                    </select>
-                </div>
+    <!-- Nombre -->
+    <div class="col-md-5">
+      <label for="nombre" class="form-label fw-semibold">Buscar trabajador</label>
+      <input
+        type="text"
+        id="nombre"
+        name="nombre"
+        value="{{ app.request.query.get('nombre') ?? '' }}"
+        class="form-control bg-dark text-light border-secondary"
+        placeholder="Escribe el nombre o apellido">
+    </div>
 
-                <!-- 🧹 Botones -->
-                <div class="col-md-3 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary w-50">
-                        <i class="bi bi-search"></i> Buscar
-                    </button>
-                    <a href="{{ path('admin_escalafon_index') }}" class="btn btn-secondary w-50">
-                        <i class="bi bi-x-circle"></i> Limpiar
-                    </a>
-                </div>
-            </div>
-        </form>
+    <!-- Categoría -->
+    <div class="col-md-4">
+      <label for="categoria" class="form-label fw-semibold">Categoría</label>
+      <select id="categoria" name="categoria" class="form-select bg-dark text-light border-secondary">
+        <option value="">Todas las categorías</option>
+        {% for c in categorias %}
+          <option value="{{ c.id }}" {{ (app.request.query.get('categoria')|default('')) == c.id ? 'selected' : '' }}>
+            {{ c }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Botones -->
+    <div class="col-md-3 d-flex gap-2">
+      <button type="submit" class="btn btn-primary w-50">
+        <i class="bi bi-search"></i> Buscar
+      </button>
+      <a href="{{ path('admin_escalafon_index') }}" class="btn btn-secondary w-50">
+        <i class="bi bi-x-circle"></i> Limpiar
+      </a>
+    </div>
+  </div>
+</form>
+
+
+
+
+
 
         <!-- 📋 Tabla de resultados -->
         <div class="table-responsive">
@@ -239,13 +244,15 @@ tr:nth-child(even) {
                 <ul class="pagination">
                     {% for i in 1..pagination.total_pages %}
                         <li class="page-item {{ i == pagination.page ? 'active' : '' }}">
-                            <a class="page-link" href="{{ path('admin_escalafon_index', {
-                                page: i,
-                                categoria: filters.categoria,
-                                nombre: app.request.get('nombre')
-                            }) }}">
-                                {{ i }}
-                            </a>
+                            <a class="page-link"
+   href="{{ path('admin_escalafon_index', {
+     page: i,
+     categoria: app.request.query.get('categoria'),
+     nombre: app.request.query.get('nombre')
+   }) }}">
+  {{ i }}
+</a>
+
                         </li>
                     {% endfor %}
                 </ul>
