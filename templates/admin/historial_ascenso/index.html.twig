@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+{% block title %}Historial de Ascensos{% endblock %}
+
+{% block body %}
+<main class="container-fluid py-4">
+  <div class="card p-4" style="background-color:#1e242b;color:#f1f3f5;border:none;">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="fw-bold">
+        <i class="bi bi-graph-up-arrow text-info"></i> Historial de Ascensos
+      </h1>
+    </div>
+
+    <!-- 🔍 FILTROS -->
+    <form method="get" action="{{ path('app_historial_ascenso_index') }}" class="mb-4">
+      <div class="row g-3 align-items-end">
+
+        <!-- Nombre -->
+        <div class="col-md-5">
+          <label for="nombre" class="form-label fw-semibold">Buscar trabajador</label>
+          <input type="text" id="nombre" name="nombre"
+                 value="{{ filters.nombre ?? '' }}"
+                 class="form-control bg-dark text-light border-secondary"
+                 placeholder="Escribe el nombre o apellido">
+        </div>
+
+        <!-- Categoría -->
+        <div class="col-md-4">
+          <label for="categoria" class="form-label fw-semibold">Categoría</label>
+          <select id="categoria" name="categoria"
+                  class="form-select bg-dark text-light border-secondary">
+            <option value="">Todas las categorías</option>
+            {% for c in categorias %}
+              <option value="{{ c.id }}" {{ (filters.categoria|default('')) == c.id ? 'selected' : '' }}>
+                {{ c }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Botones -->
+        <div class="col-md-3 d-flex gap-2">
+          <button type="submit" class="btn btn-primary w-50">
+            <i class="bi bi-search"></i> Buscar
+          </button>
+          <a href="{{ path('app_historial_ascenso_index') }}" class="btn btn-secondary w-50">
+            <i class="bi bi-x-circle"></i> Limpiar
+          </a>
+        </div>
+      </div>
+    </form>
+
+    {% if historial_ascensos is empty %}
+      <div class="alert alert-secondary text-center">
+        <i class="bi bi-info-circle"></i> No hay registros de ascensos.
+      </div>
+    {% else %}
+      <div class="table-responsive">
+        <table class="table table-dark table-striped align-middle">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Fecha</th>
+              <th>Puesto Anterior</th>
+              <th>Puesto Actual</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in historial_ascensos %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ a.informacionPersonal ?? 'Desconocido' }}</td>
+                <td>{{ a.informacionPersonal.informacionLaboral.categoria ?? 'Sin categoría' }}</td>
+                <td>{{ a.fecha ? a.fecha|date('d/m/Y') : '—' }}</td>
+                <td>{{ a.puestoAnterior }}</td>
+                <td>{{ a.puestoAscenso }}</td>
+                <td class="text-center">
+                  <a href="{{ path('app_historial_ascenso_show', { id: a.id }) }}"
+                     style="display:inline-flex;align-items:center;justify-content:center;
+                            gap:6px;background-color:#0dcaf0;color:#111;border:1px solid #0dcaf0;
+                            padding:8px 14px;border-radius:8px;text-decoration:none;
+                            font-size:0.9rem;font-weight:600;min-width:130px;height:40px;
+                            transition:all 0.2s;"
+                     onmouseover="this.style.backgroundColor='#31d2f2';this.style.boxShadow='0 0 6px rgba(13,202,240,0.6)'"
+                     onmouseout="this.style.backgroundColor='#0dcaf0';this.style.boxShadow='none'">
+                    <i class="bi bi-eye"></i> Ver historial
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </div>
+</main>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+{% block title %}Historial de {{ trabajador ?? 'Trabajador' }}{% endblock %}
+
+{% block body %}
+<main class="container-fluid py-4">
+  <div class="card p-4" style="background-color:#1e242b;color:#f1f3f5;border:none;">
+    
+    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="mb-3 d-flex gap-2">
+        <a href="{{ path('app_historial_ascenso_index') }}" class="btn-volver">
+            <i class="bi bi-arrow-left-circle"></i> Volver
+        </a>
+    </div>
+      <h2 class="fw-bold m-0 text-center flex-grow-1">
+        <i class="bi bi-person-lines-fill text-info"></i>
+        Historial de {{ trabajador ?? '—' }}
+      </h2>
+    </div>
+
+    {% if historial_completo is empty %}
+      <div class="alert alert-secondary text-center">
+        <i class="bi bi-info-circle"></i> Este trabajador no tiene registros de ascenso.
+      </div>
+    {% else %}
+      <table class="table table-dark table-striped align-middle mt-3">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Puesto Anterior</th>
+            <th>Puesto Ascendido</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in historial_completo %}
+            <tr>
+              <td>{{ a.fecha ? a.fecha|date('d/m/Y') : '—' }}</td>
+              <td>{{ a.puestoAnterior }}</td>
+              <td>{{ a.puestoAscenso }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  </div>
+</main>
+{% endblock %}
