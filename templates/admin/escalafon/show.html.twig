@@ -2,6 +2,47 @@
 {% block title %}Detalle de Escalafón{% endblock %}
 
 {% block body %}
+
+<style>
+  /* 🎨 Efecto 3D sutil para los contenedores de vacantes */
+  .vacante-card {
+    background-color: #1f242b; /* fondo base */
+    border-radius: 12px;
+    padding: 1.2rem;
+    border: 1px solid #2b323a; /* borde oscuro principal */
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04), /* brillo superior suave */
+      0 2px 4px rgba(0, 0, 0, 0.35);           /* sombra inferior leve */
+    transition: all 0.25s ease;
+  }
+
+  /* 🌗 Variante para vacantes no elegibles (más apagado visualmente) */
+  .vacante-card.inactiva {
+    background-color: #1b2026;
+    border: 1px solid #292f36;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.03),
+      0 2px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  /* 🏷️ Etiquetas */
+  .badge {
+    font-size: 0.85rem;
+  }
+
+  /* 💬 Títulos y subtítulos */
+  .card-title {
+    color: #f8f9fa;
+    font-weight: 600;
+  }
+
+  .data-label {
+    color: #adb5bd;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+</style>
+
 <main class="container-fluid py-4">
   <div class="card p-4">
 
@@ -19,24 +60,23 @@
       </h1>
     </div>
 
-    {# 🧩 Contenedor de puesto, categoría y antigüedad con el mismo estilo global #}
+    {# 🧩 Información general #}
     <div class="d-flex justify-content-center mb-5">
-  <section class="info-grid" style="max-width: 1200px; text-align: center;">
-    <div>
-      <label class="data-label">Puesto</label>
-      <div class="info-field">{{ detalle.puesto }}</div>
+      <section class="info-grid" style="max-width: 1200px; text-align: center;">
+        <div>
+          <label class="data-label">Puesto</label>
+          <div class="info-field">{{ detalle.puesto }}</div>
+        </div>
+        <div>
+          <label class="data-label">Categoría</label>
+          <div class="info-field">{{ detalle.categoria }}</div>
+        </div>
+        <div>
+          <label class="data-label">Antigüedad</label>
+          <div class="info-field">{{ detalle.antiguedad }}</div>
+        </div>
+      </section>
     </div>
-    <div>
-      <label class="data-label">Categoría</label>
-      <div class="info-field">{{ detalle.categoria }}</div>
-    </div>
-    <div>
-      <label class="data-label">Antigüedad</label>
-      <div class="info-field">{{ detalle.antiguedad }}</div>
-    </div>
-  </section>
-</div>
-
 
     {# ==========================
        🟢 Vacantes
@@ -50,7 +90,7 @@
         {% else %}
           <div class="d-flex flex-column gap-3">
             {% for v in detalle.vacantes_disponibles %}
-              <div class="card bg-dark border-0 shadow-sm flex-fill h-100">
+              <div class="vacante-card flex-fill h-100">
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center">
                     <h5 class="card-title m-0">{{ v.nombre }}</h5>
@@ -58,6 +98,7 @@
                       <span class="badge bg-success">Top antigüedad</span>
                     {% endif %}
                   </div>
+
                   <div class="mt-3">
                     <span class="data-label">Requisitos</span>
                     <ul class="list-unstyled m-0">
@@ -72,49 +113,18 @@
                       {% endfor %}
                     </ul>
                   </div>
-                  <div class="mt-3">
-  <div class="small text-secondary mb-2">Requisitos</div>
-  <ul class="list-unstyled m-0">
-    {% for r in v.requisitos %}
-      <li class="mb-1">
-        {% if r.tiene %}
-          <span class="badge bg-success"><i class="bi bi-check2"></i> {{ r.nombre }}</span>
-        {% else %}
-          <span class="badge bg-danger"><i class="bi bi-x"></i> {{ r.nombre }}</span>
-        {% endif %}
-      </li>
-    {% endfor %}
-  </ul>
-</div>
 
-<div class="mt-3">
-  <div class="small text-secondary mb-2">Requisitos</div>
-  <ul class="list-unstyled m-0">
-    {% for r in v.requisitos %}
-      <li class="mb-1">
-        {% if r.tiene %}
-          <span class="badge bg-success"><i class="bi bi-check2"></i> {{ r.nombre }}</span>
-        {% else %}
-          <span class="badge bg-danger"><i class="bi bi-x"></i> {{ r.nombre }}</span>
-        {% endif %}
-      </li>
-    {% endfor %}
-  </ul>
-</div>
-
-{# 🟢 Botón de ascenso #}
-<div class="text-end mt-3">
-  <a href="{{ path('admin_escalafon_ascender', {
-        vacanteId: v.id,
-        trabajadorId: detalle.trabajador_id
-    }) }}"
-     class="btn-guardar"
-     onclick="return confirm('¿Confirmar ascenso de {{ detalle.trabajador }} a {{ v.nombre }}?')">
-    <i class="bi bi-arrow-up-circle"></i> Efectuar ascenso
-  </a>
-</div>
-
-
+                  {# 🟢 Botón de ascenso #}
+                  <div class="text-end mt-3">
+                    <a href="{{ path('admin_escalafon_ascender', {
+                          vacanteId: v.id,
+                          trabajadorId: detalle.trabajador_id
+                      }) }}"
+                       class="btn-guardar"
+                       onclick="return confirm('¿Confirmar ascenso de {{ detalle.trabajador }} a {{ v.nombre }}?')">
+                      <i class="bi bi-arrow-up-circle"></i> Efectuar ascenso
+                    </a>
+                  </div>
 
                 </div>
               </div>
@@ -131,7 +141,7 @@
         {% else %}
           <div class="d-flex flex-column gap-3">
             {% for v in detalle.vacantes_no_elegibles %}
-              <div class="card bg-dark border-0 shadow-sm flex-fill h-100">
+              <div class="vacante-card inactiva flex-fill h-100">
                 <div class="card-body">
                   <h5 class="card-title m-0">{{ v.nombre }}</h5>
                   <div class="mt-3">

@@ -1,10 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Ficha de {{ informacion_personal.nombre }}{% endblock %}
-{% block stylesheets %}
-  {# Reutilizamos los estilos de new para mantener el mismo diseño #}
-  <link rel="stylesheet" href="{{ asset('css/informacionPersonal/new.css') }}">
-{% endblock %}
 
 {% block body %}
 <main class="container-fluid bg-dark text-light min-vh-100 py-4">
