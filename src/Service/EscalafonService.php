@@ -5,6 +5,8 @@ namespace App\Service;
 use App\Repository\InformacionPersonalRepository;
 use App\Repository\VacantesRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\InformacionPersonal;
+
 
 /**
  * Servicio principal del módulo Escalafón.
@@ -45,7 +47,7 @@ class EscalafonService
         ->leftJoin('il.puesto', 'pu')
         ->leftJoin('il.categoria', 'c');
 
-    // 🔍 Filtro por nombre (independiente)
+    // 🔍 Filtro por nombre
     if (!empty($nombre)) {
         $qb->andWhere('
             p.nombre LIKE :q
@@ -55,30 +57,29 @@ class EscalafonService
         ->setParameter('q', '%' . $nombre . '%');
     }
 
-    // 🧱 Filtro por categoría (independiente)
+    // 🧱 Filtro por categoría
     if (!empty($categoriaId)) {
         $qb->andWhere('c.id = :categoria')
            ->setParameter('categoria', $categoriaId);
     }
 
-    // 👉 (opcional) orden por apellidos+nombre para consistencia
+    // Orden base
     $qb->addOrderBy('p.apellidoPaterno', 'ASC')
        ->addOrderBy('p.apellidoMaterno', 'ASC')
        ->addOrderBy('p.nombre', 'ASC');
 
-    // 🔹 Conteo total (antes de limitar)
+    // Total
     $countQb = clone $qb;
     $total = (int) $countQb->resetDQLPart('select')->select('COUNT(p.id)')
-        ->setFirstResult(null)->setMaxResults(null)
         ->getQuery()->getSingleScalarResult();
 
-    // 🔹 Paginación
+    // Paginación
     $qb->setFirstResult(($page - 1) * $perPage)
        ->setMaxResults($perPage);
 
     $trabajadores = $qb->getQuery()->getResult();
 
-    // 🔹 Procesamiento
+    // 🔹 Procesar cada trabajador
     $items = [];
     foreach ($trabajadores as $t) {
         $laboral = $t->getInformacionLaboral();
@@ -86,7 +87,7 @@ class EscalafonService
         $categoria = $laboral?->getCategoria();
         $fechaIngreso = $laboral?->getFechaIncorporacion();
 
-        // 🧮 Antigüedad
+        // Antigüedad
         $antiguedadTexto = 'Sin registro';
         $puntosAntiguedad = 0;
         if ($fechaIngreso instanceof \DateTimeInterface) {
@@ -101,14 +102,18 @@ class EscalafonService
             $antiguedadTexto = count($partes) ? implode(', ', $partes) : 'Menos de un día';
         }
 
-        // 🎓 Puntos por capacitación
+        // 🎓 Capacitaciones
+        $cursosHechosIds = [];
         $puntosCapacitacion = 0;
         foreach ($t->getCapacitacion() as $cap) {
             $curso = $cap->getCurso();
-            if ($curso) $puntosCapacitacion += $curso->getValor() ?? 0;
+            if ($curso) {
+                $cursosHechosIds[] = $curso->getId();
+                $puntosCapacitacion += $curso->getValor() ?? 0;
+            }
         }
 
-        // ⚠️ Puntos de sanciones
+        // ⚠️ Sanciones
         $puntosSancion = 0;
         foreach ($t->getHistorialSanciones() as $sancion) {
             $puntosSancion += $sancion->getPuntosSancion() ?? 0;
@@ -117,15 +122,28 @@ class EscalafonService
         // 🧮 Puntaje total
         $puntajeTotal = $puntosAntiguedad + $puntosCapacitacion - $puntosSancion;
 
-        // 🧩 Vacantes compatibles
-        $vacantesCompatibles = [];
-        $vacantes = $this->vacanteRepo->findBy(['categoria' => $categoria]);
-        foreach ($vacantes as $v) {
-            if ($v->isActivo() && $v->getVacantesLibres() > 0) {
-                $vacantesCompatibles[] = $v->getNombre();
+        // ✅ Vacantes donde cumple TODOS los requisitos
+        $vacantesCumple = [];
+        if ($categoria) {
+            $vacantes = $this->vacanteRepo->findBy(['categoria' => $categoria, 'activo' => true]);
+
+            foreach ($vacantes as $v) {
+                $cumpleTodo = true;
+                foreach ($v->getRequisitos() as $req) {
+                    $curso = $req->getCurso();
+                    if (!$curso || !in_array($curso->getId(), $cursosHechosIds, true)) {
+                        $cumpleTodo = false;
+                        break;
+                    }
+                }
+
+                if ($cumpleTodo && $v->getVacantesLibres() > 0) {
+                    $vacantesCumple[] = $v->getNombre();
+                }
             }
         }
 
+        // 🧩 Resultado final por trabajador
         $items[] = [
             'id' => $t->getId(),
             'nombre' => (string) $t,
@@ -136,7 +154,7 @@ class EscalafonService
             'puntos_capacitacion' => $puntosCapacitacion,
             'puntos_sancion' => $puntosSancion,
             'puntaje_total' => $puntajeTotal,
-            'vacantes' => $vacantesCompatibles,
+            'vacantes' => $vacantesCumple, // 👈 solo las que cumple todos los cursos
         ];
     }
 
@@ -146,6 +164,7 @@ class EscalafonService
         'total_pages' => (int) ceil($total / $perPage),
     ];
 }
+
 
 
 
@@ -195,4 +214,151 @@ class EscalafonService
 
         return $vacantesElegibles;
     }
+
+ public function getDetalleEscalafon(InformacionPersonal $t): array
+    {
+        $laboral      = $t->getInformacionLaboral();
+        $puesto       = $laboral?->getPuesto();
+        $categoria    = $laboral?->getCategoria();
+        $fechaIngreso = $laboral?->getFechaIncorporacion();
+
+        // 🧮 Antigüedad (años/meses)
+        $antiguedad = 'Sin registro';
+        if ($fechaIngreso instanceof \DateTimeInterface) {
+            $diff       = (new \DateTime())->diff($fechaIngreso);
+            $antiguedad = sprintf('%d años, %d meses', $diff->y, $diff->m);
+        }
+
+        // 🎓 Capacitaciones completadas por el trabajador (ids de curso)
+        $cursosHechosIds = [];
+        $capacitaciones  = [];
+        foreach ($t->getCapacitacion() as $cap) {
+            $curso = $cap->getCurso();
+            if ($curso) {
+                $cursosHechosIds[] = $curso->getId();
+                $capacitaciones[]   = [
+                    'nombre' => $curso->getNombre(),
+                    'valor'  => $curso->getValor(), // por si quieres mostrarlo
+                ];
+            }
+        }
+
+        // ⚠️ Sanciones
+        $sanciones = [];
+        foreach ($t->getHistorialSanciones() as $s) {
+            $sanciones[] = [
+                'fecha'  => $s->getFecha()?->format('d/m/Y'),
+                'motivo' => $s->getMotivo(),
+                'puntos' => $s->getPuntosSancion(),
+            ];
+        }
+
+        // ⬆️ Historial de ascensos
+        $ascensos = [];
+        foreach ($t->getHistorialAscensos() as $a) {
+            $ascensos[] = [
+                'fecha'           => $a->getFecha()?->format('d/m/Y'),
+                'puesto_anterior' => $a->getPuestoAnterior(),
+                'puesto_ascenso'  => $a->getPuestoAscenso(),
+            ];
+        }
+
+        // ✅ Vacantes según requisitos (cursos)
+        $vacantesDisponibles  = []; // cumple todos los requisitos
+        $vacantesNoElegibles  = []; // le faltan cursos
+        $vacantes             = $categoria ? $this->vacanteRepo->findBy(['categoria' => $categoria]) : [];
+
+        foreach ($vacantes as $v) {
+            if (!$v->isActivo()) {
+                continue;
+            }
+
+            // Requisitos de la vacante (asumo $v->getRequisitos() y cada requisito tiene ->getCurso())
+            $detalleReq = [];
+            $faltantes  = [];
+            $cumpleTodo = true;
+
+            foreach ($v->getRequisitos() as $req) {
+                $curso = $req->getCurso();
+                if (!$curso) {
+                    // por si hubiera requisitos mal cargados
+                    $detalleReq[] = ['nombre' => '(requisito sin curso)', 'tiene' => false];
+                    $cumpleTodo   = false;
+                    continue;
+                }
+
+                $tiene = in_array($curso->getId(), $cursosHechosIds, true);
+                $detalleReq[] = ['nombre' => $curso->getNombre(), 'tiene' => $tiene];
+
+                if (!$tiene) {
+                    $faltantes[] = $curso->getNombre();
+                    $cumpleTodo  = false;
+                }
+            }
+
+            $vacInfoBase = [
+                'id'        => $v->getId(),
+                'nombre'    => $v->getNombre(),
+                'requisitos'=> $detalleReq,
+            ];
+
+            if ($cumpleTodo) {
+                $vacantesDisponibles[] = $vacInfoBase + [
+                    'faltantes'          => [],
+                    'es_top_antiguedad'  => $this->esTopAntiguedadEnCategoria($categoria?->getId(), $fechaIngreso),
+                ];
+            } else {
+                $vacantesNoElegibles[] = $vacInfoBase + [
+                    'faltantes' => $faltantes,
+                ];
+            }
+        }
+
+        // Orden: primero las disponibles, luego las no elegibles (por nombre)
+        usort($vacantesDisponibles, fn($a, $b) => strcmp($a['nombre'], $b['nombre']));
+        usort($vacantesNoElegibles, fn($a, $b) => strcmp($a['nombre'], $b['nombre']));
+
+        return [
+            // cabecera
+            'trabajador'    => (string) $t,
+            'trabajador_id'     => $t->getId(),
+            'puesto'        => $puesto?->getNombre() ?? 'Sin puesto',
+            'categoria'     => $categoria?->getNombre() ?? 'Sin categoría',
+            'antiguedad'    => $antiguedad,
+
+            // listas
+            'capacitaciones'       => $capacitaciones,
+            'sanciones'            => $sanciones,
+            'ascensos'             => $ascensos,
+            'vacantes_disponibles' => $vacantesDisponibles,
+            'vacantes_no_elegibles'=> $vacantesNoElegibles,
+        ];
+    }
+
+    /**
+     * Verdadero si el trabajador tiene la fecha de incorporación más antigua
+     * dentro de la misma categoría.
+     */
+    private function esTopAntiguedadEnCategoria(?int $categoriaId, ?\DateTimeInterface $miFecha): bool
+{
+    if (!$categoriaId || !$miFecha) {
+        return false;
+    }
+
+    // Cuenta cuántos tienen incorporación ANTES que la suya (más antiguos)
+    $qb = $this->em->createQueryBuilder();
+    $qb->select('COUNT(il2.id)')
+        ->from('App\Entity\InformacionLaboral', 'il2')
+        ->where('il2.categoria = :cat')
+        ->andWhere('il2.fechaIncorporacion < :mi')
+        ->setParameter('cat', $categoriaId)
+        ->setParameter('mi', $miFecha);
+
+    $anteriores = (int) $qb->getQuery()->getSingleScalarResult();
+
+    return $anteriores === 0; // Nadie más antiguo → es top
+}
+
+
+
 }

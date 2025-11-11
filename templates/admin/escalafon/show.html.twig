@@ -1,0 +1,218 @@
+{% extends 'base.html.twig' %}
+{% block title %}Detalle de Escalafón{% endblock %}
+
+{% block body %}
+<main class="container-fluid py-4">
+  <div class="card p-4">
+
+    {# 🔙 Botón Volver arriba a la izquierda #}
+    <div class="d-flex justify-content-start mb-3">
+      <a href="{{ path('admin_escalafon_index') }}" class="btn-volver">
+        <i class="bi bi-arrow-left"></i> Volver
+      </a>
+    </div>
+
+    {# 👤 Nombre centrado #}
+    <div class="text-center mb-4">
+      <h1 class="fw-bold">
+        <i class="bi bi-person-vcard text-info"></i> {{ detalle.trabajador }}
+      </h1>
+    </div>
+
+    {# 🧩 Contenedor de puesto, categoría y antigüedad con el mismo estilo global #}
+    <div class="d-flex justify-content-center mb-5">
+  <section class="info-grid" style="max-width: 1200px; text-align: center;">
+    <div>
+      <label class="data-label">Puesto</label>
+      <div class="info-field">{{ detalle.puesto }}</div>
+    </div>
+    <div>
+      <label class="data-label">Categoría</label>
+      <div class="info-field">{{ detalle.categoria }}</div>
+    </div>
+    <div>
+      <label class="data-label">Antigüedad</label>
+      <div class="info-field">{{ detalle.antiguedad }}</div>
+    </div>
+  </section>
+</div>
+
+
+    {# ==========================
+       🟢 Vacantes
+       ========================== #}
+    <div class="row g-4">
+      <!-- 🟢 Vacantes disponibles -->
+      <div class="col-lg-6 col-md-12">
+        <h4><i class="bi bi-check-circle-fill text-success"></i> Vacantes disponibles</h4>
+        {% if detalle.vacantes_disponibles is empty %}
+          <div class="alert alert-secondary">No hay vacantes disponibles por requisitos.</div>
+        {% else %}
+          <div class="d-flex flex-column gap-3">
+            {% for v in detalle.vacantes_disponibles %}
+              <div class="card bg-dark border-0 shadow-sm flex-fill h-100">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title m-0">{{ v.nombre }}</h5>
+                    {% if v.es_top_antiguedad %}
+                      <span class="badge bg-success">Top antigüedad</span>
+                    {% endif %}
+                  </div>
+                  <div class="mt-3">
+                    <span class="data-label">Requisitos</span>
+                    <ul class="list-unstyled m-0">
+                      {% for r in v.requisitos %}
+                        <li class="mb-1">
+                          {% if r.tiene %}
+                            <span class="badge bg-success"><i class="bi bi-check2"></i> {{ r.nombre }}</span>
+                          {% else %}
+                            <span class="badge bg-danger"><i class="bi bi-x"></i> {{ r.nombre }}</span>
+                          {% endif %}
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                  <div class="mt-3">
+  <div class="small text-secondary mb-2">Requisitos</div>
+  <ul class="list-unstyled m-0">
+    {% for r in v.requisitos %}
+      <li class="mb-1">
+        {% if r.tiene %}
+          <span class="badge bg-success"><i class="bi bi-check2"></i> {{ r.nombre }}</span>
+        {% else %}
+          <span class="badge bg-danger"><i class="bi bi-x"></i> {{ r.nombre }}</span>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="mt-3">
+  <div class="small text-secondary mb-2">Requisitos</div>
+  <ul class="list-unstyled m-0">
+    {% for r in v.requisitos %}
+      <li class="mb-1">
+        {% if r.tiene %}
+          <span class="badge bg-success"><i class="bi bi-check2"></i> {{ r.nombre }}</span>
+        {% else %}
+          <span class="badge bg-danger"><i class="bi bi-x"></i> {{ r.nombre }}</span>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+{# 🟢 Botón de ascenso #}
+<div class="text-end mt-3">
+  <a href="{{ path('admin_escalafon_ascender', {
+        vacanteId: v.id,
+        trabajadorId: detalle.trabajador_id
+    }) }}"
+     class="btn-guardar"
+     onclick="return confirm('¿Confirmar ascenso de {{ detalle.trabajador }} a {{ v.nombre }}?')">
+    <i class="bi bi-arrow-up-circle"></i> Efectuar ascenso
+  </a>
+</div>
+
+
+
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- 🔴 Vacantes no elegibles -->
+      <div class="col-lg-6 col-md-12">
+        <h4><i class="bi bi-x-circle-fill text-danger"></i> Vacantes de su categoría (no elegible por ahora)</h4>
+        {% if detalle.vacantes_no_elegibles is empty %}
+          <div class="alert alert-secondary">No hay otras vacantes en su categoría.</div>
+        {% else %}
+          <div class="d-flex flex-column gap-3">
+            {% for v in detalle.vacantes_no_elegibles %}
+              <div class="card bg-dark border-0 shadow-sm flex-fill h-100">
+                <div class="card-body">
+                  <h5 class="card-title m-0">{{ v.nombre }}</h5>
+                  <div class="mt-3">
+                    <span class="data-label">Requisitos</span>
+                    <ul class="list-unstyled m-0">
+                      {% for r in v.requisitos %}
+                        <li class="mb-1">
+                          {% if r.tiene %}
+                            <span class="badge bg-success"><i class="bi bi-check2"></i> {{ r.nombre }}</span>
+                          {% else %}
+                            <span class="badge bg-danger"><i class="bi bi-x"></i> {{ r.nombre }}</span>
+                          {% endif %}
+                        </li>
+                      {% endfor %}
+                    </ul>
+
+                    {% if v.faltantes is not empty %}
+                      <div class="mt-2 small">
+                        <span class="text-secondary">Faltan:</span>
+                        {% for f in v.faltantes %}
+                          <span class="badge border border-danger text-danger bg-transparent">{{ f }}</span>
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <hr class="my-4" />
+
+    {# ==========================
+       📚 Capacitaciones y sanciones
+       ========================== #}
+    <div class="row g-3">
+      <div class="col-md-6">
+        <h4><i class="bi bi-mortarboard"></i> Capacitaciones</h4>
+        <ul class="list-group list-group-flush">
+          {% for c in detalle.capacitaciones %}
+            <li class="list-group-item bg-dark text-light d-flex justify-content-between">
+              <span>{{ c.nombre }}</span>
+              <span class="text-secondary">val: {{ c.valor }}</span>
+            </li>
+          {% else %}
+            <li class="list-group-item bg-dark text-secondary">Sin registros</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="col-md-6">
+        <h4><i class="bi bi-exclamation-triangle"></i> Sanciones</h4>
+        <ul class="list-group list-group-flush">
+          {% for s in detalle.sanciones %}
+            <li class="list-group-item bg-dark text-light d-flex justify-content-between">
+              <span>{{ s.fecha }} — {{ s.motivo }}</span>
+              <span class="badge bg-danger">{{ s.puntos }}</span>
+            </li>
+          {% else %}
+            <li class="list-group-item bg-dark text-secondary">Sin registros</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <h4><i class="bi bi-graph-up-arrow"></i> Historial de ascensos</h4>
+      <ul class="list-group list-group-flush">
+        {% for a in detalle.ascensos %}
+          <li class="list-group-item bg-dark text-light">
+            {{ a.fecha }} — {{ a.puesto_anterior }} → <strong>{{ a.puesto_ascenso }}</strong>
+          </li>
+        {% else %}
+          <li class="list-group-item bg-dark text-secondary">Sin registros</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+  </div>
+</main>
+{% endblock %}

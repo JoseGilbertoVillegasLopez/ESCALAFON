@@ -116,6 +116,7 @@ tr:nth-child(even) {
         text-align: left;
         color: #adb5bd;
     }
+
 }
 </style>
 
@@ -219,19 +220,65 @@ tr:nth-child(even) {
                                         {% endfor %}
                                     </ul>
                                 {% else %}
-                                    <span class="text-muted">—</span>
+                                    <span class="text-warning">
+                                        <i class="bi bi-exclamation-triangle"></i>
+                                        Sin posibilidad de ascenso
+                                    </span>
                                 {% endif %}
                             </td>
-                            <td>
+
+                            <td class="text-center">
                                 {% if t.vacantes is not empty %}
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                    {# 🔵 Botón Notificar #}
                                     <a href="{{ path('admin_escalafon_notificar', { id: t.id, vacante: t.vacantes|first }) }}"
-                                       class="btn btn-notificar btn-sm">
+                                        style="display:inline-flex;align-items:center;justify-content:center;
+                                                gap:6px;background-color:#007bff;color:#fff;border:1px solid #007bff;
+                                                padding:8px 14px;border-radius:8px;text-decoration:none;
+                                                font-size:0.9rem;font-weight:600;min-width:120px;height:40px;
+                                                transition:all 0.2s;"
+                                        onmouseover="this.style.backgroundColor='#339aff';this.style.boxShadow='0 0 6px rgba(51,154,255,0.6)'"
+                                        onmouseout="this.style.backgroundColor='#007bff';this.style.boxShadow='none'">
                                         <i class="bi bi-envelope"></i> Notificar
                                     </a>
+
+                                    {# 👁️ Botón Ver #}
+                                    <a href="{{ path('admin_escalafon_show', { id: t.id }) }}"
+                                        style="display:inline-flex;align-items:center;justify-content:center;
+                                                gap:6px;background-color:#0dcaf0;color:#111;border:1px solid #0dcaf0;
+                                                padding:8px 14px;border-radius:8px;text-decoration:none;
+                                                font-size:0.9rem;font-weight:600;min-width:120px;height:40px;
+                                                transition:all 0.2s;"
+                                        onmouseover="this.style.backgroundColor='#31d2f2';this.style.boxShadow='0 0 6px rgba(13,202,240,0.6)'"
+                                        onmouseout="this.style.backgroundColor='#0dcaf0';this.style.boxShadow='none'">
+                                        <i class="bi bi-eye"></i> Ver
+                                    </a>
+
+                                    </div>
+
                                 {% else %}
-                                    <span class="text-muted">No aplica</span>
+                                    <div class="d-flex justify-content-center">
+
+                                    {# 🟡 Botón Ver detalles (sin posibilidad de ascenso) #}
+                                    <a href="{{ path('admin_escalafon_show', { id: t.id }) }}"
+                                        style="display:inline-flex;align-items:center;justify-content:center;
+                                                gap:6px;background-color:transparent;color:#ffc107;
+                                                border:1px solid #ffc107;padding:8px 14px;border-radius:8px;
+                                                text-decoration:none;font-size:0.9rem;font-weight:600;
+                                                min-width:140px;height:40px;transition:all 0.2s;"
+                                        onmouseover="this.style.backgroundColor='#ffc107';this.style.color='#1b1f24';
+                                                    this.style.boxShadow='0 0 6px rgba(255,193,7,0.6)'"
+                                        onmouseout="this.style.backgroundColor='transparent';this.style.color='#ffc107';
+                                                    this.style.boxShadow='none'">
+                                        <i class="bi bi-eye"></i> Ver detalles
+                                    </a>
+
+                                    </div>
                                 {% endif %}
                             </td>
+
+
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -245,13 +292,13 @@ tr:nth-child(even) {
                     {% for i in 1..pagination.total_pages %}
                         <li class="page-item {{ i == pagination.page ? 'active' : '' }}">
                             <a class="page-link"
-   href="{{ path('admin_escalafon_index', {
-     page: i,
-     categoria: app.request.query.get('categoria'),
-     nombre: app.request.query.get('nombre')
-   }) }}">
-  {{ i }}
-</a>
+                            href="{{ path('admin_escalafon_index', {
+                                page: i,
+                                categoria: app.request.query.get('categoria'),
+                                nombre: app.request.query.get('nombre')
+                            }) }}">
+                            {{ i }}
+                            </a>
 
                         </li>
                     {% endfor %}

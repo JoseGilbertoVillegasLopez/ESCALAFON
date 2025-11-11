@@ -56,6 +56,7 @@ class VacantesType extends AbstractType
             ->add('activo', CheckboxType::class, [
                 'required' => false,
                 'label' => 'Vacante activa',
+                'attr' => ['hidden' => 'true'],
             ])
         ;
     }
