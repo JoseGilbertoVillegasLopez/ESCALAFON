@@ -53,18 +53,27 @@ class VacantesType extends AbstractType
                 'by_reference' => false,
                 'label' => false,
             ])
-            ->add('activo', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Vacante activa',
-                'attr' => ['hidden' => 'true'],
-            ])
+            
+            
         ;
+
+        if ($options['is_edit']) {
+        $builder
+        ->add('requisitos', CollectionType::class, [
+                'entry_type' => RequisitosVacantesType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'label' => false,
+        ]);
+    }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Vacantes::class,
-        ]);
+        'data_class' => Vacantes::class,
+        'is_edit' => false, // valor por defecto
+    ]);
     }
 }

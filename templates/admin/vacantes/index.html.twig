@@ -3,6 +3,44 @@
 {% block title %}Vacantes{% endblock %}
 
 {% block body %}
+<style>
+/* 🎯 Corrige la alineación vertical de los filtros */
+.filter-box .form-label {
+  color: #bfc6ce;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+.filter-input {
+  width: 100%;
+  background-color: #1f252d !important;
+  color: #f1f3f5 !important;
+  border: 1px solid #2d333b !important;
+  border-radius: 6px;
+  padding: 0.55rem 0.75rem !important;
+  font-size: 0.95rem;
+  line-height: 1.5rem; /* iguala el alto de los selects */
+}
+
+.filter-input::placeholder {
+  color: #889099 !important;
+}
+
+.filter-input:focus {
+  border-color: #0dcaf0 !important;
+  box-shadow: 0 0 0 0.15rem rgba(13, 202, 240, 0.25);
+}
+
+/* Alinea todos los elementos del formulario de filtros */
+.filter-box .col-md-4,
+.filter-box .col-md-3,
+.filter-box .col-md-2 {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+</style>
 <main class="container-fluid py-5" style="min-height: 100vh;">
   <div class="card p-4 shadow-sm mx-auto">
     

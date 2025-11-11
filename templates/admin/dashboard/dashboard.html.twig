@@ -1,35 +1,227 @@
 {% extends 'base.html.twig' %}
 {% block title %}Dashboard Admin{% endblock %}
-{% block stylesheets %}
-    <link rel="stylesheet" href="{{asset('css/buttons/enlaces.css')}}">
-{% endblock %}
-{% block body %}
-    <h1>Dashboard Admin</h1>
 
-    <div class="buttons-container">
-        <button>
-            <a href="{{ path('app_vacantes_index') }}">Vacantes</a>
-        </button>
-        <button>
-            <a href="{{ path('app_informacion_personal_index') }}">Personal</a>
-        </button>
-        <button>
-            <a href="{{ path('app_categoria_index') }}">Categoria</a>
-        </button>
-        <button>
-            <a href="{{ path('app_puesto_index') }}">Puestos</a>
-        </button>
-        <button>
-            <a href="{{ path('app_cursos_index') }}">Cursos</a>
-        </button>
-        <button>
-            <a href="{{ path('app_historial_sanciones_index') }}">Historial salciones</a>
-        </button>
-        <button>
-            <a href="{{ path('admin_escalafon_index') }}">Escalafon</a>
-        </button>
-        <button>
-            <a href="{{ path('app_historial_ascenso_index') }}">Historial Ascensos</a>
-        </button>
-    </div>
-{% endblock %} 
+{% block body %}
+<style>
+  /* 🌌 Estructura general */
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #1e242b !important;
+    color: #f1f3f5;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden; /* evita scroll global */
+  }
+
+  /* 🧭 Sidebar */
+  .sidebar {
+    width: 250px;
+    background: linear-gradient(180deg, #1a1f26, #14181d);
+    border-right: 1px solid #2b323a;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* ocupa todo el alto */
+  }
+
+  .sidebar a {
+    color: #b8c2cc;
+    text-decoration: none;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.4rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .sidebar a:hover,
+  .sidebar a.active {
+    background-color: #29313a;
+    color: #fff;
+  }
+
+  /* 📋 Panel de contenido */
+  .content {
+    flex-grow: 1;
+    height: 100vh; /* ocupa toda la pantalla */
+    overflow-y: auto;
+    padding: 1.5rem;
+    background-color: #1e242b; /* mismo fondo que body */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ⏳ Spinner */
+  .spinner {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .spinner-border {
+    width: 3rem;
+    height: 3rem;
+    border: 0.25em solid rgba(255, 255, 255, 0.1);
+    border-top: 0.25em solid #0d6efd;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* 🌫️ Animación de entrada/salida */
+  .fade-enter {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .fade-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+  }
+  .fade-exit {
+    opacity: 1;
+  }
+  .fade-exit-active {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.25s ease;
+  }
+
+  /* Scrollbar personalizado */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #3a414a;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #4f5963;
+  }
+
+  /* Layout general */
+  body {
+    display: flex;
+    flex-direction: row;
+  }
+</style>
+
+
+<div class="sidebar">
+  <h2>Panel Admin</h2>
+  <a href="#" data-url="{{ path('app_vacantes_index') }}">Vacantes</a>
+  <a href="#" data-url="{{ path('app_informacion_personal_index') }}">Personal</a>
+  <a href="#" data-url="{{ path('app_categoria_index') }}">Categorías</a>
+  <a href="#" data-url="{{ path('app_puesto_index') }}">Puestos</a>
+  <a href="#" data-url="{{ path('app_cursos_index') }}">Cursos</a>
+  <a href="#" data-url="{{ path('app_historial_sanciones_index') }}">Sanciones</a>
+  <a href="#" data-url="{{ path('admin_escalafon_index') }}">Escalafón</a>
+  <a href="#" data-url="{{ path('app_historial_ascenso_index') }}">Ascensos</a>
+</div>
+
+<div class="content">
+  <div class="spinner"><div class="spinner-border"></div></div>
+  <div id="dashboard-content">
+    <h2>Bienvenido al Panel Administrativo</h2>
+    <p>Selecciona una sección del menú lateral para comenzar.</p>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const links = document.querySelectorAll('.sidebar a');
+  const content = document.getElementById('dashboard-content');
+  const spinner = document.querySelector('.spinner');
+
+  // 🔁 Recuperar sección actual desde la URL
+  const currentSection = new URLSearchParams(window.location.search).get('section');
+  if (currentSection) loadContent(`/admin/dashboard/load/${currentSection}`, false);
+
+  // 🎯 Click handler para el menú lateral
+  links.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const url = link.dataset.url || `/admin/dashboard/load/${link.dataset.section}`;
+      loadContent(url, true);
+      links.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+    });
+  });
+
+  // ⚙️ Función principal de carga AJAX
+  async function loadContent(url, pushState = true) {
+    spinner.style.display = 'block';
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Error HTTP ' + response.status);
+      const html = await response.text();
+      content.innerHTML = html;
+      enhanceInternalLinks(); // <-- engancha enlaces internos
+
+      if (pushState) history.pushState({ url }, '', url);
+    } catch (err) {
+      content.innerHTML = `<p class="text-danger">❌ Error al cargar: ${err.message}</p>`;
+    } finally {
+      spinner.style.display = 'none';
+    }
+  }
+
+  // 🔗 Interceptar enlaces internos (new, edit, show, back)
+  function enhanceInternalLinks() {
+    const internalLinks = content.querySelectorAll('a[href^="/admin/"]');
+    internalLinks.forEach(link => {
+      link.addEventListener('click', e => {
+        // Evita recargar si no es descarga o _blank
+        if (
+          !link.hasAttribute('download') &&
+          link.target !== '_blank'
+        ) {
+          e.preventDefault();
+          const href = link.getAttribute('href');
+          loadContent(href, true);
+        }
+      });
+    });
+
+    // Interceptar formularios también (new/edit con POST)
+    const forms = content.querySelectorAll('form');
+    forms.forEach(form => {
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        spinner.style.display = 'block';
+        try {
+          const response = await fetch(form.action, {
+            method: form.method,
+            body: formData,
+          });
+          const html = await response.text();
+          content.innerHTML = html;
+          enhanceInternalLinks();
+        } catch (err) {
+          content.innerHTML = `<p class="text-danger">❌ Error: ${err.message}</p>`;
+        } finally {
+          spinner.style.display = 'none';
+        }
+      });
+    });
+  }
+
+  // 🧭 Soporte para botón "Atrás" del navegador
+  window.addEventListener('popstate', e => {
+    const url = e.state?.url;
+    if (url) loadContent(url, false);
+  });
+});
+</script>
+
+{% endblock %}

@@ -7,6 +7,161 @@
 label.required {
     color: #fff;
 }
+/* 🎯 Estilo unificado para selects de requisitos */
+.requisito-curso {
+  width: 100%;
+  background-color: #1f252d !important;
+  color: #f1f3f5 !important;
+  border: 1px solid #2d333b !important;
+  border-radius: 6px;
+  padding: 0.55rem 0.75rem !important;
+  font-size: 0.95rem;
+  line-height: 1.5rem;
+  appearance: none; /* quita flecha nativa */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23a7b0bb' viewBox='0 0 16 16'%3E%3Cpath d='M3.204 5h9.592L8 10.481z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.75rem center !important;
+  background-size: 16px !important;
+}
+
+.requisito-curso:focus {
+  border-color: #0dcaf0 !important;
+  box-shadow: 0 0 0 0.15rem rgba(13, 202, 240, 0.25);
+  outline: none !important;
+}
+
+/* 💡 Ajusta la altura y alineación */
+.requisito-item select {
+  min-height: 42px;
+}
+/* 🎯 Estilo uniforme para selects de requisitos */
+.requisito-item {
+  background-color: #2a323c !important;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.requisito-item label {
+  display: block;
+  color: #bfc6ce;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* El select del curso */
+.requisito-curso {
+  width: 100%;
+  background-color: #1f252d !important;
+  color: #f1f3f5 !important;
+  border: 1px solid #2d333b !important;
+  border-radius: 6px;
+  padding: 0.55rem 0.75rem !important;
+  font-size: 0.95rem;
+  line-height: 1.5rem;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23a7b0bb' viewBox='0 0 16 16'%3E%3Cpath d='M3.204 5h9.592L8 10.481z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.75rem center !important;
+  background-size: 16px !important;
+}
+
+.requisito-curso:focus {
+  border-color: #0dcaf0 !important;
+  box-shadow: 0 0 0 0.15rem rgba(13, 202, 240, 0.25);
+  outline: none !important;
+}
+
+/* Ajuste de alineación general */
+.requisito-item .flex-fill {
+  flex: 1;
+}
+/* 🎯 Corrige fondo blanco persistente en select de requisitos */
+.requisito-curso,
+.requisito-curso option {
+  background-color: #1f252d !important;
+  color: #f1f3f5 !important;
+}
+
+/* Elimina la apariencia nativa (para Chrome, Firefox, Edge) */
+.requisito-curso {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
+/* Bordes y estilo coherente con los demás inputs */
+.requisito-curso {
+  border: 1px solid #2d333b !important;
+  border-radius: 6px;
+  padding: 0.55rem 0.75rem !important;
+  font-size: 0.95rem;
+  line-height: 1.5rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23a7b0bb' viewBox='0 0 16 16'%3E%3Cpath d='M3.204 5h9.592L8 10.481z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.75rem center !important;
+  background-size: 16px !important;
+  cursor: pointer;
+}
+
+.requisito-curso:focus {
+  border-color: #0dcaf0 !important;
+  box-shadow: 0 0 0 0.15rem rgba(13, 202, 240, 0.25);
+  outline: none !important;
+}
+
+/* 🔽 También fuerza el color del dropdown (Windows/WebKit) */
+.requisito-curso::-ms-expand {
+  background-color: transparent !important;
+  color: #f1f3f5 !important;
+}
+/* 🌙 Forzar fondo oscuro incluso en el valor seleccionado */
+.requisito-curso {
+  background-color: #1f252d !important;
+  color: #f1f3f5 !important;
+  border: 1px solid #2d333b !important;
+  border-radius: 6px;
+  padding: 0.55rem 0.75rem !important;
+  font-size: 0.95rem;
+  line-height: 1.5rem;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  color-scheme: dark; /* 💡 indica a WebKit/Chromium que use estilo oscuro */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23a7b0bb' viewBox='0 0 16 16'%3E%3Cpath d='M3.204 5h9.592L8 10.481z'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 0.75rem center !important;
+  background-size: 16px !important;
+}
+
+/* 🔽 Dropdown oscuro */
+.requisito-curso option {
+  background-color: #1f252d !important;
+  color: #f1f3f5 !important;
+}
+
+/* 🧠 Hover en las opciones del dropdown */
+.requisito-curso option:hover,
+.requisito-curso option:focus {
+  background-color: #0dcaf0 !important;
+  color: #fff !important;
+}
+
+/* ✨ Efecto focus del campo */
+.requisito-curso:focus {
+  border-color: #0dcaf0 !important;
+  box-shadow: 0 0 0 0.15rem rgba(13, 202, 240, 0.25);
+  outline: none !important;
+}
+
+/* 🔧 Previene que Windows renderice fondo blanco */
+@supports (-webkit-appearance: none) {
+  .requisito-curso {
+    background-color: #1f252d !important;
+  }
+}
+
+
 </style>
 
 <main class="container-fluid py-5" style="min-height: 100vh;">
@@ -78,7 +233,8 @@ label.required {
           <div class="requisito-item p-3 rounded shadow-sm mb-3" style="background-color:#2a323c;">
             <div class="d-flex align-items-center justify-content-between gap-3">
               <div class="flex-fill">
-                {{ form_widget(requisito, {'attr': {'class': 'form-select requisito-curso'}}) }}
+                {{ form_label(requisito, 'Curso', {'label_attr': {'class': 'data-label'}}) }}
+                {{ form_widget(requisito, {'attr': {'class': 'requisito-curso'}}) }}
               </div>
               <button type="button" class="btn btn-outline-danger btn-sm remove-requisito">
                 <i class="bi bi-trash"></i> Eliminar

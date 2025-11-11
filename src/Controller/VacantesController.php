@@ -68,7 +68,7 @@ final class VacantesController extends AbstractController
         $requisito = new \App\Entity\RequisitosVacantes();
         $vacante->addRequisito($requisito);
     }
-        $form = $this->createForm(VacantesType::class, $vacante);
+        $form = $this->createForm(VacantesType::class, $vacante, ['is_edit' => false]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -101,7 +101,7 @@ final class VacantesController extends AbstractController
     #[Route('/{id}/edit', name: 'app_vacantes_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Vacantes $vacante, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(VacantesType::class, $vacante);
+        $form = $this->createForm(VacantesType::class, $vacante, ['is_edit' => true,]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
