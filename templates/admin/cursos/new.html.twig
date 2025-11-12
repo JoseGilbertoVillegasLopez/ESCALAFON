@@ -1,10 +1,11 @@
-{% extends 'base.html.twig' %}
-
+{% extends 'admin/layout.html.twig' %}
 {% block title %}Crear Curso{% endblock %}
+{% block admin_content %}
 
-{% block body %}
-<main class="container-fluid py-5" style="min-height: 100vh;">
-  <div class="card p-4 shadow-sm mx-auto" style="max-width: 900px;">
+
+
+
+  <div class="card p-4 shadow-sm mx-auto">
 
     {# 🔹 ENCABEZADO #}
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -44,11 +45,9 @@
         <i class="bi bi-save"></i> Guardar curso
       </button>
     </div>
-
     {{ form_end(form) }}
-
   </div>
-</main>
+
 {% block javascripts %}
 <script>
 document.addEventListener('DOMContentLoaded', () => {

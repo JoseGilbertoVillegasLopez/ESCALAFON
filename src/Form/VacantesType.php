@@ -55,16 +55,14 @@ class VacantesType extends AbstractType
             ])
             
             
+            
         ;
 
         if ($options['is_edit']) {
         $builder
-        ->add('requisitos', CollectionType::class, [
-                'entry_type' => RequisitosVacantesType::class,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'by_reference' => false,
-                'label' => false,
+        ->add('activo', CheckboxType::class, [
+            'required' => false,
+            'label' => 'Vacante activa',
         ]);
     }
     }

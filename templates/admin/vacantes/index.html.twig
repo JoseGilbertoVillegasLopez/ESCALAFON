@@ -1,8 +1,6 @@
-{% extends 'base.html.twig' %}
-
+{% extends 'admin/layout.html.twig' %}
 {% block title %}Vacantes{% endblock %}
-
-{% block body %}
+{% block admin_content %}
 <style>
 /* 🎯 Corrige la alineación vertical de los filtros */
 .filter-box .form-label {
@@ -19,7 +17,7 @@
   border-radius: 6px;
   padding: 0.55rem 0.75rem !important;
   font-size: 0.95rem;
-  line-height: 1.5rem; /* iguala el alto de los selects */
+  line-height: 1.5rem;
 }
 
 .filter-input::placeholder {
@@ -31,7 +29,6 @@
   box-shadow: 0 0 0 0.15rem rgba(13, 202, 240, 0.25);
 }
 
-/* Alinea todos los elementos del formulario de filtros */
 .filter-box .col-md-4,
 .filter-box .col-md-3,
 .filter-box .col-md-2 {
@@ -39,128 +36,123 @@
   flex-direction: column;
   justify-content: flex-end;
 }
-
 </style>
-<main class="container-fluid py-5" style="min-height: 100vh;">
-  <div class="card p-4 shadow-sm mx-auto">
-    
-    <!-- 🏷️ Título principal -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h1><i class="bi bi-briefcase-fill text-info"></i> Lista de Vacantes</h1>
+
+<div class="card p-4 shadow-sm mx-auto" style="background:#1e242b;border:1px solid #222b34;color:#e9edf1;">
+  
+  <!-- 🏷️ Título principal -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="bi bi-briefcase-fill text-info"></i> Lista de Vacantes</h1>
+  </div>
+
+  <!-- 🔍 FILTROS -->
+  <form method="get" class="filter-box mb-4 row g-3">
+    <div class="col-md-4">
+      <label class="form-label">Buscar por nombre</label>
+      <input type="text" name="nombre" value="{{ filtros.nombre }}" class="filter-input" placeholder="Ejemplo: Vacante docente...">
     </div>
+    <div class="col-md-3">
+      <label class="form-label">Puesto</label>
+      <select name="puesto" class="filter-input form-select">
+        <option value="">Todos</option>
+        {% for p in puestos %}
+          <option value="{{ p.id }}" {% if filtros.puesto == p.id %}selected{% endif %}>{{ p.nombre }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Categoría</label>
+      <select name="categoria" class="filter-input form-select">
+        <option value="">Todas</option>
+        {% for c in categorias %}
+          <option value="{{ c.id }}" {% if filtros.categoria == c.id %}selected{% endif %}>{{ c.nombre }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2 d-flex align-items-end gap-2">
+      <button class="btn btn-outline-info w-100">
+        <i class="bi bi-funnel"></i> Filtrar
+      </button>
+      <a href="{{ path('app_vacantes_index') }}" class="btn btn-outline-warning w-100">
+        <i class="bi bi-arrow-clockwise"></i> Limpiar
+      </a>
+    </div>
+  </form>
 
-    <!-- 🔍 FILTROS -->
-    <form method="get" class="filter-box mb-4 row g-3">
-      <div class="col-md-4">
-        <label class="form-label">Buscar por nombre</label>
-        <input type="text" name="nombre" value="{{ filtros.nombre }}" class="filter-input" placeholder="Ejemplo: Vacante docente...">
-      </div>
-      <div class="col-md-3">
-        <label class="form-label">Puesto</label>
-        <select name="puesto" class="filter-input form-select">
-          <option value="">Todos</option>
-          {% for p in puestos %}
-            <option value="{{ p.id }}" {% if filtros.puesto == p.id %}selected{% endif %}>{{ p.nombre }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-md-3">
-        <label class="form-label">Categoría</label>
-        <select name="categoria" class="filter-input form-select">
-          <option value="">Todas</option>
-          {% for c in categorias %}
-            <option value="{{ c.id }}" {% if filtros.categoria == c.id %}selected{% endif %}>{{ c.nombre }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-md-2 d-flex align-items-end gap-2">
-        <button class="btn btn-outline-info w-100">
-          <i class="bi bi-funnel"></i> Filtrar
-        </button>
-        <a href="{{ path('app_vacantes_index') }}" class="btn btn-outline-warning w-100">
-          <i class="bi bi-arrow-clockwise"></i> Limpiar
-        </a>
-      </div>
-    </form>
-
-    <!-- 📋 TABLA DE VACANTES -->
-    <div class="table-responsive mt-3">
-
-     <div class="d-flex justify-content-between align-items-center mb-4">
-      
+  <!-- 📋 TABLA DE VACANTES -->
+  <div class="table-responsive mt-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
       <a href="{{ path('app_vacantes_new') }}" class="btn-guardar d-flex align-items-center gap-2">
         <i class="bi bi-plus-circle"></i> Nueva Vacante
       </a>
     </div>
 
-      <table class="table table-dark table-hover align-middle text-center">
-        <thead>
+    <table class="table table-dark table-hover align-middle text-center">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Puesto</th>
+          <th>Categoría</th>
+          <th>Antigüedad mínima</th>
+          <th>Vacantes</th>
+          <th>Descripción</th>
+          <th>Activo</th>
+          <th>Requisitos</th>
+          <th style="width: 150px;">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for vacante in vacantes %}
           <tr>
-            <th>Nombre</th>
-            <th>Puesto</th>
-            <th>Categoría</th>
-            <th>Antigüedad mínima</th>
-            <th>Vacantes</th>
-            <th>Descripción</th>
-            <th>Activo</th>
-            <th>Requisitos</th>
-            <th style="width: 150px;">Acciones</th>
+            <td>{{ vacante.nombre }}</td>
+            <td>{{ vacante.puesto.nombre }}</td>
+            <td>{{ vacante.categoria.nombre }}</td>
+            <td>{{ vacante.antiguedad }} año(s)</td>
+            <td>
+              <span class="text-info fw-semibold">{{ vacante.vacantesUsadas ?? 0 }}</span> /
+              <span class="text-success fw-semibold">{{ vacante.numeroVacantes }}</span><br>
+              <small class="text-muted">Libres: {{ vacante.vacantesLibres ?? 0 }}</small>
+            </td>
+            <td class="text-start">{{ vacante.descripcion|length > 50 ? vacante.descripcion|slice(0,50) ~ '...' : vacante.descripcion }}</td>
+            <td>
+              {% if vacante.activo %}
+                <span class="badge bg-success">Activo</span>
+              {% else %}
+                <span class="badge bg-danger">Inactivo</span>
+              {% endif %}
+            </td>
+            <td class="text-start">
+              {% if vacante.requisitos is not empty %}
+                <ul class="list-unstyled mb-0">
+                  {% for req in vacante.requisitos %}
+                    <li><i class="bi bi-bookmark-check text-info"></i> {{ req.curso.nombre }}</li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <span class="text-muted">Sin requisitos</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="d-flex justify-content-center gap-2">
+                <a href="{{ path('app_vacantes_show', {'id': vacante.id}) }}" class="btn btn-outline-info btn-sm" title="Ver detalles">
+                  <i class="bi bi-eye-fill"></i>
+                </a>
+                <a href="{{ path('app_vacantes_edit', {'id': vacante.id}) }}" class="btn btn-outline-warning btn-sm" title="Editar">
+                  <i class="bi bi-pencil-fill"></i>
+                </a>
+                {{ include('admin/vacantes/_delete_form.html.twig') }}
+              </div>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          {% for vacante in vacantes %}
-            <tr>
-              <td>{{ vacante.nombre }}</td>
-              <td>{{ vacante.puesto.nombre }}</td>
-              <td>{{ vacante.categoria.nombre }}</td>
-              <td>{{ vacante.antiguedad }} año(s)</td>
-              <td>
-                <span class="text-info fw-semibold">{{ vacante.vacantesUsadas ?? 0 }}</span> /
-                <span class="text-success fw-semibold">{{ vacante.numeroVacantes }}</span>
-                <br>
-                <small class="text-muted">Libres: {{ vacante.vacantesLibres ?? 0 }}</small>
-              </td>
-              <td class="text-start">{{ vacante.descripcion|length > 50 ? vacante.descripcion|slice(0,50) ~ '...' : vacante.descripcion }}</td>
-              <td>
-                {% if vacante.activo %}
-                  <span class="badge bg-success">Activo</span>
-                {% else %}
-                  <span class="badge bg-danger">Inactivo</span>
-                {% endif %}
-              </td>
-              <td class="text-start">
-                {% if vacante.requisitos is not empty %}
-                  <ul class="list-unstyled mb-0">
-                    {% for req in vacante.requisitos %}
-                      <li><i class="bi bi-bookmark-check text-info"></i> {{ req.curso.nombre }}</li>
-                    {% endfor %}
-                  </ul>
-                {% else %}
-                  <span class="text-muted">Sin requisitos</span>
-                {% endif %}
-              </td>
-              <td>
-                <div class="d-flex justify-content-center gap-2">
-                  <a href="{{ path('app_vacantes_show', {'id': vacante.id}) }}" class="btn btn-outline-info btn-sm" title="Ver detalles">
-                    <i class="bi bi-eye-fill"></i>
-                  </a>
-                  <a href="{{ path('app_vacantes_edit', {'id': vacante.id}) }}" class="btn btn-outline-warning btn-sm" title="Editar">
-                    <i class="bi bi-pencil-fill"></i>
-                  </a>
-                  {{ include('admin/vacantes/_delete_form.html.twig') }}
-                </div>
-              </td>
-            </tr>
-          {% else %}
-            <tr>
-              <td colspan="9" class="text-center text-muted py-3">
-                <i class="bi bi-inbox"></i> No se encontraron vacantes registradas.
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+        {% else %}
+          <tr>
+            <td colspan="9" class="text-center text-muted py-3">
+              <i class="bi bi-inbox"></i> No se encontraron vacantes registradas.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
-</main>
+</div>
 {% endblock %}

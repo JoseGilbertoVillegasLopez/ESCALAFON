@@ -1,15 +1,16 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
+
+
 
 {% block title %}Editar información personal{% endblock %}
 
 {% block stylesheets %}
+{{ parent() }}
   {# Reutilizamos los estilos de new para mantener el mismo diseño #}
   <link rel="stylesheet" href="{{ asset('css/informacionPersonal/new.css') }}">
 {% endblock %}
+{% block admin_content %}
 
-{% block body %}
-<main class="container-fluid py-4">
-  <div class="container-lg">
 
     <div class="card border-0 shadow-lg p-4 rounded-4">
 
@@ -21,17 +22,277 @@
       </div>
 
       <div class="card-body">
-        {# Formulario de edición (idéntico al de creación, solo cambia el include) #}
-        {{ include('admin/informacion_personal/_form.html.twig', { form: form, button_label: 'Guardar cambios' }) }}
+        
+{{ form_start(form, {'attr': {'id': 'form_informacion_personal'}}) }}
+
+{# =========================
+   🧍 PERFIL (nombre + imagen centrada)
+   ========================= #}
+<section class="mb-5 text-center">
+  <div class="perfil-container">
+
+    {# 🔹 Cambia el título dinámicamente según si es nuevo o edición #}
+    <h2 class="perfil-nombre" id="nombre-preview">
+      {% if form.vars.value and form.vars.value.id %}
+        {{ informacion_personal.nombre }} {{ informacion_personal.apellidoPaterno }} {{ informacion_personal.apellidoMaterno }}
+      {% else %}
+        Nuevo registro
+      {% endif %}
+    </h2>
+
+    <div class="perfil-imagen mt-3">
+      {# 🔹 Si hay imagen en la entidad, mostrarla. Si no, mostrar el ícono por defecto #}
+      {% if form.vars.value and form.vars.value.imagen %}
+        <img id="preview"
+             src="{{ asset('uploads/imagenes/' ~ form.vars.value.imagen) }}"
+             alt="Foto del trabajador"
+             class="img-preview">
+      {% else %}
+        <img id="preview"
+             src="{{ asset('uploads/imagenes/login_logo.png') }}"
+             alt="Vista previa"
+             class="img-preview">
+      {% endif %}
+    </div>
+
+    {# Campo de carga de imagen #}
+    <div class="col-md-6 mx-auto mt-3">
+      {{ form_widget(form.imagen, {
+        attr: {
+          accept: 'image/*',
+          'data-preview-target': '#preview'
+        },
+        help: 'Formatos permitidos: JPG, PNG, SVG.'
+      }) }}
+      {{ form_errors(form.imagen) }}
+    </div>
+  </div>
+</section>
+
+
+{# =========================
+   🧍 DATOS PERSONALES
+   ========================= #}
+<section class="mb-5">
+  <h4><i class="bi bi-person-badge"></i> Datos personales</h4>
+  <div class="info-grid">
+    <div>
+      <span class="data-label">Nombre(s)</span>
+      {{ form_widget(form.nombre, {'attr': {'class': 'info-input', 'id': 'input-nombre'}}) }}
+      {{ form_errors(form.nombre) }}
+    </div>
+    <div>
+      <span class="data-label">Apellido paterno</span>
+      {{ form_widget(form.apellidoPaterno, {'attr': {'class': 'info-input', 'id': 'input-apellido-p'}}) }}
+      {{ form_errors(form.apellidoPaterno) }}
+    </div>
+    <div>
+      <span class="data-label">Apellido materno</span>
+      {{ form_widget(form.apellidoMaterno, {'attr': {'class': 'info-input', 'id': 'input-apellido-m'}}) }}
+      {{ form_errors(form.apellidoMaterno) }}
+    </div>
+    <div>
+      <span class="data-label">CURP</span>
+      {{ form_widget(form.curp, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">RFC</span>
+      {{ form_widget(form.rfc, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">NSS</span>
+      {{ form_widget(form.nss, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Estado civil</span>
+      {{ form_widget(form.estadoCivil, {'attr': {'class': 'info-input'}}) }}
+    </div>
+  </div>
+</section>
+
+{# =========================
+   🧳 INFORMACIÓN LABORAL
+   ========================= #}
+<section class="mb-5">
+  <h4><i class="bi bi-briefcase-fill"></i> Información laboral</h4>
+  <div class="info-grid">
+    <div>
+      <span class="data-label">Número afiliado</span>
+      {{ form_widget(form.informacionLaboral.numeroAfiliado, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Fecha de incorporación</span>
+      {{ form_widget(form.informacionLaboral.fechaIncorporacion, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Tipo de plaza</span>
+      {{ form_widget(form.informacionLaboral.tipoPlaza, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Turno actual</span>
+      {{ form_widget(form.informacionLaboral.turnoactual, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Jornada</span>
+      {{ form_widget(form.informacionLaboral.jornada, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Puesto</span>
+      {{ form_widget(form.informacionLaboral.puesto, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Categoría</span>
+      {{ form_widget(form.informacionLaboral.categoria, {'attr': {'class': 'info-input'}}) }}
+    </div>
+  </div>
+</section>
+
+{# =========================
+   📞 CONTACTO
+   ========================= #}
+<section class="mb-5">
+  <h4><i class="bi bi-telephone-fill"></i> Contacto</h4>
+  <div class="info-grid">
+    <div>
+      <span class="data-label">Teléfono fijo</span>
+      {{ form_widget(form.telefonoFijo, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Teléfono celular</span>
+      {{ form_widget(form.telefonoCelular, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Correo</span>
+      {{ form_widget(form.correo, {'attr': {'class': 'info-input'}}) }}
+    </div>
+    <div>
+      <span class="data-label">Domicilio</span>
+      {{ form_widget(form.domicilio, {'attr': {'class': 'info-input'}}) }}
+    </div>
+  </div>
+</section>
+
+{# =========================
+   🧠 FORMACIÓN ACADÉMICA
+   ========================= #}
+<section class="mb-5">
+  <h4><i class="bi bi-mortarboard-fill"></i> Formación académica</h4>
+
+  <div class="formacion-grid">
+    <div>
+      <span class="data-label">Escolaridad</span>
+      {{ form_widget(form.formacionAcademica.escolaridad, {'attr': {'class': 'info-input'}}) }}
+      {{ form_errors(form.formacionAcademica.escolaridad) }}
+    </div>
+
+    <div>
+      <span class="data-label">Certificado (PDF o imagen)</span>
+      {{ form_widget(form.formacionAcademica.certificado, {'attr': {'class': 'info-input'}}) }}
+      {{ form_errors(form.formacionAcademica.certificado) }}
+    </div>
+  </div>
+</section>
+
+
+{# =========================
+   🧩 CAPACITACIONES
+   ========================= #}
+<section class="mb-5">
+  <h4><i class="bi bi-journal-text"></i> Capacitaciones</h4>
+
+  <div class="collection-capacitacion"
+       data-prototype="{{ form_widget(form.capacitacion.vars.prototype)|e('html_attr') }}">
+    {% for item in form.capacitacion %}
+      <div class="capacitacion-item">
+        <div class="capacitacion-inner">
+          {{ form_row(item.curso) }}
+          <button type="button" class="btn btn-danger btn-sm remove-item">
+            <i class="bi bi-trash"></i> Eliminar
+          </button>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+{# =========================
+   🚨 CONTACTOS DE EMERGENCIA
+   ========================= #}
+<section class="mb-5">
+  <h4><i class="bi bi-people-fill"></i> Contactos de emergencia</h4>
+
+  <div class="collection-contactos"
+       data-prototype="
+        <div class='contacto-item'>
+          <div class='contacto-grid'>
+            <div class='form-group'>
+              {{ form_label(form.contactosEmergencias.vars.prototype.nombre)|e('html_attr') }}
+              {{ form_widget(form.contactosEmergencias.vars.prototype.nombre)|e('html_attr') }}
+            </div>
+            <div class='form-group'>
+              {{ form_label(form.contactosEmergencias.vars.prototype.parentesco)|e('html_attr') }}
+              {{ form_widget(form.contactosEmergencias.vars.prototype.parentesco)|e('html_attr') }}
+            </div>
+            <div class='form-group'>
+              {{ form_label(form.contactosEmergencias.vars.prototype.telefono)|e('html_attr') }}
+              {{ form_widget(form.contactosEmergencias.vars.prototype.telefono)|e('html_attr') }}
+            </div>
+            <div class='form-group'>
+              {{ form_label(form.contactosEmergencias.vars.prototype.correo)|e('html_attr') }}
+              {{ form_widget(form.contactosEmergencias.vars.prototype.correo)|e('html_attr') }}
+            </div>
+            <div class='form-group eliminar-container'>
+            </div>
+          </div>
+        </div>
+      ">
+
+    {% for item in form.contactosEmergencias %}
+      <div class="contacto-item">
+        <div class="contacto-grid">
+          <div class="form-group">
+            {{ form_label(item.nombre) }}
+            {{ form_widget(item.nombre) }}
+          </div>
+          <div class="form-group">
+            {{ form_label(item.parentesco) }}
+            {{ form_widget(item.parentesco) }}
+          </div>
+          <div class="form-group">
+            {{ form_label(item.telefono) }}
+            {{ form_widget(item.telefono) }}
+          </div>
+          <div class="form-group">
+            {{ form_label(item.correo) }}
+            {{ form_widget(item.correo) }}
+          </div>
+          <div class="form-group eliminar-container">
+            <button type="button" class="btn btn-danger btn-sm remove-item">
+              <i class="bi bi-trash"></i> Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<div class="text-center mt-4">
+  <button type="submit" class="btn-guardar">
+    <i class="bi bi-save"></i> Guardar registro
+  </button>
+</div>
+
+{{ form_end(form) }}
+
       </div>
 
     </div>
 
-  </div>
-</main>
 {% endblock %}
 
 {% block javascripts %}
+{{ parent() }}
   <script src="{{ asset('js/admin/informacionPersonal/preview.js') }}"></script>
   <script src="{{ asset('js/admin/informacionPersonal/collection.js') }}"></script>
 {% endblock %}

@@ -1,9 +1,10 @@
-{% extends 'base.html.twig' %}
-
+{% extends 'admin/layout.html.twig' %}
 {% block title %}Ficha de {{ informacion_personal.nombre }}{% endblock %}
+{% block admin_content %}
 
-{% block body %}
-<main class="container-fluid bg-dark text-light min-vh-100 py-4">
+
+
+
   <div class="container-lg">
 
     {# 🔙 Volver #}
@@ -267,6 +268,5 @@
       </div>
     </div>
   </div>
-</main>
 
 {% endblock %}

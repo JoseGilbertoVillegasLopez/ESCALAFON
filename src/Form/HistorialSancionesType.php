@@ -43,6 +43,15 @@ class HistorialSancionesType extends AbstractType
                 'label' => 'Descripción',
                 'attr' => ['rows' => 4],
             ])
+            ->add('puntosSancion', null, [
+                'label' => 'Valor de la sanción (puntos)',
+                'attr' => [
+                    'class' => 'form-control info-input',
+                    'min' => 0,
+                    'placeholder' => 'Ejemplo: 5',
+                ],
+            ])
+
             ->add('comprovante', FileType::class, [
                 'label' => 'Comprobante (opcional)',
                 'mapped' => false, // No está ligado directamente a la entidad

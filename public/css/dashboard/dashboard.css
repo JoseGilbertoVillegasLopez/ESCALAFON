@@ -1,0 +1,84 @@
+/* 🌌 Fondo base */
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: #161b22;
+  font-family: "Inter", sans-serif;
+}
+
+/* 🎯 Sidebar */
+.sidebar {
+  width: 240px;
+  background: linear-gradient(180deg, #1f262d 0%, #1a2026 100%);
+  border-right: 1px solid #2b323a;
+  box-shadow: inset -1px 0 3px rgba(255, 255, 255, 0.03);
+  padding: 2rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.sidebar h4 {
+  color: #20c5ff;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 4px rgba(32, 197, 255, 0.5);
+}
+
+.sidebar hr {
+  border-color: rgba(255, 255, 255, 0.05);
+  margin-bottom: 1rem;
+}
+
+/* 🔗 Links */
+.sidebar .nav-link {
+  color: #b9c2cc !important;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 8px;
+  padding: 0.5rem 0.9rem;
+  transition: all 0.25s ease;
+  margin-bottom: 0.3rem;
+}
+
+.sidebar .nav-link:hover {
+  background: rgba(32, 197, 255, 0.1);
+  color: #ffffff !important;
+}
+
+.sidebar .nav-link.active {
+  background: linear-gradient(90deg, #007bff 0%, #00d4ff 100%);
+  color: white !important;
+  font-weight: 600;
+  box-shadow: 0 0 12px rgba(0, 123, 255, 0.25);
+}
+
+/* 📄 Contenido principal */
+.admin-content {
+  flex-grow: 1;
+  background-color: #1e242b;
+  color: #f1f3f5;
+  padding: 2rem 3rem;
+  overflow-y: auto;
+}
+
+/* Scrollbar estilizado */
+.admin-content::-webkit-scrollbar {
+  width: 8px;
+}
+.admin-content::-webkit-scrollbar-thumb {
+  background: #2b323a;
+  border-radius: 10px;
+}
+
+/* 📱 Responsive */
+@media (max-width: 992px) {
+  .admin-wrapper {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #2b323a;
+  }
+}

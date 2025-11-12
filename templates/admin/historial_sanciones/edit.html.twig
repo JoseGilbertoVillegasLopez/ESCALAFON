@@ -1,9 +1,10 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 {% block title %}Editar Sanción{% endblock %}
+{% block admin_content %}
 
-{% block body %}
-<main class="container-fluid py-5" style="min-height: 100vh;">
-  <div class="card p-4 shadow-sm mx-auto" style="max-width: 1000px;">
+
+
+  <div class="card p-4 shadow-sm mx-auto" >
     
     {# 🔙 Título y botón volver #}
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -41,6 +42,13 @@
         {{ form_errors(form.descripcion) }}
       </div>
 
+      <div class="mb-3">
+        {{ form_label(form.puntosSancion) }}
+        {{ form_widget(form.puntosSancion) }}
+        {{ form_errors(form.puntosSancion) }}
+      </div>
+
+
       <div class="mb-4">
         {{ form_label(form.comprovante) }}
         {{ form_widget(form.comprovante, {'attr': {'class': 'form-control info-input'}}) }}
@@ -67,6 +75,5 @@
 </div>
 
 {{ form_end(form) }}
-    </div>
-</main>
+</div>
 {% endblock %}

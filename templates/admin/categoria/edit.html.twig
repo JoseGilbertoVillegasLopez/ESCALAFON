@@ -1,9 +1,10 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 {% block title %}Editar Categoría{% endblock %}
+{% block admin_content %}
 
-{% block body %}
-<main class="container-fluid py-5" style="min-height: 100vh;">
-  <div class="card p-4 shadow-sm mx-auto" style="max-width: 800px;">
+
+
+  <div class="card p-4 shadow-sm mx-auto" >
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h1><i class="bi bi-pencil-square text-warning"></i> Editar Categoría</h1>
     </div>
@@ -35,11 +36,11 @@
         <button class="btn-guardar">
           <i class="bi bi-save"></i> Guardar cambios
         </button>
+    {{ form_end(form) }}
+
         {{ include('admin/categoria/_delete_form.html.twig') }}
       </div>
     </div>
 
-    {{ form_end(form) }}
   </div>
-</main>
 {% endblock %}

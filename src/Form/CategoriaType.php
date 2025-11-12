@@ -25,6 +25,9 @@ class CategoriaType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Categoria::class,
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token',
+            'csrf_token_id' => 'categoria_form', // 💥 clave importante
         ]);
     }
 }

@@ -1,9 +1,8 @@
-{% extends 'base.html.twig' %}
-
+{% extends 'admin/layout.html.twig' %}
 {% block title %}Información Personal{% endblock %}
+{% block admin_content %}
 
-{% block body %}
-<main class="container-fluid py-4">
+
   <div class="card">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h1><i class="bi bi-people-fill text-info"></i> Información Personal</h1>
@@ -22,21 +21,25 @@
         <div class="col-md-3">
           <label for="categoria" class="data-label">Filtrar por categoría</label>
           <select name="categoria" id="categoria" class="form-select info-input">
-            <option value="">Todas</option>
-            {% for cat in categorias %}
-              <option value="{{ cat }}" {% if app.request.get('categoria') == cat %}selected{% endif %}>{{ cat }}</option>
-            {% endfor %}
-          </select>
+  <option value="">Todas</option>
+  {% for cat in categorias %}
+    <option value="{{ cat.id }}" {% if app.request.get('categoria') == cat.id %}selected{% endif %}>
+      {{ cat.nombre }}
+    </option>
+  {% endfor %}
+</select>
         </div>
 
         <div class="col-md-3">
           <label for="puesto" class="data-label">Filtrar por puesto</label>
           <select name="puesto" id="puesto" class="form-select info-input">
-            <option value="">Todos</option>
-            {% for p in puestos %}
-              <option value="{{ p }}" {% if app.request.get('puesto') == p %}selected{% endif %}>{{ p }}</option>
-            {% endfor %}
-          </select>
+  <option value="">Todos</option>
+  {% for p in puestos %}
+    <option value="{{ p.id }}" {% if app.request.get('puesto') == p.id %}selected{% endif %}>
+      {{ p.nombre }}
+    </option>
+  {% endfor %}
+</select>
         </div>
 
         <div class="col-md-2">
@@ -139,5 +142,4 @@
       </table>
     </div>
   </div>
-</main>
 {% endblock %}

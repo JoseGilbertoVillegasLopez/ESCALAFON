@@ -1,8 +1,10 @@
-{% extends 'base.html.twig' %}
-
+{% extends 'admin/layout.html.twig' %}
 {% block title %}Escalafón de Personal{% endblock %}
+{% block admin_content %}
 
-{% block body %}
+
+
+
 <style>
 /* 🌙 Fondo y tipografía */
 html, body {
@@ -120,7 +122,6 @@ tr:nth-child(even) {
 }
 </style>
 
-<main class="container-fluid">
     <div class="card p-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1><i class="bi bi-bar-chart-steps"></i> Escalafón de Personal</h1>
@@ -308,5 +309,4 @@ tr:nth-child(even) {
 
         {% endif %}
     </div>
-</main>
 {% endblock %}

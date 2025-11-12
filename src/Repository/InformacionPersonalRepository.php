@@ -17,34 +17,36 @@ class InformacionPersonalRepository extends ServiceEntityRepository
     }
     public function buscarFiltrado(?string $search, ?string $categoria, ?string $puesto, ?string $antiguedad): array
 {
-    // Crea el QueryBuilder para la entidad principal
+    // 🧭 Query base: traemos la información laboral relacionada
     $qb = $this->createQueryBuilder('i')
-        ->leftJoin('i.informacionLaboral', 'l') // para acceder a puesto, categoria, etc.
-        ->addSelect('l');
+        ->leftJoin('i.informacionLaboral', 'l')
+        ->leftJoin('l.puesto', 'p')
+        ->leftJoin('l.categoria', 'c')
+        ->addSelect('l', 'p', 'c');
 
-    // 🔍 Filtro de búsqueda por nombre completo
+    // 🔍 Búsqueda por nombre completo o parcial
     if ($search) {
         $qb->andWhere('
-            i.nombre LIKE :search
-            OR i.apellidoPaterno LIKE :search
-            OR i.apellidoMaterno LIKE :search
+            LOWER(i.nombre) LIKE LOWER(:search)
+            OR LOWER(i.apellidoPaterno) LIKE LOWER(:search)
+            OR LOWER(i.apellidoMaterno) LIKE LOWER(:search)
         ')
-        ->setParameter('search', '%' . $search . '%');
+        ->setParameter('search', '%' . trim($search) . '%');
     }
 
-    // 🧩 Filtrar por categoría (desde informacionLaboral)
-    if ($categoria) {
-        $qb->andWhere('l.categoria = :categoria')
-           ->setParameter('categoria', $categoria);
+    // 🧩 Filtro por categoría (comparando por ID)
+    if (!empty($categoria)) {
+        $qb->andWhere('c.id = :categoriaId')
+           ->setParameter('categoriaId', $categoria);
     }
 
-    // 🧩 Filtrar por puesto
-    if ($puesto) {
-        $qb->andWhere('l.puesto = :puesto')
-           ->setParameter('puesto', $puesto);
+    // 🧩 Filtro por puesto (comparando por ID)
+    if (!empty($puesto)) {
+        $qb->andWhere('p.id = :puestoId')
+           ->setParameter('puestoId', $puesto);
     }
 
-    // ⏳ Ordenar por antigüedad (fechaIncorporacion)
+    // ⏳ Ordenar por fecha de incorporación (antigüedad)
     if ($antiguedad === 'asc') {
         $qb->orderBy('l.fechaIncorporacion', 'ASC');
     } elseif ($antiguedad === 'desc') {
@@ -53,8 +55,10 @@ class InformacionPersonalRepository extends ServiceEntityRepository
         $qb->orderBy('i.apellidoPaterno', 'ASC');
     }
 
+    // 🚀 Ejecutar y retornar resultados
     return $qb->getQuery()->getResult();
 }
+
 public function findDistinctCategorias(): array
 {
     return array_column(

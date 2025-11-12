@@ -1,10 +1,10 @@
-{% extends 'base.html.twig' %}
-
+{% extends 'admin/layout.html.twig' %}
 {% block title %}Detalles del Puesto{% endblock %}
+{% block admin_content %}
 
-{% block body %}
-<main class="container-fluid py-5" style="min-height: 100vh;">
-  <div class="card p-4 shadow-sm mx-auto" style="max-width: 700px;">
+
+
+  <div class="card p-4 shadow-sm mx-auto" >
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h1><i class="bi bi-briefcase-fill text-info"></i> Detalles del Puesto</h1>
       <a href="{{ path('app_puesto_index') }}" class="btn-volver">
@@ -34,5 +34,4 @@
       {{ include('admin/puesto/_delete_form.html.twig') }}
     </div>
   </div>
-</main>
 {% endblock %}

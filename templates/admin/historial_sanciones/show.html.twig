@@ -1,9 +1,10 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/layout.html.twig' %}
 {% block title %}Detalles de la Sanción{% endblock %}
+{% block admin_content %}
 
-{% block body %}
-<main class="container-fluid py-5" style="min-height: 100vh;">
-  <div class="card p-4 shadow-sm mx-auto" style="max-width: 1100px;">
+
+
+  <div class="card p-4 shadow-sm mx-auto">
     
     {# 🔙 Título y botón de volver #}
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -34,6 +35,13 @@
           <th>Descripción</th>
           <td>{{ historial_sancione.descripcion }}</td>
         </tr>
+
+        <tr>
+          <th>Valor de la sanción (puntos)</th>
+          <td>{{ historial_sancione.puntosSancion }}</td>
+        </tr>
+
+
         <tr>
           <th>Comprobante</th>
           <td>
@@ -61,5 +69,4 @@
       {{ include('admin/historial_sanciones/_delete_form.html.twig') }}
     </div>
   </div>
-</main>
 {% endblock %}
