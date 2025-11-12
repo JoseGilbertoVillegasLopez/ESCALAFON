@@ -1,0 +1,215 @@
+{% extends 'user/layout.html.twig' %}
+{% block title %}Mi Escalafón - {{ trabajador.nombre }}{% endblock %}
+
+{% block user_content %}
+<div class="card p-4 shadow-lg border-0 rounded-4">
+  <!-- 🔙 Volver -->
+  <div class="d-flex justify-content-start mb-3">
+    <a href="{{ path('usuario_escalafon_index') }}" class="btn-volver">
+      <i class="bi bi-arrow-left"></i> Volver al escalafón
+    </a>
+  </div>
+
+  <!-- 👤 Título principal -->
+  <div class="text-center mb-4">
+    <h2 class="fw-bold text-info mb-2">
+      <i class="bi bi-person-vcard"></i> {{ trabajador.nombre }} {{ trabajador.apellidoPaterno }}
+    </h2>
+    <p class="text-secondary">
+      Categoría actual: <strong>{{ detalle.categoria }}</strong> |
+      Puesto: <strong>{{ detalle.puesto }}</strong> |
+      Antigüedad: <strong>{{ detalle.antiguedad }}</strong>
+    </p>
+  </div>
+
+  <!-- ========================== -->
+  <!-- 🟢 Vacantes disponibles -->
+  <!-- ========================== -->
+  <div class="row g-4 mb-5">
+    <div class="col-lg-6">
+      <h4><i class="bi bi-check-circle-fill text-success"></i> Vacantes que cumples</h4>
+
+      {% if detalle.vacantes_disponibles is empty %}
+        <div class="alert alert-secondary mt-3">
+          <i class="bi bi-info-circle"></i> No cumples con los requisitos para vacantes en este momento.
+        </div>
+      {% else %}
+        <div class="d-flex flex-column gap-3 mt-3">
+          {% for v in detalle.vacantes_disponibles %}
+            <div class="vacante-card flex-fill">
+              <h5 class="card-title">{{ v.nombre }}</h5>
+
+              <p class="mb-2 small text-secondary">Requisitos cumplidos:</p>
+              <ul class="list-unstyled m-0">
+                {% for r in v.requisitos %}
+                  <li>
+                    {% if r.tiene %}
+                      <span class="badge bg-success"><i class="bi bi-check2"></i> {{ r.nombre }}</span>
+                    {% else %}
+                      <span class="badge bg-danger"><i class="bi bi-x"></i> {{ r.nombre }}</span>
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- ========================== -->
+    <!-- 🔴 Vacantes no elegibles -->
+    <!-- ========================== -->
+    <div class="col-lg-6">
+      <h4><i class="bi bi-x-circle-fill text-danger"></i> Vacantes que no cumples</h4>
+
+      {% if detalle.vacantes_no_elegibles is empty %}
+        <div class="alert alert-secondary mt-3">
+          <i class="bi bi-check2-circle"></i> Cumples con todas las vacantes de tu categoría.
+        </div>
+      {% else %}
+        <div class="d-flex flex-column gap-3 mt-3">
+          {% for v in detalle.vacantes_no_elegibles %}
+            <div class="vacante-card inactiva flex-fill">
+              <h5 class="card-title">{{ v.nombre }}</h5>
+
+              <p class="mb-2 small text-secondary">Requisitos:</p>
+              <ul class="list-unstyled m-0">
+                {% for r in v.requisitos %}
+                  <li>
+                    {% if r.tiene %}
+                      <span class="badge bg-success"><i class="bi bi-check2"></i> {{ r.nombre }}</span>
+                    {% else %}
+                      <span class="badge bg-danger"><i class="bi bi-x"></i> {{ r.nombre }}</span>
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+
+              {% if v.faltantes is not empty %}
+                <div class="mt-2 small">
+                  <span class="text-secondary">Faltantes:</span>
+                  {% for f in v.faltantes %}
+                    <span class="badge border border-danger text-danger bg-transparent">{{ f }}</span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ========================== -->
+  <!-- 📚 Capacitaciones y sanciones -->
+  <!-- ========================== -->
+  <div class="row g-3">
+    <div class="col-md-6">
+      <h4><i class="bi bi-mortarboard"></i> Capacitaciones</h4>
+      <ul class="list-group list-group-flush">
+        {% for c in detalle.capacitaciones %}
+          <li class="list-group-item bg-dark text-light d-flex justify-content-between">
+            <span>{{ c.nombre }}</span>
+            <span class="text-secondary">+{{ c.valor }}</span>
+          </li>
+        {% else %}
+          <li class="list-group-item bg-dark text-secondary">Sin registros</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="col-md-6">
+      <h4><i class="bi bi-exclamation-triangle"></i> Sanciones</h4>
+      <ul class="list-group list-group-flush">
+        {% for s in detalle.sanciones %}
+          <li class="list-group-item bg-dark text-light d-flex justify-content-between">
+            <span>{{ s.fecha }} — {{ s.motivo }}</span>
+            <span class="badge bg-danger">-{{ s.puntos }}</span>
+          </li>
+        {% else %}
+          <li class="list-group-item bg-dark text-secondary">Sin sanciones registradas</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <!-- ========================== -->
+  <!-- 📈 Historial de ascensos -->
+  <!-- ========================== -->
+  <div class="mt-4">
+    <h4><i class="bi bi-graph-up-arrow"></i> Historial de ascensos</h4>
+    <ul class="list-group list-group-flush">
+      {% for a in detalle.ascensos %}
+        <li class="list-group-item bg-dark text-light">
+          {{ a.fecha }} — <span class="text-info">{{ a.puesto_anterior }}</span> → 
+          <strong>{{ a.puesto_ascenso }}</strong>
+        </li>
+      {% else %}
+        <li class="list-group-item bg-dark text-secondary">Aún no tienes ascensos registrados.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<style>
+  /* Contenedor base oscuro */
+  .vacante-card {
+    background-color: #1f242b;
+    border: 1px solid #2b323a;
+    border-radius: 12px;
+    padding: 1.2rem;
+    color: #f1f3f5; /* Texto claro */
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 2px 5px rgba(0, 0, 0, 0.35);
+    transition: all 0.25s ease;
+  }
+
+  /* Título de la vacante */
+  .vacante-card h5 {
+    color: #00b4d8; /* celeste brillante */
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+  }
+
+  /* Etiquetas de requisitos */
+  .vacante-card .badge {
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 6px;
+    padding: 0.35em 0.6em;
+  }
+
+  .badge-requisito {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #ff6b6b;
+    border: 1px solid rgba(220, 53, 69, 0.4);
+  }
+
+  .badge-faltante {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #ffd166;
+    border: 1px solid rgba(255, 193, 7, 0.4);
+  }
+
+  /* Texto general */
+  .vacante-card p {
+    color: #d6d8da;
+  }
+
+  /* Efecto hover */
+  .vacante-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 180, 216, 0.3);
+  }
+
+  /* Títulos de secciones ("Vacantes que cumples" / "que no cumples") */
+  h3.section-title {
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+</style>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'user/layout.html.twig' %}
+
+{% block title %}Panel del Usuario{% endblock %}
+
+{% block user_content %}
+  <div class="card p-4 shadow-sm mx-auto" 
+     style="max-width: 800px; background:#1e242b; border:1px solid #2d333b; color:#e9edf1;">
+  <h2 class="mb-3" style="color:#0dcaf0;">Bienvenido, {{ app.user.trabajador.nombre ?? app.user.email }}</h2>
+
+  <p class="text-light mb-4" style="color:#cfd4da !important;">
+    Desde este panel puedes consultar tu <span style="color:#0dcaf0;">información</span>, 
+    <span style="color:#ffc107;">escalafón</span>, 
+    <span style="color:#20c997;">ascensos</span> y 
+    <span style="color:#dc3545;">sanciones</span> de manera rápida.
+  </p>
+
+  </div>
+{% endblock %}

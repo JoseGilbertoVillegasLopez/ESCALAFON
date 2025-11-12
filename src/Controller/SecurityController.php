@@ -15,11 +15,11 @@ class SecurityController extends AbstractController
         //rederige segun el rol del usuario
         if ($this->getUser()){
             if ($this->isGranted('ROLE_ADMIN')){
-                return $this->render('/admin/dashboard/dashboard.html.twig');
+                return $this->redirectToRoute('admin_dashboard');
             }
-//            if ($this->isGranted('ROLE_USER')){
-//                return $this->redirectToRoute('user_dashboard');
-//            }
+            if ($this->isGranted('ROLE_USER')){
+                return $this->redirectToRoute('usuario_dashboard');
+            }
     }
     
         // get the login error if there is one

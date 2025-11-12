@@ -1,0 +1,68 @@
+{% extends 'user/layout.html.twig' %}
+{% block title %}Mis sanciones{% endblock %}
+
+{% block user_content %}
+<div class="card p-4 shadow-lg mx-auto" style="max-width: 1000px;">
+
+  <h2 class="text-danger mb-3 text-center">
+    <i class="bi bi-exclamation-triangle-fill"></i> Historial de sanciones
+  </h2>
+
+  <p class="text-secondary text-center mb-4">
+    Aquí puedes consultar las sanciones registradas en tu expediente.
+  </p>
+
+  {% if sanciones is empty %}
+    <div class="alert alert-secondary text-center mt-4">
+      <i class="bi bi-inbox"></i> No tienes sanciones registradas 🎉
+    </div>
+  {% else %}
+    <div class="table-responsive">
+      <table class="table table-dark table-striped align-middle mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Fecha</th>
+            <th>Motivo</th>
+            <th>Puntos</th>
+            <th>Comprobante</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in sanciones %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ s.fecha ? s.fecha|date('d/m/Y') : '—' }}</td>
+              <td>{{ s.motivo }}</td>
+              <td>
+                <span class="badge bg-danger">-{{ s.puntosSancion }}</span>
+              </td>
+              <td>
+                {% if s.comprovante %}
+                  <a href="{{ asset('uploads/sanciones/' ~ s.comprovante) }}" 
+                     target="_blank" class="text-info">
+                    <i class="bi bi-file-earmark-pdf"></i> Ver
+                  </a>
+                {% else %}
+                  <span class="text-muted small">No disponible</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+
+</div>
+
+<style>
+.table th {
+  background-color: #2a3038;
+  border-bottom: 1px solid #3b424c;
+}
+.badge {
+  font-size: 0.85rem;
+}
+</style>
+{% endblock %}

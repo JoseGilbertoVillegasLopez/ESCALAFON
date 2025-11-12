@@ -247,6 +247,10 @@ class InformacionPersonal
 
         return $this;
     }
+    public function getUsuario(): ?Usuario
+{
+    return $this->usuario;
+}
 
     public function setUsuario(?Usuario $usuario): static
     {

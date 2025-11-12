@@ -1,0 +1,54 @@
+{% extends 'user/layout.html.twig' %}
+{% block title %}Mis Ascensos{% endblock %}
+
+{% block user_content %}
+<div class="card p-4 shadow-lg mx-auto" style="max-width: 1000px;">
+
+  <h2 class="text-info mb-3 text-center">
+    <i class="bi bi-graph-up-arrow"></i> Historial de ascensos
+  </h2>
+
+  <p class="text-secondary text-center mb-4">
+    Aquí puedes consultar los ascensos que has obtenido a lo largo de tu trayectoria.
+  </p>
+
+  {% if ascensos is empty %}
+    <div class="alert alert-secondary text-center mt-4">
+      <i class="bi bi-info-circle"></i> Aún no tienes ascensos registrados.
+    </div>
+  {% else %}
+    <div class="table-responsive">
+      <table class="table table-dark table-striped align-middle mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Fecha</th>
+            <th>Puesto anterior</th>
+            <th>Puesto de ascenso</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in ascensos %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ a.fecha ? a.fecha|date('d/m/Y') : '—' }}</td>
+              <td>{{ a.puestoAnterior }}</td>
+              <td>
+                <strong class="text-success">{{ a.puestoAscenso }}</strong>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+
+</div>
+
+<style>
+.table th {
+  background-color: #2a3038;
+  border-bottom: 1px solid #3b424c;
+}
+</style>
+{% endblock %}
