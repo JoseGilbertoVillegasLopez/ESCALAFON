@@ -168,3 +168,80 @@ body {
   color: #33c4ff;
   text-decoration: underline;
 }
+/* Enlace volver al inicio */
+.back-link {
+  color: #00aaff;
+  font-weight: 500;
+  text-decoration: none;
+  margin-top: 10px;
+  display: inline-block;
+  transition: color 0.3s ease;
+}
+
+.back-link:hover {
+  color: #33c4ff;
+  text-decoration: underline;
+}
+
+/* Mensaje de éxito */
+.alert-success {
+  background-color: rgba(0, 255, 170, 0.1);
+  border: 1px solid #00ffaa;
+  color: #b8ffcc;
+  padding: 0.6rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+
+/* ✅ Mensaje de éxito con fade */
+.alert-success {
+  background-color: rgba(0, 255, 170, 0.08);
+  border: 1px solid #00ffaa;
+  color: #b8ffcc;
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  margin-bottom: 1.2rem;
+  font-weight: 500;
+  text-align: center;
+  opacity: 0;
+}
+
+/* 💥 Mensaje de error, por si quieres mantenerlo coherente */
+.alert-danger {
+  background-color: rgba(255, 0, 0, 0.1);
+  border: 1px solid #ff4c4c;
+  color: #ffb3b3;
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  margin-bottom: 1.2rem;
+  text-align: center;
+}
+
+.login-logo{
+    width: 150px;
+    height: 150px;
+}
+
+.alert-success {
+  background-color: rgba(0, 255, 170, 0.08);
+  border: 1px solid #00ffaa;
+  color: #b8ffcc;
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  margin-bottom: 1.2rem;
+  font-weight: 500;
+  text-align: center;
+  opacity: 1;
+}
+
+.alert-danger {
+  background-color: rgba(255, 0, 0, 0.1);
+  border: 1px solid #ff4c4c;
+  color: #ffb3b3;
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  margin-bottom: 1.2rem;
+  text-align: center;
+}

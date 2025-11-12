@@ -39,7 +39,7 @@
 
       <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
-      <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+      <a href="{{ path('app_password_reset') }}" class="forgot-password">¿Olvidaste tu contraseña?</a>
 
       <button type="submit" class="btn-login">Entrar</button>
 
@@ -47,6 +47,13 @@
   </div>
 </div>
 
+
+
+{% endblock %}
+
+
+{% block javascripts %}
+{{ parent() }}
 <script>
 document.getElementById('togglePassword').addEventListener('click', function () {
   const passwordInput = document.getElementById('password');
@@ -56,5 +63,4 @@ document.getElementById('togglePassword').addEventListener('click', function () 
   this.classList.toggle('bi-eye-slash');
 });
 </script>
-
 {% endblock %}
