@@ -2,6 +2,10 @@
 
 {% block title %}Panel Admin{% endblock %}
 
+
+
+
+
 {% block body %}
 <div class="d-flex min-vh-100" style="background:#161b21;">
   {# === Sidebar === #}
@@ -60,4 +64,11 @@
     {% endblock %}
   </main>
 </div>
+{% endblock %}
+{% block javascripts %}
+{{ parent() }}
+  <script>
+localStorage.removeItem("dashboardLoadedOnce");
+</script>
+  <script src="{{ asset('js/admin/recargar.js') }}"></script>
 {% endblock %}
