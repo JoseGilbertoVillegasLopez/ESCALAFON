@@ -18,3 +18,10 @@
 
   </div>
 {% endblock %}
+{% block javascripts %}
+{{ parent() }}
+  <script>
+localStorage.removeItem("dashboardLoadedOnce");
+</script>
+  <script src="{{ asset('js/admin/recargar.js') }}"></script>
+{% endblock %}
