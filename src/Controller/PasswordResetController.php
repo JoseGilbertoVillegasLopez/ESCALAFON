@@ -34,32 +34,27 @@ public function reset(
         $info = $infoRepository->findOneBy(['correo' => $correo]);
 
         if (!$info) {
-            $error = 'No se encontró ningún trabajador con ese correo.';
-        } elseif ($pass1 !== $pass2) {
-            $error = 'Las contraseñas no coinciden.';
-        } else {
-            $usuario = $info->getUsuario();
+    $this->addFlash('error', 'No se encontró ningún trabajador con ese correo.');
+} elseif ($pass1 !== $pass2) {
+    $this->addFlash('error', 'Las contraseñas no coinciden.');
+} elseif (!$usuario = $info->getUsuario()) {
+    $this->addFlash('error', 'No hay una cuenta asociada a ese trabajador.');
+} else {
+    $hashedPassword = $passwordHasher->hashPassword($usuario, $pass1);
+    $usuario->setPassword($hashedPassword);
 
-            if (!$usuario) {
-                $error = 'No hay una cuenta asociada a ese trabajador.';
-            } else {
-                $hashedPassword = $passwordHasher->hashPassword($usuario, $pass1);
-                $usuario->setPassword($hashedPassword);
+    $em->persist($usuario);
+    $em->flush();
 
-                $em->persist($usuario);
-                $em->flush();
+    $this->addFlash('mensaje', '✅ Tu contraseña se ha actualizado correctamente. Ya puedes iniciar sesión.');
 
-                $mensaje = '✅ Tu contraseña se ha actualizado correctamente. Ya puedes iniciar sesión.';
-                $correo = ''; // limpia los campos
-            }
-        }
+    return $this->redirectToRoute('app_password_reset');
+}
     }
 
-    return $this->render('security/password_reset.html.twig', [
-        'mensaje' => $mensaje,
-        'error' => $error,
-        'correo' => $correo,
-    ]);
+   return $this->render('security/password_reset.html.twig', [
+    'correo' => $correo,
+]);
 }
 
 }
