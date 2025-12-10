@@ -41,6 +41,9 @@ class InformacionLaboral
     #[ORM\JoinColumn(nullable: false)]
     private ?Categoria $categoria = null;
 
+    #[ORM\Column(type: 'json', nullable: true)]
+    private array $trabajo30Dias = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -138,6 +141,18 @@ class InformacionLaboral
     public function setCategoria(?Categoria $categoria): static
     {
         $this->categoria = $categoria;
+
+        return $this;
+    }
+
+    public function getTrabajo30Dias(): array
+    {
+        return $this->trabajo30Dias ?? [];
+    }
+
+    public function setTrabajo30Dias(array $trabajo30Dias): static
+    {
+        $this->trabajo30Dias = $trabajo30Dias;
 
         return $this;
     }

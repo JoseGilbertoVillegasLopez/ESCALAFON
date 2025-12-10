@@ -28,6 +28,7 @@ class AdminDashboardController extends AbstractController
             'sanciones' => 'admin/historial_sanciones/index.html.twig',
             'escalafon' => 'admin/escalafon/index.html.twig',
             'ascensos' => 'admin/historial_ascenso/index.html.twig',
+            'Dias30' => 'admin/escalafon/diasTrabajados.html.twig',
         ];
 
         if (!isset($viewMap[$section])) {

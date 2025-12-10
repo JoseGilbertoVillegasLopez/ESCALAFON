@@ -67,6 +67,7 @@
       <a href="{{ path('app_historial_sanciones_index') }}" class="nav-link {% if app.request.attributes.get('_route') starts with 'app_historial_sanciones' %}active{% endif %}">Sanciones</a>
       <a href="{{ path('admin_escalafon_index') }}" class="nav-link {% if app.request.attributes.get('_route') starts with 'app_escalafon' %}active{% endif %}">Escalafón</a>
       <a href="{{ path('app_historial_ascenso_index') }}" class="nav-link {% if app.request.attributes.get('_route') starts with 'app_historial_ascenso' %}active{% endif %}">Ascensos</a>
+      <a href="{{ path('admin_escalafon_30dias') }}" class="nav-link {% if app.request.attributes.get('_route') starts with 'admin_escalafon_30dias' %}active{% endif %}">Dias Trabajados</a>
     </nav>
   </aside>
 

@@ -7,6 +7,8 @@
 
 
 {% block body %}
+<!-- DEBUG DASHBOARD -->
+
 <div class="d-flex min-vh-100" style="background:#161b21;">
   {# === Sidebar === #}
   <aside class="p-4 border-end" style="width:260px;background:#1e242b;border-color:#222b34 !important;">
@@ -45,6 +47,12 @@
          class="nav-link px-3 py-2 rounded {{ app.request.get('_route') starts with 'app_historial_ascenso' ? 'active' : '' }}">
         Ascensos
       </a>
+      <a href="{{ path('admin_escalafon_30dias') }}"
+        class="nav-link px-3 py-2 rounded {{ app.request.get('_route') starts with 'admin_escalafon_30dias' ? 'active' : '' }}">
+        Revisión 30 días
+      </a>  
+
+      
     </nav>
 
     <style>

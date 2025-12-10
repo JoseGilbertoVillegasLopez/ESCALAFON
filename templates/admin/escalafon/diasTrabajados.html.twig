@@ -1,0 +1,199 @@
+{% extends 'admin/layout.html.twig' %}
+{% block title %}Revisión de 30 días trabajados{% endblock %}
+
+{% block admin_content %}
+
+<style>
+/* 🌙 Fondo y tipografía */
+html, body {
+    background-color: #1e242b !important;
+    color: #f1f3f5 !important;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+}
+
+main.container-fluid {
+    width: 100%;
+    max-width: 100%;
+    padding: 2rem;
+}
+
+/* 💼 Card principal */
+.card {
+    background-color: #2a3038;
+    border: 1px solid #3c444f;
+    border-radius: 1rem;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    color: #f8f9fa;
+    overflow: hidden;
+}
+
+/* 🧾 Título */
+h1, h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+/* 📊 Tabla */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #f1f3f5;
+}
+
+th, td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+}
+
+th {
+    background-color: #343b45;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.9rem;
+}
+
+tr:nth-child(even) {
+    background-color: #2f353e;
+}
+
+/* 🧭 Botones */
+.btn {
+    border-radius: 0.5rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-volver {
+    background-color: #49515d;
+    color: #fff;
+}
+
+.btn-volver:hover {
+    background-color: #5a6371;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+    table thead {
+        display: none;
+    }
+    table, table tbody, table tr, table td {
+        display: block;
+        width: 100%;
+    }
+    table tr {
+        margin-bottom: 1rem;
+        background: #2f353e;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
+    }
+    table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+    table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 1rem;
+        font-weight: bold;
+        text-align: left;
+        color: #adb5bd;
+    }
+}
+</style>
+
+
+<div class="card p-4 rounded-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">
+      <i class="bi bi-calendar-check text-info"></i>
+      Revisión de 30 días trabajados — {{ year }}
+    </h2>
+    <a href="{{ path('admin_escalafon_index') }}" class="btn-volver">
+      <i class="bi bi-arrow-left-circle"></i> Volver al escalafón
+    </a>
+  </div>
+
+  {% for msg in app.flashes('success') %}
+    <div class="alert alert-success mb-3">{{ msg }}</div>
+  {% endfor %}
+
+  {% if trabajadores is empty %}
+    <div class="alert alert-info mb-0">
+      Todos los trabajadores ya fueron revisados para {{ year }}.
+    </div>
+
+  {% else %}
+
+    <form method="post">
+
+      <p class="text-muted mb-3">
+        Marca <strong>"Sí"</strong> si el trabajador cumplió al menos 30 días trabajados en el año {{ year }},
+        o <strong>"No"</strong> si no los cumplió.  
+        Los que no marques quedarán <em>pendientes</em> para otra revisión.
+      </p>
+
+      <div class="table-responsive mt-3">
+        <table class="table table-dark table-hover align-middle">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Núm. afiliado</th>
+              <th>Puesto</th>
+              <th>Categoría</th>
+              <th class="text-center">Cumplió 30 días</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for t in trabajadores %}
+              {% set laboral = t.informacionLaboral %}
+
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ t }}</td>
+                <td>{{ laboral.numeroAfiliado ?? 'Sin número' }}</td>
+                <td>{{ laboral.puesto.nombre ?? 'Sin puesto' }}</td>
+                <td>{{ laboral.categoria.nombre ?? 'Sin categoría' }}</td>
+
+                <td class="text-center">
+                  <div class="d-flex justify-content-center gap-3">
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="estado[{{ t.id }}]" value="si">
+                      Sí
+                    </label>
+                    <label class="form-check-label">
+                      <input class="form-check-input" type="radio" name="estado[{{ t.id }}]" value="no">
+                      No
+                    </label>
+                  </div>
+                </td>
+              </tr>
+
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="text-center mt-4">
+        <button type="submit" class="btn-guardar">
+          <i class="bi bi-save"></i> Guardar revisión
+        </button>
+      </div>
+
+    </form>
+
+  {% endif %}
+</div>
+
+{% endblock %}

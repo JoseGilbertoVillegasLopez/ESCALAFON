@@ -194,6 +194,7 @@ tr:nth-child(even) {
                         <th>P. Capacitación</th>
                         <th>P. Sanción</th>
                         <th>Puntaje Total</th>
+                        <th>30 días</th>
                         <th>Vacantes Disponibles</th>
                         <th>Acciones</th>
                     </tr>
@@ -201,7 +202,7 @@ tr:nth-child(even) {
                 <tbody>
                     {% for t in items %}
                         <tr>
-                            <td>{{ loop.index + ((pagination.page - 1) * pagination.per_page) }}</td>
+                            <td>{{ t.posicion_final }}</td>
                             <td>{{ t.nombre }}</td>
                             <td>{{ t.puesto }}</td>
                             <td>{{ t.categoria }}</td>
@@ -213,6 +214,23 @@ tr:nth-child(even) {
                                     {{ t.puntaje_total }}
                                 </strong>
                             </td>
+                            <td>
+  {% if t.trabajo_30_dias is same as(true) %}
+    <span class="badge bg-success">Cumplió</span>
+
+{% elseif t.trabajo_30_dias is same as(false) %}
+    <span class="badge bg-danger">NO cumplió</span><br>
+
+    <small class="text-muted">
+        Posición antes: {{ t.posicion_original }}<br>
+    </small>
+
+{% else %}
+    <span class="badge bg-secondary">Sin revisar</span>
+{% endif %}
+
+</td>
+
                             <td>
                                 {% if t.vacantes is not empty %}
                                     <ul class="m-0 ps-3">
