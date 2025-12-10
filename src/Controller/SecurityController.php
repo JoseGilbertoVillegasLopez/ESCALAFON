@@ -20,7 +20,7 @@ class SecurityController extends AbstractController
             if ($this->isGranted('ROLE_USER')){
                 return $this->redirectToRoute('usuario_dashboard');
             }
-    }
+        }
     
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();

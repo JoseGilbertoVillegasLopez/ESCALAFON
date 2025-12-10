@@ -59,12 +59,23 @@ final class InformacionPersonalController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $informacionPersonal = new InformacionPersonal();
-        // 👇 Agregamos al menos un contacto vacío antes de crear el formulario
-        $contacto = new ContactosEmergencia(); // creamos un nuevo objeto vacío
-        $informacionPersonal->addContactosEmergencia($contacto); // lo asociamos al objeto principal
-        $informacionPersonal->addCapacitacion(new Capacitacion());// Agregamos una capacitación vacía
-        $informacionPersonal->setInformacionLaboral(new InformacionLaboral());
-        $informacionPersonal->setFormacionAcademica(new FormacionAcademica());
+
+// contacto vacío
+$informacionPersonal->addContactosEmergencia(new ContactosEmergencia());
+
+// capacitación vacía
+$informacionPersonal->addCapacitacion(new Capacitacion());
+
+// laboral
+$informacionPersonal->setInformacionLaboral(new InformacionLaboral());
+
+// formación académica
+$formacion = new FormacionAcademica();
+$formacion->setInformacionPersonal($informacionPersonal);
+$informacionPersonal->setFormacionAcademica($formacion);
+
+
+        
 
         $form = $this->createForm(InformacionPersonalType::class, $informacionPersonal);
         $form->handleRequest($request);
@@ -112,6 +123,13 @@ final class InformacionPersonalController extends AbstractController
 
                 $formacion->setCertificado($newFilename);
             }
+            else {
+                    // Para nuevos registros, garantizar null explícito
+                    if ($formacion->getCertificado() === null) {
+                        $formacion->setCertificado(null);
+                    }
+                }
+            
 
             $entityManager->persist($informacionPersonal);
             $entityManager->flush();

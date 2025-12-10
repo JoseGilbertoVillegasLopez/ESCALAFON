@@ -13,10 +13,10 @@ class FormacionAcademica
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     private ?string $escolaridad = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     private ?string $certificado = null;
 
     #[ORM\OneToOne(inversedBy: 'formacionAcademica', cascade: ['persist', 'remove'])]
@@ -33,7 +33,7 @@ class FormacionAcademica
         return $this->escolaridad;
     }
 
-    public function setEscolaridad(string $escolaridad): static
+    public function setEscolaridad(?string $escolaridad): static
     {
         $this->escolaridad = $escolaridad;
 
@@ -45,7 +45,7 @@ class FormacionAcademica
         return $this->certificado;
     }
 
-    public function setCertificado(string $certificado): static
+    public function setCertificado(?string $certificado): static
     {
         $this->certificado = $certificado;
 
