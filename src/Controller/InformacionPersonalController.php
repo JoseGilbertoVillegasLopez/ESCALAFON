@@ -237,5 +237,38 @@ $informacionPersonal->setFormacionAcademica($formacion);
 
         return $this->redirectToRoute('app_informacion_personal_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/buscar/trabajador', name: 'buscar_trabajador', methods: ['GET'])]
+public function buscarTrabajador(Request $request, InformacionPersonalRepository $repo): Response
+{
+    $term = $request->query->get('q');
+
+    $resultados = $repo->createQueryBuilder('p')
+        ->leftJoin('p.informacionLaboral', 'i')
+        ->where('p.nombre LIKE :t 
+                 OR p.apellidoPaterno LIKE :t 
+                 OR i.numeroAfiliado LIKE :t')
+        ->setParameter('t', "$term%")
+        ->setMaxResults(10)
+        ->getQuery()
+        ->getResult();
+
+    $json = [];
+
+    foreach ($resultados as $p) {
+        $json[] = [
+            'id' => $p->getId(),
+            'nombre' => $p->getNombre() . ' ' . $p->getApellidoPaterno(),
+            'numero' => $p->getInformacionLaboral()
+    ? $p->getInformacionLaboral()->getNumeroAfiliado()
+    : 'Sin número'
+
+        ];
+    }
+
+    return $this->json($json);
+}
+
+
 }
 

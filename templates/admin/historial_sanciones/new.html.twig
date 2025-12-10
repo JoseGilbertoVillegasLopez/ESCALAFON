@@ -15,7 +15,21 @@
 
       <div class="mb-3">
         {{ form_label(form.informacionPersonal, 'Trabajador', {'label_attr': {'class': 'data-label'}}) }}
-        {{ form_widget(form.informacionPersonal, {'attr': {'class': 'form-select info-input'}}) }}
+        <div class="mb-3 position-relative">
+
+    <input type="text"
+           id="buscador-trabajador"
+           class="form-control info-input"
+           placeholder="Buscar por nombre, apellido o número de afiliado...">
+
+    <ul id="resultado-busqueda"
+        class="list-group position-absolute w-100"
+        style="z-index: 999;"></ul>
+
+    {# Campo oculto donde guardamos el ID real que necesita Symfony #}
+    <input type="hidden" id="sancion_trabajador" name="historial_sanciones[informacionPersonal]">
+</div>
+
         {{ form_errors(form.informacionPersonal) }}
       </div>
 
@@ -55,4 +69,49 @@
 
     {{ form_end(form) }}
   </div>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+      const input  = document.getElementById("buscador-trabajador");
+      const lista  = document.getElementById("resultado-busqueda");
+      const hidden = document.getElementById("sancion_trabajador");
+
+      const urlBuscar = "{{ path('buscar_trabajador') }}"; // 👈 Symfony te da la URL correcta
+
+      input.addEventListener("input", async () => {
+          const q = input.value.trim();
+          if (q.length < 1) {
+              lista.innerHTML = "";
+              hidden.value = "";
+              return;
+          }
+
+          try {
+              const res  = await fetch(urlBuscar + "?q=" + encodeURIComponent(q));
+              if (!res.ok) return;
+              const data = await res.json();
+
+              lista.innerHTML = "";
+
+              data.forEach(t => {
+                  const item = document.createElement("li");
+                  item.classList.add("list-group-item", "list-group-item-action");
+                  item.textContent = `${t.nombre} — ${t.numero}`;
+                  item.addEventListener("click", () => {
+                      input.value  = `${t.nombre} (${t.numero})`;
+                      hidden.value = t.id;
+                      lista.innerHTML = "";
+                  });
+                  lista.appendChild(item);
+              });
+
+          } catch (e) {
+              console.error("Error en la búsqueda:", e);
+          }
+      });
+  });
+</script>
+
+
 {% endblock %}
