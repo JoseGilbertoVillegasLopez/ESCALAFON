@@ -80,4 +80,60 @@ class Escalafon30DiasController extends AbstractController
             'year' => $yearActual,
         ]);
     }
+
+
+    #[Route('/30-dias/buscar', name: 'admin_escalafon_30dias_buscar', methods: ['GET'])]
+public function buscarTrabajador30Dias(
+    Request $request,
+    InformacionPersonalRepository $personalRepo
+): Response {
+    $q = trim((string) $request->query->get('q', ''));
+    $yearActual = (int) (new \DateTime())->format('Y');
+
+    if ($q === '') {
+        return $this->json([]);
+    }
+
+    $qb = $personalRepo->createQueryBuilder('p')
+        ->leftJoin('p.informacionLaboral', 'il')
+        ->leftJoin('il.puesto', 'pu')
+        ->leftJoin('il.categoria', 'c')
+        ->addSelect('il', 'pu', 'c')
+        ->where(
+            'p.nombre LIKE :q
+             OR p.apellidoPaterno LIKE :q
+             OR p.apellidoMaterno LIKE :q'
+        )
+        ->setParameter('q', '%' . $q . '%')
+        ->orderBy('p.apellidoPaterno', 'ASC')
+        ->addOrderBy('p.apellidoMaterno', 'ASC')
+        ->addOrderBy('p.nombre', 'ASC')
+        ->setMaxResults(10);
+
+    $resultados = $qb->getQuery()->getResult();
+
+    $data = [];
+
+    foreach ($resultados as $t) {
+        $laboral = $t->getInformacionLaboral();
+
+        $estado30 = null;
+        if ($laboral) {
+            $json30 = $laboral->getTrabajo30Dias() ?? [];
+            $estado30 = $json30[(string)$yearActual] ?? null;
+        }
+
+        $data[] = [
+            'id' => $t->getId(),
+            'nombre' => (string) $t,
+            'numero_afiliado' => $laboral?->getNumeroAfiliado(),
+            'puesto' => $laboral?->getPuesto()?->getNombre(),
+            'categoria' => $laboral?->getCategoria()?->getNombre(),
+            'estado_30_dias' => $estado30, // true | false | null
+        ];
+    }
+
+    return $this->json($data);
+}
+
 }

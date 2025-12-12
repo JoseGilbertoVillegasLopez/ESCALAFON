@@ -142,6 +142,17 @@ tr:nth-child(even) {
         Los que no marques quedarán <em>pendientes</em> para otra revisión.
       </p>
 
+      <div class="mb-3">
+  <input
+    type="text"
+    id="buscador-trabajador"
+    class="form-control form-control-lg"
+    placeholder="Buscar trabajador por nombre o apellido…"
+    autocomplete="off"
+  >
+</div>
+
+
       <div class="table-responsive mt-3">
         <table class="table table-dark table-hover align-middle">
           <thead>
@@ -195,5 +206,106 @@ tr:nth-child(even) {
 
   {% endif %}
 </div>
+
+<script>
+(function initBuscador30Dias() {
+
+    function iniciar() {
+
+        const input = document.getElementById('buscador-trabajador');
+        const tbody = document.querySelector('table tbody');
+
+        if (!input || !tbody) {
+            return false; // 👈 el DOM aún no está listo
+        }
+
+        const urlBuscar = "{{ path('admin_escalafon_30dias_buscar') }}";
+        let timeout = null;
+
+        input.addEventListener('input', () => {
+            clearTimeout(timeout);
+
+            timeout = setTimeout(async () => {
+                const q = input.value.trim();
+
+                if (q.length === 0) {
+                    window.location.reload();
+                    return;
+                }
+
+                try {
+                    const res = await fetch(urlBuscar + '?q=' + encodeURIComponent(q));
+                    if (!res.ok) return;
+
+                    const data = await res.json();
+                    tbody.innerHTML = '';
+
+                    if (data.length === 0) {
+                        tbody.innerHTML = `
+                          <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                              No se encontraron resultados
+                            </td>
+                          </tr>
+                        `;
+                        return;
+                    }
+tbody.innerHTML = '';
+
+data.forEach((t, index) => {
+
+    let radioSi = '';
+    let radioNo = '';
+
+    if (t.estado_30_dias === true) radioSi = 'checked';
+    if (t.estado_30_dias === false) radioNo = 'checked';
+
+    tbody.innerHTML += `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${t.nombre}</td>
+        <td>${t.numero_afiliado ?? 'Sin número'}</td>
+        <td>${t.puesto ?? 'Sin puesto'}</td>
+        <td>${t.categoria ?? 'Sin categoría'}</td>
+        <td class="text-center">
+          <div class="d-flex justify-content-center gap-3">
+            <label class="form-check-label">
+              <input class="form-check-input" type="radio"
+                     name="estado[${t.id}]"
+                     value="si" ${radioSi}>
+              Sí
+            </label>
+            <label class="form-check-label">
+              <input class="form-check-label" type="radio"
+                     name="estado[${t.id}]"
+                     value="no" ${radioNo}>
+              No
+            </label>
+          </div>
+        </td>
+      </tr>
+    `;
+});
+
+                    
+
+                } catch (e) {
+                    console.error('Error en búsqueda:', e);
+                }
+
+            }, 300);
+        });
+
+        return true;
+    }
+
+    // 🔁 mismo patrón que sanciones
+    if (!iniciar()) {
+        document.addEventListener('DOMContentLoaded', iniciar);
+    }
+
+})();
+</script>
+
 
 {% endblock %}
