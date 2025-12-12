@@ -46,23 +46,6 @@ public function getEscalafonData(
         ->leftJoin('il.puesto', 'pu')
         ->leftJoin('il.categoria', 'c');
 
-    if (!empty($nombre)) {
-        $qb->andWhere(
-            'p.nombre LIKE :q
-             OR p.apellidoPaterno LIKE :q
-             OR p.apellidoMaterno LIKE :q'
-        )->setParameter('q', '%' . $nombre . '%');
-    }
-
-    if (!empty($categoriaId)) {
-        $qb->andWhere('c.id = :categoria')
-           ->setParameter('categoria', $categoriaId);
-    }
-
-    $qb->addOrderBy('p.apellidoPaterno', 'ASC')
-       ->addOrderBy('p.apellidoMaterno', 'ASC')
-       ->addOrderBy('p.nombre', 'ASC');
-
     $trabajadores = $qb->getQuery()->getResult();
 
     /* ======================================================
@@ -152,6 +135,7 @@ public function getEscalafonData(
             'nombre' => (string)$t,
             'puesto' => $puesto?->getNombre() ?? 'Sin puesto',
             'categoria' => $categoria?->getNombre() ?? 'Sin categoría',
+            'categoria_id' => $categoria?->getId(),
             'fecha_ingreso' => $fechaIngreso?->format('d/m/Y'),
             'antiguedad' => $antiguedadTexto,
             'puntos_capacitacion' => $puntosCapacitacion,
@@ -219,11 +203,45 @@ unset($row);
     }
     unset($row);
 
+
+// ======================================================
+// 🔎 FILTROS SOBRE ESCALAFÓN YA CALCULADO
+// ======================================================
+
+$itemsFiltrados = $items;
+
+// 🔍 Filtro por nombre
+if (!empty($nombre)) {
+    $q = mb_strtolower($nombre);
+
+    $itemsFiltrados = array_filter($itemsFiltrados, function ($row) use ($q) {
+        return str_contains(mb_strtolower($row['nombre']), $q);
+    });
+}
+
+// 🗂️ Filtro por categoría
+if (!empty($categoriaId)) {
+    $itemsFiltrados = array_filter($itemsFiltrados, function ($row) use ($categoriaId) {
+        return (string)$row['categoria_id'] === (string)$categoriaId;
+    });
+}
+
+
+
+
+
+
     /* ======================================================
        PAGINACIÓN
        ====================================================== */
-    $total = count($items);
-    $itemsPaginados = array_slice($items, ($page - 1) * $perPage, $perPage);
+    $total = count($itemsFiltrados);
+
+$itemsPaginados = array_slice(
+    array_values($itemsFiltrados),
+    ($page - 1) * $perPage,
+    $perPage
+);
+
 
     return [
         'items' => $itemsPaginados,
