@@ -120,14 +120,18 @@ tr:nth-child(even) {
 </style>
 <div class="card p-4 shadow-lg">
   <h2 class="text-center text-info mb-3" style="font-size: 2rem;">
-    <i class="bi bi-bar-chart-steps"></i> Escalafón de la categoría: {{ categoria.nombre }}
-  </h2>
+  <i class="bi bi-bar-chart-steps"></i>
+  Escalafón general
+</h2>
+
 
   {% if posicion %}
-    <p class="text-center text-secondary">
-      Tu posición actual: <strong class="text-warning">#{{ posicion }}</strong>
-    </p>
-  {% endif %}
+  <p class="text-center text-secondary">
+    Tu posición actual en el escalafón general:
+    <strong class="text-warning fs-4">#{{ posicion }}</strong>
+  </p>
+{% endif %}
+
 
   {% if items is empty %}
     <div class="alert alert-secondary text-center mt-4">
@@ -151,7 +155,7 @@ tr:nth-child(even) {
         <tbody>
           {% for t in items %}
             <tr class="{% if t.id == mi_id %}table-primary{% endif %}">
-              <td>{{ loop.index }}</td>
+              <td>{{ t.posicion_final }}</td>
               <td>
                 {% if t.id == mi_id %}
                   <strong>{{ t.nombre }} (Tú)</strong>
