@@ -117,19 +117,42 @@
                 —
               {% endif %}
             </td>
+
            <td class="text-center">
+  <div class="d-flex justify-content-center align-items-center gap-2">
+
+
+  {# 👁 VER #}
   <a href="{{ path('app_informacion_personal_show', {'id': info.id}) }}"
-     class="btn btn-sm btn-outline-info me-2"
+     class="btn btn-sm btn-outline-info"
      title="Ver detalles">
      <i class="bi bi-eye-fill"></i>
   </a>
 
+  {# ✏️ EDITAR #}
   <a href="{{ path('app_informacion_personal_edit', {'id': info.id}) }}"
      class="btn btn-sm btn-outline-warning"
      title="Editar información">
      <i class="bi bi-pencil-fill"></i>
   </a>
+
+  {# 🗑 ELIMINAR #}
+  <form method="post"
+        action="{{ path('app_informacion_personal_delete', {'id': info.id}) }}"
+        onsubmit="return confirm('¿Estás seguro de eliminar este registro?');"
+        style="display:inline-block;">
+
+    <input type="hidden" name="_token"
+           value="{{ csrf_token('delete' ~ info.id) }}">
+
+    <button class="btn btn-sm btn-outline-danger"
+            title="Eliminar registro">
+      <i class="bi bi-trash-fill"></i>
+    </button>
+  </form>
+</div>
 </td>
+
 
 
           </tr>
